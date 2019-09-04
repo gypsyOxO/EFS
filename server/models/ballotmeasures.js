@@ -16,6 +16,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
+    BM_FULL_NAME: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    BM_GROUP_LABEL: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     ELECTION_ID: {
       type: DataTypes.INTEGER(10),
       allowNull: true,

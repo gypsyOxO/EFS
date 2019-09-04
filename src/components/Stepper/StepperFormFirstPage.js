@@ -12,6 +12,7 @@ import StepperNextButton from "./StepperNextButton"
 import ReactSelectMaterialUi from "react-select-material-ui"
 
 import CandidateOrBallotMeasure from "../Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
+import BallotMeasure from "../Form/Group/BallotMeasure/BallotMeasure"
 //import GetCandidates from '../Form/Panels/GetCandidates';
 
 const useStyles = makeStyles(theme => ({
@@ -48,7 +49,8 @@ const StepperFormFirstPage = props => {
 	]
 
 	const showCandidateOrBallotmeasure = isCandidate ? (
-		<CandidateOrBallotMeasure />
+		<div><CandidateOrBallotMeasure />
+		<BallotMeasure /></div>
 	) : (
 		<Grid container>
 			<Grid item style={{ marginBottom: 8 }} xs={12}>

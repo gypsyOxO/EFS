@@ -17,6 +17,8 @@ export default `
         ELECTION_ID: Int
         ELECTION_DESC: String
         ELECTION_DATE: String
+        BM_FULL_NAME: String
+        BM_GROUP_LABEL: String
     }
 
     type IndExp {
