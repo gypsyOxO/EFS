@@ -9,7 +9,16 @@ export default `
         PER_LNAME: String
         ELEC_SEAT_LABEL: String!
     }
-    
+
+    type BallotMeasure {
+        BM_ID: Int!
+        BM_NUM_OR_LETTER: String
+        BM_NAME: String
+        ELECTION_ID: Int
+        ELECTION_DESC: String
+        ELECTION_DATE: String
+    }
+
     type IndExp {
         IE_ID: ID!
         ELECTION_ID: Int!
@@ -31,6 +40,7 @@ export default `
         candidates: [Candidate!]! 
         indexp(IE_ID: Int!): IndExp! 
         indexps(limit: Int): [IndExp!]!
-        
+        ballotmeasures: [BallotMeasure!]!
+        ballotmeasure(BM_ID: Int!): BallotMeasure! 
 	}
 `

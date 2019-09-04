@@ -15,6 +15,7 @@ export default {
 
 	Query: {
 		candidates: (parent, args, { db }) => db.candidate.findAll(),
+		ballotmeasures: (parent, args, { db }) => db.ballotmeasures.findAll(),
         indexp: (parent,{IE_ID},{db}) => db.ind_exp.findByPk(IE_ID),
         indexps: (parent, args, { db }) => {
 
