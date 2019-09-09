@@ -12,7 +12,6 @@ import StepperNextButton from "./StepperNextButton"
 import ReactSelectMaterialUi from "react-select-material-ui"
 
 import CandidateOrBallotMeasure from "../Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
-import BallotMeasure from "../Form/Group/BallotMeasure/BallotMeasure"
 //import GetCandidates from '../Form/Panels/GetCandidates';
 
 const useStyles = makeStyles(theme => ({
@@ -37,7 +36,7 @@ const StepperFormFirstPage = props => {
 	const { handleSubmit } = props
 	const [isCandidate, setIsCandidate] = useState(true)
 
-	const options: string[] = [
+	/*const options: string[] = [
 		"2019 LAUSD Ballot Measure",
 		"2018 City Ballot Measures",
         "2017 City and LAUSD Ballot Measures",
@@ -46,29 +45,7 @@ const StepperFormFirstPage = props => {
 
 	const options2: string[] = [
 		"EE-Quality Teacher, Class Size Reductions, and Local School Safety Measure"
-	]
-
-	const showCandidateOrBallotmeasure = isCandidate ? (
-		<div><CandidateOrBallotMeasure />
-		<BallotMeasure /></div>
-	) : (
-		<Grid container>
-			<Grid item style={{ marginBottom: 8 }} xs={12}>
-				<ReactSelectMaterialUi
-					fullWidth
-					value="2019 LAUSD Ballot Measure"
-					options={options}
-				/>
-			</Grid>
-			<Grid item xs={12}>
-				<ReactSelectMaterialUi
-					fullWidth
-					placeholder="Select one or more"
-					options={options2}
-				/>
-			</Grid>
-		</Grid>
-	)
+	]*/
 
 	return (
 		<form onSubmit={handleSubmit}>
@@ -98,43 +75,7 @@ const StepperFormFirstPage = props => {
 				</Grid>
 
 				<Grid item xs={12} sm={6}>
-					<FormControl component="fieldset">
-						<FormLabel component="legend">
-							Choose Candidate or Ballot Measure
-						</FormLabel>
-						<Field name="subject" component={renderRadioGroup} row>
-							<FormControlLabel
-								value="C"
-								control={
-									<Radio
-										color="primary"
-										onClick={() => setIsCandidate(true)}
-									/>
-								}
-								label="Candidate"
-								labelPlacement="end"
-							/>
-							<FormControlLabel
-								value="B"
-								control={
-									<Radio
-										color="primary"
-										onClick={() => setIsCandidate(false)}
-									/>
-								}
-								label="Ballot Measure"
-								labelPlacement="end"
-							/>
-						</Field>
-						{/* <Field
-							id="name"
-							name="name"
-							component={renderTextField}
-							label="Enter candidate or Ballot Measure to support or oppose"
-							fullWidth
-                        /> */}
-					</FormControl>
-					{showCandidateOrBallotmeasure}
+					<CandidateOrBallotMeasure />
 				</Grid>
 			</Grid>
 

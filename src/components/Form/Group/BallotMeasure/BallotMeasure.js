@@ -45,7 +45,7 @@ class BallotMeasure extends Component {
 	state = {
 		data: [],
 		ballotmeasure: {
-			election_id: "",
+			election_id: "57",
 			bm_id: ""
 		},
 		Elections: [],
