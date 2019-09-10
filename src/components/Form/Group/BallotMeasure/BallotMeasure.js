@@ -18,6 +18,8 @@ query {
       BM_NAME
       BM_FULL_NAME
       BM_GROUP_LABEL
+	  ELECTION_ID
+	  ELECTION_DESC
     }
   }
 `
@@ -45,7 +47,7 @@ class BallotMeasure extends Component {
 	state = {
 		data: [],
 		ballotmeasure: {
-			election_id: "57",
+			election_id: "",
 			bm_id: ""
 		},
 		Elections: [],
@@ -90,8 +92,8 @@ class BallotMeasure extends Component {
 				: this.state.data.filter(el => el.ELECTION_ID === election_id)
 
 		const bm_list = optGroupBuilder(
-            electionList,
-            "",
+			electionList,
+			"",
 			"BM_FULL_NAME",
 			"BM_ID",
 			"BM_GROUP_LABEL"

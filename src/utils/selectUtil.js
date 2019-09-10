@@ -22,8 +22,8 @@ export function optGroupBuilder(list,fname,lname,optvalue,optgroup) {
     //e.g. optvalue = cand_per_id
     let optList = []
     
-    for (let el of list) {         
-        let fullName = el[fname] === '' ? el[lname] : el[fname] + ' ' + el[lname]
+    for (let el of list) {        
+        let fullName = el[fname] === '' || null ? el[lname] : el[fname] + ' ' + el[lname]
         let obj = optList.findIndex(o => o.label === el[optgroup])
         if (obj === -1) {
             optList.push({label: el[optgroup], options: [{label: fullName, value: el[optvalue] }]})            
