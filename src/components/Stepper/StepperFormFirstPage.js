@@ -28,7 +28,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const initialValues = {
-	subject: "C"
+	subject: "C",
+	position: "S",
+	type: "IE"
 }
 
 const StepperFormFirstPage = props => {
@@ -83,13 +85,13 @@ const StepperFormFirstPage = props => {
 						<FormLabel component="legend">Type</FormLabel>
 						<Field name="type" component={renderRadioGroup} row>
 							<FormControlLabel
-								value="S"
+								value="IE"
 								control={<Radio color="primary" />}
 								label="Independent Expenditure"
 								labelPlacement="end"
 							/>
 							<FormControlLabel
-								value="O"
+								value="MC"
 								control={<Radio color="primary" />}
 								label="Membership Communication"
 								labelPlacement="end"

@@ -141,7 +141,7 @@ class Candidate extends Component {
 	}
 
 	SeatsSelectHandler = event => {
-		console.log("SeatsSelectHandler->event", event)
+		//console.log("SeatsSelectHandler->event", event)
 		const value = { elec_seat_id: event.value, elec_seat_cand_id: "" }
 		this.handleSelect(value, "candidate")
 		this.getListOfCandidates(null, event.value)
