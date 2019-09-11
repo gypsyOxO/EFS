@@ -74,8 +74,28 @@ const StepperFormFirstPage = props => {
 					</FormControl>
 				</Grid>
 
-				<Grid item xs={12} sm={6}>
+				<Grid item xs={12} sm={4}>
 					<CandidateOrBallotMeasure />
+				</Grid>
+
+				<Grid item xs={12} sm={4}>
+					<FormControl component="fieldset">
+						<FormLabel component="legend">Type</FormLabel>
+						<Field name="type" component={renderRadioGroup} row>
+							<FormControlLabel
+								value="S"
+								control={<Radio color="primary" />}
+								label="Independent Expenditure"
+								labelPlacement="end"
+							/>
+							<FormControlLabel
+								value="O"
+								control={<Radio color="primary" />}
+								label="Membership Communication"
+								labelPlacement="end"
+							/>
+						</Field>
+					</FormControl>
 				</Grid>
 			</Grid>
 

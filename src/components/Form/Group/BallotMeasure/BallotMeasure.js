@@ -115,7 +115,8 @@ class BallotMeasure extends Component {
 
 	BMSelectHandler = event => {
 		const value = {
-			bm_id: event.map(({ value }) => value).join()
+			bm_id: event.value
+			//bm_id: event.map(({ value }) => value).join()
 		}
 		this.handleSelect(value, "ballotmeasure")
 	}
@@ -135,7 +136,7 @@ class BallotMeasure extends Component {
             election_id,
             bm_id
 		} = this.state.ballotmeasure
-
+/*
 		//convert ballotmeasure props from comma delimited list to array of integers...Why, you ask? Because Multiselct requires value in array of objects format
 		const bmProps = bm_id.split(",").map(Number)
 
@@ -144,7 +145,7 @@ class BallotMeasure extends Component {
 			(acc, currentValue) => acc.concat(currentValue.options),
 			[]
 		).filter(({ value }) => bmProps.indexOf(value) !== -1)
-
+			*/
 		return (
 			<Grid container>
 				<Grid item xs={12} style={{marginBottom: 4}}>
