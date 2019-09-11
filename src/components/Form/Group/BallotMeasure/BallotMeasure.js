@@ -82,8 +82,8 @@ class BallotMeasure extends Component {
 	getListOfBallotMeasures = (election_id) => {
 		election_id = election_id || this.state.election_id
 
-		let electionList = []
-		electionList =
+		let electionBMList = []
+		electionBMList =
 			election_id !== null
 				? this.state.data.filter(
 						el =>
@@ -92,7 +92,7 @@ class BallotMeasure extends Component {
 				: this.state.data.filter(el => el.ELECTION_ID === election_id)
 
 		const bm_list = optGroupBuilder(
-			electionList,
+			electionBMList,
 			"",
 			"BM_FULL_NAME",
 			"BM_ID",
