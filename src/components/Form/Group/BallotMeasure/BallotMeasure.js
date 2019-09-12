@@ -20,6 +20,7 @@ query {
       BM_GROUP_LABEL
 	  ELECTION_ID
 	  ELECTION_DESC
+	  JURIS_ID
     }
   }
 `

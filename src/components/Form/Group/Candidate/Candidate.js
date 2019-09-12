@@ -24,6 +24,7 @@ const GET_CANDIDATES = gql`
 			PER_FNAME
 			PER_LNAME
 			ELEC_SEAT_LABEL
+			JURIS_ID
 		}
 	}
 `

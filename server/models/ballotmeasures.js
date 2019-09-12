@@ -36,6 +36,11 @@ module.exports = function(sequelize, DataTypes) {
     ELECTION_DATE: {
       type: DataTypes.DATEONLY,
       allowNull: true
+    },
+    JURIS_ID: {
+      type: DataTypes.INTEGER(10),
+      allowNull: true,
+      defaultValue: '0'
     }
   }, {
     tableName: 'ballotmeasures'

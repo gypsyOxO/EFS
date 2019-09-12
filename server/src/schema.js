@@ -8,6 +8,7 @@ export default `
         PER_FNAME: String
         PER_LNAME: String
         ELEC_SEAT_LABEL: String!
+        JURIS_ID: Int
     }
 
     type BallotMeasure {
@@ -19,6 +20,7 @@ export default `
         ELECTION_DATE: String
         BM_FULL_NAME: String
         BM_GROUP_LABEL: String
+        JURIS_ID: Int
     }
 
     type IndExp {
