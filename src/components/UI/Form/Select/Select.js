@@ -1,19 +1,36 @@
-import React from 'react'
-import ReactSelect from 'react-select'
-import SimpleValue from 'react-select-simple-value'
-
+import React from "react"
+import ReactSelect from "react-select"
+import SimpleValue from "react-select-simple-value"
 
 const Select = ({ options, value, ...props }) => {
-  return  (
-  <SimpleValue options={options} value={value}>
-    {simpleProps => <ReactSelect {...simpleProps} {...props} className="basic-select" classNamePrefix="select" />}
-  </SimpleValue>
-  )}
+	return (
+		<SimpleValue options={options} value={value}>
+			{simpleProps => {
+        
+        simpleProps.value = simpleProps.value === undefined ? null : simpleProps.value
+        
+				return (
+					<ReactSelect
+						{...simpleProps}
+						{...props}
+						className="basic-select"
+						classNamePrefix="select"
+					/>
+				)
+			}}
+		</SimpleValue>
+	)
+}
 
 export const MultiSelect = ({ ...props }) => {
-  return (
-    <ReactSelect {...props} isMulti className="basic-multi-select" classNamePrefix="select" />
-  )
+	return (
+		<ReactSelect
+			{...props}
+			isMulti
+			className="basic-multi-select"
+			classNamePrefix="select"
+		/>
+	)
 }
 
 export default Select
