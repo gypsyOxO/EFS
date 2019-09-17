@@ -6,9 +6,10 @@ const Select = ({ options, value, ...props }) => {
 	return (
 		<SimpleValue options={options} value={value}>
 			{simpleProps => {
-        
-        simpleProps.value = simpleProps.value === undefined ? null : simpleProps.value
-        
+				simpleProps.value = simpleProps.value
+					? simpleProps.value
+					: null
+
 				return (
 					<ReactSelect
 						{...simpleProps}
