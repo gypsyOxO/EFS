@@ -1,7 +1,5 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import { Provider } from "react-redux"
-import store from "./store/store"
 import App from "./App"
 import { ThemeProvider } from "@material-ui/styles"
 import theme from "./theme/theme"
@@ -12,12 +10,10 @@ import * as serviceWorker from "./serviceWorker"
 const client = new ApolloClient({ uri: 'http://localhost:4000/graphql' })
 
 ReactDOM.render(
-	<ApolloProvider client={client}>
-		<Provider store={store}>
+	<ApolloProvider client={client}>		
 			<ThemeProvider theme={theme}>
 				<App />
 			</ThemeProvider>
-		</Provider>
 	</ApolloProvider>,
 	document.getElementById("root")
 )

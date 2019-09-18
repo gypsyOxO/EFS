@@ -13,9 +13,9 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const StepperNextButton = props => {
+const WizardBackButton = props => {
 	const classes = useStyles()
-	const { previousStep } = props
+	const { navigateBack } = props
 
 	return (
 		<div className={classes.buttons}>
@@ -23,11 +23,11 @@ const StepperNextButton = props => {
 				className={classes.button}
 				variant="contained"
 				color="primary"
-				onClick={previousStep}>
+				onClick={navigateBack}>
 				Back
 			</Button>
 		</div>
 	)
 }
 
-export default StepperNextButton
+export default WizardBackButton

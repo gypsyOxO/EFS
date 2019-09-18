@@ -4,7 +4,7 @@ import FormLabel from "@material-ui/core/FormLabel"
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
 import { renderTextField, renderRadioGroup } from "../../../Form/Inputs/renderInputs"
-import { Field, reduxForm } from "redux-form"
+import { Field} from "formik"
 import BallotMeasure from "../../../Form/Group/BallotMeasure/BallotMeasure"
 import Candidate from "../../../Form/Group/Candidate/Candidate"
 
