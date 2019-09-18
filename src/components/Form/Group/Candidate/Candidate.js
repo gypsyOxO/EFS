@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from "react"
-import Select, { MultiSelect } from "../../../UI/Form/Select/Select"
+import Select, { MultiSelect } from "components/UI/Form/Select/Select"
 //import axios from '../../../axios-api'
 import {
 	optGroupBuilder,
 	getDistinctOptions
-} from "../../../../utils/selectUtil"
+} from "utils/selectUtil"
 import gql from "graphql-tag"
 import { Query } from "react-apollo"
 

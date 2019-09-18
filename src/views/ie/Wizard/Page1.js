@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Field, reduxForm } from "redux-form"
+import React, { useState, Fragment } from "react"
+import { Field } from "formik"
 import Typography from "@material-ui/core/Typography"
 import { makeStyles } from "@material-ui/core/styles"
 import Grid from "@material-ui/core/Grid"
@@ -7,11 +7,14 @@ import FormControlLabel from "@material-ui/core/FormControlLabel"
 import FormLabel from "@material-ui/core/FormLabel"
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
-import { renderTextField, renderRadioGroup } from "../Form/Inputs/renderInputs"
-import StepperNextButton from "./StepperNextButton"
+import {
+	renderTextField,
+	renderRadioGroup
+} from "components/Form/Inputs/renderInputs"
+import WizardNextButton from "components/Wizard/WizardNextButton"
 import ReactSelectMaterialUi from "react-select-material-ui"
 
-import CandidateOrBallotMeasure from "../Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
+import CandidateOrBallotMeasure from "components/Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
 //import GetCandidates from '../Form/Panels/GetCandidates';
 
 const useStyles = makeStyles(theme => ({
@@ -27,30 +30,11 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const initialValues = {
-	subject: "C",
-	position: "S",
-	type: "IE"
-}
-
-const StepperFormFirstPage = props => {
+const Page1 = props => {
 	const classes = useStyles()
-	const { handleSubmit } = props
-	const [isCandidate, setIsCandidate] = useState(true)
-
-	/*const options: string[] = [
-		"2019 LAUSD Ballot Measure",
-		"2018 City Ballot Measures",
-        "2017 City and LAUSD Ballot Measures",
-        "2016 City Ballot Measures"
-	]
-
-	const options2: string[] = [
-		"EE-Quality Teacher, Class Size Reductions, and Local School Safety Measure"
-	]*/
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<Fragment>
 			<Typography variant="h6" gutterBottom className={classes.header}>
 				Purpose
 			</Typography>
@@ -59,7 +43,10 @@ const StepperFormFirstPage = props => {
 				<Grid item xs={12} sm={4}>
 					<FormControl component="fieldset">
 						<FormLabel component="legend">Purpose</FormLabel>
-						<Field name="position" component={renderRadioGroup} row>
+						<Field
+							name="SUPPORT_OPPOSE_FLG"
+							component={renderRadioGroup}
+							row>
 							<FormControlLabel
 								value="S"
 								control={<Radio color="primary" />}
@@ -100,15 +87,9 @@ const StepperFormFirstPage = props => {
 					</FormControl>
 				</Grid>
 			</Grid>
-
-			<StepperNextButton />
-		</form>
+			<WizardNextButton {...props} />
+		</Fragment>
 	)
 }
 
-export default reduxForm({
-	form: "stepperForm", // <------ same form name
-	destroyOnUnmount: false, // <------ preserve form data
-	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-	initialValues
-})(StepperFormFirstPage)
+export default Page1

@@ -1,5 +1,5 @@
-import React from "react"
-import { reduxForm } from "redux-form"
+import React, { Fragment } from "react"
+
 import { makeStyles } from "@material-ui/core/styles"
 import Typography from "@material-ui/core/Typography"
 import Grid from "@material-ui/core/Grid"
@@ -11,11 +11,14 @@ import TableHead from "@material-ui/core/TableHead"
 import TableRow from "@material-ui/core/TableRow"
 import Paper from "@material-ui/core/Paper"
 import Button from "@material-ui/core/Button"
-import StepperBackButton from "./StepperBackButton"
+import WizardBackButton from "components/Wizard/WizardBackButton"
 import Fab from "@material-ui/core/Fab"
 import Icon from "@material-ui/core/Icon"
 import EditIcon from "@material-ui/icons/Edit"
-import ReviewBox from "../../assets/IE/review/ReviewBox"
+import ContentBox from "components/UI/Content/ContentBox"
+
+import { review_box } from "views/ie/Wizard"
+
 
 const useStyles = makeStyles(theme => ({
 	listItem: {
@@ -77,20 +80,14 @@ const rows1 = [
 ]
 
 const Review = props => {
-	const classes = useStyles()
-	const {
-		handleSubmit,
-		previousStep,
-		pristine,
-		submitting,
-		handleStep
-	} = props
+    const classes = useStyles()
+    const {navigateToPage} = props
 	return (
-		<form onSubmit={handleSubmit}>
+		<Fragment>
 			<Typography variant="h6" gutterBottom className={classes.header}>
 				Review
 			</Typography>
-			<ReviewBox />
+			<ContentBox>{review_box}</ContentBox>
 			<br />
 			<br />
 			<Grid container spacing={1} className={classes.grid}>
@@ -98,10 +95,10 @@ const Review = props => {
 					<Typography variant="body1" gutterBottom>
 						<b>Communication summary</b>
 					</Typography>
-                </Grid>
-                <Grid>
+				</Grid>
+				<Grid>
 					<Fab
-						onClick={() => handleStep(0)}
+						onClick={() => navigateToPage(0)}
 						size="small"
 						className={classes.fab}>
 						<EditIcon className={classes.icon} />
@@ -134,7 +131,7 @@ const Review = props => {
 				</Grid>
 				<Grid />
 				<Fab
-					onClick={() => handleStep(1)}
+					onClick={() => navigateToPage(1)}
 					size="small"
 					display="flex"
 					justifyContent="flex-end"
@@ -186,7 +183,7 @@ const Review = props => {
 				</Grid>
 				<Grid />
 				<Fab
-					onClick={() => handleStep(2)}
+					onClick={() => navigateToPage(2)}
 					size="small"
 					display="flex"
 					justifyContent="flex-end"
@@ -256,7 +253,7 @@ const Review = props => {
 				</Grid>
 				<Grid />
 				<Fab
-					onClick={() => handleStep(3)}
+					onClick={() => navigateToPage(3)}
 					size="small"
 					display="flex"
 					justifyContent="flex-end"
@@ -300,7 +297,7 @@ const Review = props => {
 				</Grid>
 				<Grid />
 				<Fab
-					onClick={() => handleStep(4)}
+					onClick={() => navigateToPage(4)}
 					size="small"
 					display="flex"
 					justifyContent="flex-end"
@@ -337,7 +334,7 @@ const Review = props => {
 			</Paper>
 
 			<div className={classes.buttons}>
-				<StepperBackButton previousStep={previousStep} />
+				<WizardBackButton {...props} />
 
 				<Button
 					className={classes.button}
@@ -347,12 +344,8 @@ const Review = props => {
 					Continue to E-sign
 				</Button>
 			</div>
-		</form>
+		</Fragment>
 	)
 }
 
-export default reduxForm({
-	form: "stepperForm", // <------ same form name
-	destroyOnUnmount: false, // <------ preserve form data
-	forceUnregisterOnUnmount: true // <------ unregister fields on unmount
-})(Review)
+export default Review

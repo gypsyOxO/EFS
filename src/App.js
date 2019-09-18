@@ -1,12 +1,12 @@
 import React from 'react'
-import StepperForm from './components/Stepper/StepperForm'
+import Wizard from './components/Wizard/Wizard'
 
 
 
 const App = () => {
   return (
     <div className="App">      
-        <StepperForm />       
+        <Wizard />       
     </div>
   );
 }
