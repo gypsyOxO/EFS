@@ -89,7 +89,7 @@ export default function Wizard() {
         SUPPORT_OPPOSE_FLG: "S",
         ELECTION_ID: 61,
         BM_ID: 72,
-        MC_FLG: 0
+        MC_FLG: "0"
 
 	}
 	return (

@@ -64,21 +64,21 @@ const Page1 = props => {
 				</Grid>
 
 				<Grid item xs={12} sm={4}>
-					<CandidateOrBallotMeasure />
+					<CandidateOrBallotMeasure {...props} />
 				</Grid>
 
 				<Grid item xs={12} sm={4}>
 					<FormControl component="fieldset">
 						<FormLabel component="legend">Type</FormLabel>
-						<Field name="type" component={renderRadioGroup} row>
+						<Field name="MC_FLG" component={renderRadioGroup} row>
 							<FormControlLabel
-								value="IE"
+								value="0"
 								control={<Radio color="primary" />}
 								label="Independent Expenditure"
 								labelPlacement="end"
 							/>
 							<FormControlLabel
-								value="MC"
+								value="1"
 								control={<Radio color="primary" />}
 								label="Membership Communication"
 								labelPlacement="end"
