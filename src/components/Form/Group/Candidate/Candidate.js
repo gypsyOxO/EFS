@@ -1,14 +1,15 @@
 import React, { Component, Fragment } from "react"
-import Select, { MultiSelect } from "../../../UI/Form/Select/Select"
+import Select, { MultiSelect } from "components/UI/Form/Select/Select"
 //import axios from '../../../axios-api'
 import {
 	optGroupBuilder,
 	getDistinctOptions
-} from "../../../../utils/selectUtil"
+} from "utils/selectUtil"
 import gql from "graphql-tag"
 import { Query } from "react-apollo"
 
 import Grid from "@material-ui/core/Grid"
+import { ColorSelect } from "react-select-material-ui";
 
 // This makes the assumption elec_seat_cand_id is stored in comma delmited list. Ideally it is stored in arrays, but this might be in a more nosql environment
 
@@ -23,6 +24,7 @@ const GET_CANDIDATES = gql`
 			PER_FNAME
 			PER_LNAME
 			ELEC_SEAT_LABEL
+			JURIS_ID
 		}
 	}
 `
@@ -102,8 +104,9 @@ class Candidate extends Component {
 	}
 
 	getListOfCandidates = (election_id, elec_seat_id) => {
-		election_id = election_id || this.state.election_id
-
+		election_id = election_id || this.state.candidate.election_id
+		//console.log(this.state.candidate.election_id, "this.state.candidate.election_id")
+		//console.log(election_id, "election_id")
 		let seatList = []
 		seatList =
 			elec_seat_id !== null
@@ -139,6 +142,7 @@ class Candidate extends Component {
 	}
 
 	SeatsSelectHandler = event => {
+		//console.log("SeatsSelectHandler->event", event)
 		const value = { elec_seat_id: event.value, elec_seat_cand_id: "" }
 		this.handleSelect(value, "candidate")
 		this.getListOfCandidates(null, event.value)
@@ -146,7 +150,8 @@ class Candidate extends Component {
 
 	CandSelectHandler = event => {
 		const value = {
-			elec_seat_cand_id: event.map(({ value }) => value).join()
+			//elec_seat_cand_id: event.map(({ value }) => value).join()
+			elec_seat_cand_id: event.value
 		}
 		this.handleSelect(value, "candidate")
 	}
@@ -158,6 +163,7 @@ class Candidate extends Component {
 				...value
 			}
 		})
+		console.log(this.state)
 	}
 
 	render() {
@@ -169,13 +175,13 @@ class Candidate extends Component {
 		} = this.state.candidate
 
 		//convert candidate props from comma delimited list to array of integers...Why, you ask? Because Multiselct requires value in array of objects format
-		const candProps = elec_seat_cand_id.split(",").map(Number)
+		/*const candProps = elec_seat_cand_id.split(",").map(Number)
 
 		//flatten options array in candidate select list, then filter down to elec_seat_cand_id prop.
 		const selectedCandidates = Candidates.reduce(
 			(acc, currentValue) => acc.concat(currentValue.options),
 			[]
-		).filter(({ value }) => candProps.indexOf(value) !== -1)
+		).filter(({ value }) => candProps.indexOf(value) !== -1)*/
 
 		return (
 			<Grid container>
@@ -196,10 +202,10 @@ class Candidate extends Component {
 					/>
 				</Grid>
 				<Grid item xs={12} style={{marginBottom: 4}}>
-					<MultiSelect
-						value={selectedCandidates}
+					<Select
+						value={elec_seat_cand_id}
 						onChange={this.CandSelectHandler}
-						placeholder="Select one or more seats"
+						placeholder="Select Candidate"
 						options={Candidates}
 						isLoading={isLoading}
 					/>

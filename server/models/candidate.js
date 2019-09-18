@@ -38,7 +38,12 @@ module.exports = function(sequelize, DataTypes) {
     ELEC_SEAT_LABEL: {
       type: DataTypes.STRING(200),
       allowNull: true
-    },    
+    },
+    JURIS_ID: {
+      type: DataTypes.INTEGER(10),
+      allowNull: true,
+      defaultValue: '0'
+    }    
   }, {
     tableName: 'candidates'
   });

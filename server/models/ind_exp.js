@@ -148,6 +148,14 @@ module.exports = function(sequelize, DataTypes) {
 			ELEC_SEAT_CMT_ID: {
 				type: DataTypes.INTEGER(10),
 				allowNull: true
+			},
+			DATE_DISTRIBUTED: {
+				type: DataTypes.DATEONLY,
+				allowNull: true
+			},
+			NUM_DISTRIBUTED: {
+				type: DataTypes.INTEGER(11),
+				allowNull: true
 			}
 		},
 		{
@@ -156,8 +164,8 @@ module.exports = function(sequelize, DataTypes) {
 	)
 
 	ind_exp.associate = models => {
-		ind_exp.hasMany(models.ind_exp_communication, {foreignKey: 'ie_id'})
-    }
-    
+		ind_exp.hasMany(models.ind_exp_communication, { foreignKey: "ie_id" })
+	}
+
 	return ind_exp
 }
