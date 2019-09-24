@@ -77,10 +77,11 @@ export default `
 
     input IEInput {
         CAND_PER_ID: Int
+        CMT_PER_ID: Int!
         SUPPORT_OPPOSE_FLG: String
-        ELECTION_ID: Int!,
-        BM_ID: Int,
-        MC_FLG: Int!
+        ELECTION_ID: Int!
+        MC_FLG: String!
+        BM_ID: Int        
         ind_exp_communications: [CommsInput]        
     }
 
@@ -122,7 +123,8 @@ export default `
         
     type Mutation {
         createComms(IE_ID: Int!, COMM_TYPE: String!, DOC_FILE_NAME: String!): [T1S1!]!
-        createIE(ie: IEInput ): IE      
+        createIE(ie: IEInput ): IE   
+        createTest(ELECTION_ID: Int): IE  
         createUser(firstname: String, addresses: [addressInput]):  user
     }
 `

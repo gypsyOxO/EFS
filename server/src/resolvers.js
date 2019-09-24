@@ -11,6 +11,7 @@ export default {
     },
 
     Mutation: {
+        createTest: (parent,args,{db}) => db.ind_exp.create(args),
         createUser: (parent,args,{db}) => {
 
 

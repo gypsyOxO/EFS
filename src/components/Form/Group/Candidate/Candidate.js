@@ -162,8 +162,7 @@ class Candidate extends Component {
 				...this.state[type],
 				...value
 			}
-		})
-		console.log(this.state)
+		})		
 	}
 
 	render() {

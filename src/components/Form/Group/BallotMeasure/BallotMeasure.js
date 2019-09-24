@@ -63,8 +63,7 @@ class BallotMeasure extends Component {
 	}
 
 	//handle initial default selections here....get incoming props and set select option states.
-	initControls = () => {
-        console.log(this.state.data);
+	initControls = () => {        
         const listOfElections = getDistinctOptions(
 			this.state.data,
 			"ELECTION_ID",

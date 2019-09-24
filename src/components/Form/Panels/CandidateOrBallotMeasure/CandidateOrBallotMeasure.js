@@ -11,7 +11,6 @@ import Candidate from "../../../Form/Group/Candidate/Candidate"
 //need to take in initialization value. also needs to pass on selected props. spinner happens at candidate or ballot measure level?
 //class CandidateOrBallotMeasure extends Component {
 const CandidateOrBallotMeasure = props => {
-    console.log(props)
     const showCandidateOrBallotmeasure = (
         props.values.SUBJECT === 'C' ? (
             <div><Candidate /></div>

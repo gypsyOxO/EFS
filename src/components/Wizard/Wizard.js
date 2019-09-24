@@ -1,6 +1,4 @@
-import React, { Component, Fragment } from "react"
-
-import {filter} from "graphql-anywhere"
+import React, { Fragment } from "react"
 
 import { Formik } from "formik"
 //import * as Yup from "yup"
@@ -9,7 +7,7 @@ import { DisplayFormikState } from "./helper"
 import Wiz from "./Wiz"
 import { makeStyles } from "@material-ui/core/styles"
 
-import { useQuery } from "react-apollo"
+import { useQuery, useMutation } from "@apollo/react-hooks"
 
 import PropTypes from "prop-types"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -19,14 +17,10 @@ import StepButton from "@material-ui/core/StepButton"
 
 import { Page1, Page2, Page3, Page4, Page5, Review } from "views/ie/Wizard"
 
-// import {
-// 	Page1,
-// 	// Page2,
-// 	// Page3,
-// 	// Page4,
-// 	// Page5,
-// 	// Review
-// } from "../../views/ie/Wizard"
+import { graphqlFilter } from "utils/graphqlUtil"
+import gql from "graphql-tag"
+import { loader } from "graphql.macro"
+const ADD_IE = loader("../../graphql/ie/index.graphql")
 
 //import { withStyles } from "@material-ui/core/styles"
 
@@ -85,13 +79,36 @@ export default function Wizard() {
 	// if (error) return <p>Error :( </p>
 	//initialValues = data.t1
 	const initialValues = {
-        SUBJECT: "C", 
-        SUPPORT_OPPOSE_FLG: "S",
-        ELECTION_ID: 61,
-        BM_ID: 72,
-        MC_FLG: "0"
-
+		SUBJECT: "C",
+		SUPPORT_OPPOSE_FLG: "S",
+		ELECTION_ID: 53,
+		BM_ID: 72,
+		MC_FLG: "0",
+		CMT_PER_ID: 14389
 	}
+
+	const query = gql`
+		query {
+			indexp
+			CMT_PER_ID
+			MC_FLG
+			ELECTION_ID
+			SUPPORT_OPPOSE_FLG
+			BM_ID
+		}
+	`
+
+
+	const [createIE] = useMutation(ADD_IE)
+
+	const handleCreate = async ({ filteredResult, createIE }) => {
+		const createResult = await createIE({
+			variables: { ie: { ...filteredResult } }
+		})
+    
+        window.location.href = "http://localhost/ken?id=" + createResult.data.createIE.IE_ID
+	}
+
 	return (
 		<Fragment>
 			<CssBaseline>
@@ -100,10 +117,10 @@ export default function Wizard() {
 						pages={[
 							Page1,
 							Page2,
-                            Page3,
-                            Page4,
-                            Page5,
-                            Review
+							Page3,
+							Page4,
+							Page5,
+							Review
 
 							//, Page3, Page4, Page5, Review
 						]}>
@@ -134,23 +151,34 @@ export default function Wizard() {
 											values,
 											{ setSubmitting }
 										) => {
-											//gonna put it in my new database											
-											setTimeout(() => {
-												alert(
-													JSON.stringify(
-														values,
-														null,
-														2
-													)
-												)
-												setSubmitting(false)
-											}, 1000)
+
+											const filteredResult = graphqlFilter(
+												query,
+												values
+											)
+											
+											handleCreate({
+												filteredResult,
+												createIE
+											})
+
+
 										}}>
 										{props => {
-											const { handleSubmit } = props
+											const {
+												handleSubmit,
+												values
+											} = props
+
+											const result = graphqlFilter(
+												query,
+												values
+											)
+
 											return (
 												<form onSubmit={handleSubmit}>
 													{wizProps.renderPage(props)}
+													{JSON.stringify(result)}
 													<DisplayFormikState
 														{...props}
 													/>
