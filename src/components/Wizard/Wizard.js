@@ -106,7 +106,7 @@ export default function Wizard() {
 			variables: { ie: { ...filteredResult } }
 		})
     
-        window.location.href = "http://localhost/ken?id=" + createResult.data.createIE.IE_ID
+        window.location.href = "http://cecwebtest.ci.la.ca.us/CFCs/Landing/ie?id=" + createResult.data.createIE.IE_ID
 	}
 
 	return (
