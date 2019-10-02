@@ -3,11 +3,21 @@ import ReactDOM from "react-dom"
 import App from "./App"
 import { ThemeProvider } from "@material-ui/styles"
 import theme from "./theme/theme"
+
 import ApolloClient from "apollo-boost"
+//import {InMemoryCache} from "apollo-cache-inmemory"
 import { ApolloProvider } from "react-apollo"
+//import {createHttpLink} from "apollo-link-http"
+
 import * as serviceWorker from "./serviceWorker"
 
-const client = new ApolloClient({ uri: 'http://localhost:4000/graphql' })
+
+
+const client = new ApolloClient({ uri: 'http://localhost:4000/graphql'})
+
+
+
+//console.log("client:", client)
 
 ReactDOM.render(
 	<ApolloProvider client={client}>		

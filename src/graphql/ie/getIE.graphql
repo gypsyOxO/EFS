@@ -1,0 +1,10 @@
+query indexp($IE_ID: Int!){    
+    indexp(IE_ID: $IE_ID) {
+    IE_ID
+    CMT_PER_ID
+    MC_FLG
+    ELECTION_ID
+    SUPPORT_OPPOSE_FLG
+    BM_ID
+    }
+}

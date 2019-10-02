@@ -1,9 +1,23 @@
 import React, { Component } from 'react';
 
+
+
 class Wiz extends Component {
+    // constructor() {
+    //     super()
+    //     window.globalv = this
+    // }
+
+
+    // callit(data){
+    //     alert(data)
+    // }
+
 	state = {
 		pageIndex: 0
-	};
+    };
+
+
 
 	render() {
 		const renderProps = {

@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && rimraf ../../inetpub/wwwroot/CFCs/PDF/IE/Stepper/* && cp -a ./build/* ../../inetpub/wwwroot/CFCs/PDF/IE/Stepper/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

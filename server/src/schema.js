@@ -31,6 +31,9 @@ export default `
         ELEC_SEAT_ID: Int
         ELEC_SEAT_CAND_ID: Int!
         CAND_PER_ID: Int
+        BM_ID: Int
+        MC_FLG: String
+        CMT_PER_ID: Int!
         SUPPORT_OPPOSE_FLG: String   
         indexpcomms: [IndExpComm]     
     }

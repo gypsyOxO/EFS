@@ -1,12 +1,13 @@
 import React from 'react'
-import Wizard from './components/Wizard/Wizard'
+import IndExp from './containers/ie/IndExp'
+
 
 
 
 const App = () => {
   return (
     <div className="App">      
-        <Wizard />       
+        <IndExp />       
     </div>
   );
 }
