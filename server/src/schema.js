@@ -54,7 +54,11 @@ export default gql`
     }
 
     input IEUpdate {
+<<<<<<< HEAD
         # IE_ID: Int!
+=======
+        IE_ID: Int!
+>>>>>>> nested read for ie's, candidateballotmeasure root working, basic updates
         CAND_PER_ID: Int        
         CMT_PER_ID: Int!
         SUPPORT_OPPOSE_FLG: String
@@ -132,7 +136,7 @@ export default gql`
     type Mutation {
         
         createIE(ie: IECreate ): IndExp   
-        updateIE(IE_ID: Int!, ie: IEUpdate): ID        
+        updateIE(ie: IEUpdate): ID        
 
 
     }

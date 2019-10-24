@@ -22,13 +22,13 @@ export default {
 
         updateIE: (parent,args,{db}) => {                        
             
-            return db.ind_exp.update(args.ie, {include: [db.ind_exp.associations.payments], returning: true, where: {IE_ID: args.IE_ID}}).then(ind_exp => {
+            return db.ind_exp.update(args.ie, {include: [db.ind_exp.associations.payments], returning: true, where: {IE_ID: args.ie.IE_ID}}).then(ind_exp => {
                 // console.log(args.ie.payments)
                 // args.ie.payments.map(p => {
                 //     db.payment.upsert(args.ie.payment, {returning: true, where: {IE_PAYMENT_ID: args.ie.payment[p].IE_PAYMENT_ID}})
                 // })
                 
-                return args.IE_ID})
+                return args.ie.IE_ID})
         },
         createIE: (parent,args, {db}) => {
              return db.ind_exp.create(args.ie
