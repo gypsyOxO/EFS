@@ -1,5 +1,6 @@
+import gql from "graphql-tag"
 
-export default `   
+export default gql`   
 
     type BallotMeasure {
         BM_ID: Int!
@@ -26,7 +27,8 @@ export default `
     }
     
     type IndExp {
-        IE_ID: ID!
+        IE_ID: Int!
+        SUBJECT: String
         ELECTION_ID: Int!
         ELEC_SEAT_ID: Int
         ELEC_SEAT_CAND_ID: Int!
@@ -36,88 +38,91 @@ export default `
         CMT_PER_ID: Int!
         SUPPORT_OPPOSE_FLG: String   
         indexpcomms: [IndExpComm]     
-    }
-
-    type T1 {
-        IE_ID: ID
-        CAND_PER_ID: Int
-        SUPPORT_OPPOSE_FLG: String   
-        comms: [T1S1]     
+        payments: [Payment]
     }
 
 
-
-    input T1Input {        
-        CAND_PER_ID: Int
-        SUPPORT_OPPOSE_FLG: String
-        t1s1s: [T1S1Input]
-    }
-
-    input T1S1Input {
-        COMM_TYPE: String
-        DOC_FILE_NAME: String
-
-    }
-
-
-    type user {
-        id: ID!
-        firstname: String
-    }
-
-    type address {
-        id: ID!
-        type: String
-        userId: Int
-    }
-
-    input addressInput {        
-        type: String
-        userId: Int
-    }
-
-
-
-    input IEInput {
+    input IECreate {
         CAND_PER_ID: Int
         CMT_PER_ID: Int!
         SUPPORT_OPPOSE_FLG: String
         ELECTION_ID: Int!
         MC_FLG: String!
         BM_ID: Int        
-        ind_exp_communications: [CommsInput]        
+        ind_exp_communications: [CommInput]        
+
     }
 
-    input CommsInput {                        
+    input IEUpdate {
+        # IE_ID: Int!
+        CAND_PER_ID: Int        
+        CMT_PER_ID: Int!
+        SUPPORT_OPPOSE_FLG: String
+        ELECTION_ID: Int!
+        MC_FLG: String!
+        BM_ID: Int        
+        ind_exp_communications: [CommInput]        
+        payments: [PaymentInput]
+    }
+
+
+    input CommInput {                        
         COMM_TYPE: String
         DOC_FILE_NAME: String
     }
 
+    
+
     type IE {
-        IE_ID: ID! 
+        IE_ID: ID
         CAND_PER_ID: Int
         SUPPORT_OPPOSE_FLG: String        
     }
 
-    type T1S1 {
-        IE_COMM_ID: ID!
-        IE_ID: Int!        
+    type IndExpComm {
+        IE_COMM_ID: Int!        
         COMM_TYPE: String
         DOC_FILE_NAME: String
     }
 
-    type IndExpComm {
-        IE_COMM_ID: ID!
-        IE_ID: Int!        
-        COMM_TYPE: String
-        DOC_FILE_NAME: String
+    type Payment {
+        IE_PAYMENT_ID: Int!
+        IE_PAYEE: String
+        IE_PAYMENT_DESC: String
+        IE_PAYMENT_DATE: String
+        IE_PAYMENT_AMT: String
+        vendors: [Vendor]        
     }
+
+
+    input PaymentInput {
+        IE_PAYMENT_ID: Int!
+        IE_PAYEE: String
+        IE_PAYMENT_DESC: String
+        IE_PAYMENT_DATE: String
+        IE_PAYMENT_AMT: String
+        # vendors: [VendorInput]
+    }
+
+
+    type Vendor {
+        IE_PAYMENT_VENDOR_ID: Int!
+        IE_PAYMENT_ID: Int!
+        IE_ID: Int!      
+        IE_PAYMENT_VENDOR_LNAME: String
+    }
+
+    # input VendorInput {        
+    #     IE_PAYMENT_ID: Int!
+    #     IE_ID: Int!      
+    #     IE_PAYMENT_VENDOR_LNAME: String
+    # }
+
 
 	type Query {
         candidates: [Candidate!]! 
         indexp(IE_ID: Int!): IndExp! 
         indexps(limit: Int): [IndExp!]!
-        t1(IE_ID: Int!): T1! 
         ballotmeasures: [BallotMeasure!]!
         ballotmeasure(BM_ID: Int!): BallotMeasure!         
         
@@ -125,9 +130,12 @@ export default `
 
         
     type Mutation {
-        createComms(IE_ID: Int!, COMM_TYPE: String!, DOC_FILE_NAME: String!): [T1S1!]!
-        createIE(ie: IEInput ): IE   
-        createTest(ELECTION_ID: Int): IE  
-        createUser(firstname: String, addresses: [addressInput]):  user
+        
+        createIE(ie: IECreate ): IndExp   
+        updateIE(IE_ID: Int!, ie: IEUpdate): ID        
+
+
     }
 `
+
+//createComms(IE_ID: Int!, COMM_TYPE: String!, DOC_FILE_NAME: String!): [T1S1!]!

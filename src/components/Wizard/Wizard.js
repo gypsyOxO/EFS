@@ -1,4 +1,4 @@
-import React, { Fragment} from "react"
+import React, { Fragment } from "react"
 
 import { Formik } from "formik"
 //import * as Yup from "yup"
@@ -18,9 +18,9 @@ import StepButton from "@material-ui/core/StepButton"
 import { Page1, Page2, Page3, Page4, Page5, Review } from "views/ie/Wizard"
 
 import { graphqlFilter } from "utils/graphqlUtil"
-import gql from "graphql-tag"
-import { loader } from "graphql.macro"
-const ADD_IE = loader("../../graphql/ie/createIE.graphql")
+import { ADD_IE, UPDATE_IE} from "../../graphql/ie/Mutations"
+import {filteredUpdate,filteredSubmit} from "../../graphql/ie/FilterQueries"
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -62,9 +62,8 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function Wizard(props) {
+	const classes = useStyles()
 
-    const classes = useStyles()
-    
 	const steps = [
 		"Purpose",
 		"Communications",
@@ -75,28 +74,30 @@ export default function Wizard(props) {
 	]
 
 
-    //TODO: move to graphql folder after testing more sophisticated queries
-	const query = gql`
-		query {
-			indexp
-			CMT_PER_ID
-			MC_FLG
-			ELECTION_ID
-			SUPPORT_OPPOSE_FLG
-			BM_ID
-		}
-	`
-
 	const [createIE] = useMutation(ADD_IE)
+	const [updateIE] = useMutation(UPDATE_IE)
 
-	const handleCreate = async ({ filteredResult, createIE }) => {
-		const createResult = await createIE({
-			variables: { ie: { ...filteredResult } }
-		})
-
+    const jumpLink = (document_id) => {
 		window.location.href =
 			"http://cecwebtest.ci.la.ca.us/CFCs/Landing/ie?id=" +
-			createResult.data.createIE.IE_ID
+			document_id        
+    }
+
+
+	const handleUpdate = async ({ filteredResult, updateIE }) => {
+		const updatedResult = await updateIE({
+			variables: { ie: { ...filteredResult } }
+        })
+        
+        jumpLink(updatedResult.data.updateIE)
+	}
+
+	const handleCreate = async ({ filteredResult, createIE }) => {
+		const createdResult = await createIE({
+			variables: { ie: { ...filteredResult } }
+		})
+        
+        jumpLink(createdResult.data.createIE.IE_ID)
 	}
 
 	return (
@@ -139,20 +140,31 @@ export default function Wizard(props) {
 										enableReinitialize
 										initialValues={props.initValues}
 										onSubmit={(values, { resetForm }) => {
+											
+                                            let filteredResult = ""
 
+											if (values.IE_ID !== undefined && values.IE_ID > 0) {
+                                                filteredResult = graphqlFilter(
+                                                    filteredUpdate,
+                                                    values
+                                                )
+    
+												handleUpdate({
+													filteredResult,
+													updateIE
+												})
 
-                                            //TODO: need to strip ie_id if it is set to 0, can we make this a boolean in graphqlfilter,
-                                            //exists only if it is greater than 0    
+											} else {
+                                                filteredResult = graphqlFilter(
+                                                    filteredSubmit,
+                                                    values
+                                                )
 
-											const filteredResult = graphqlFilter(
-												query,
-												values
-											)
-
-											handleCreate({
-												filteredResult,
-												createIE
-											})
+												handleCreate({
+													filteredResult,
+													createIE
+												})
+											}
 										}}>
 										{props => {
 											const {
@@ -161,7 +173,7 @@ export default function Wizard(props) {
 											} = props
 
 											const result = graphqlFilter(
-												query,
+												filteredSubmit,
 												values
 											)
 

@@ -1,8 +1,0 @@
-mutation CreateIE($ie: IEInput!) {
-    createIE(ie: $ie) {
-        IE_ID
-    }
-}
-
-
-

@@ -4,41 +4,33 @@ export default {
 
     IndExp: {
         indexpcomms: (parent, args, context, info) => parent.getInd_exp_communications(),
+        payments: (parent, args, context, info) => {
+            //console.log(parent)    
+            return parent.getPayments()
+        },
+    },
+    Payment: {
+        vendors: (parent, args, context, info) => {
+            //console.log(parent)    
+            return parent.getVendors()
+        },
     },
 
-    T1: {
-        comms: (parent, args, context, info) => parent.getT1s1s(),
-    },
 
     Mutation: {
-        createTest: (parent,args,{db}) => db.ind_exp.create(args),
-        createUser: (parent,args,{db}) => {
+  
 
-
-
-            //console.log(Object.values(db.users.associations.addresses))
-            return db.users.create(args,
-             {
-                 include: [db.users.associations.addresses]
-             }
-        )},
-
-
-        //     return db.users.create({
-        //         firstname: "Jummy",
-        //          addresses: [
-        //              {type: "yo gouy"}
-        //          ]
-        //     },
-        //      {
-        //          include: [db.users.associations.addresses]
-        //      }
-        // )},
-
+        updateIE: (parent,args,{db}) => {                        
+            
+            return db.ind_exp.update(args.ie, {include: [db.ind_exp.associations.payments], returning: true, where: {IE_ID: args.IE_ID}}).then(ind_exp => {
+                // console.log(args.ie.payments)
+                // args.ie.payments.map(p => {
+                //     db.payment.upsert(args.ie.payment, {returning: true, where: {IE_PAYMENT_ID: args.ie.payment[p].IE_PAYMENT_ID}})
+                // })
+                
+                return args.IE_ID})
+        },
         createIE: (parent,args, {db}) => {
-//console.log(Object.values(db.t1.associations.t1s1s))
-          
-            //console.log(Object.values(db.t1.associations.t1s1s))
              return db.ind_exp.create(args.ie
             //     , {
             //     include: [db..associations.t1s1s]
@@ -52,7 +44,6 @@ export default {
         candidates: (parent, args, { db }) => db.candidate.findAll(),
         ballotmeasures: (parent, args, { db }) => db.ballotmeasures.findAll(),
         indexp: (parent,{IE_ID},{db}) => db.ind_exp.findByPk(IE_ID),
-        t1: (parent,{IE_ID},{db}) => db.t1.findByPk(IE_ID),
         indexps: (parent, args, { db }) => {
 
             const Op = db.Sequelize.Op
@@ -69,3 +60,30 @@ export default {
         }
     }
 }
+
+
+//      createTest: (parent,args,{db}) => db.ind_exp.create(args),
+// createUser: (parent,args,{db}) => {
+
+
+
+        
+//     return db.users.create(args,
+//      {
+
+//          include: [db.users.associations.addresses]
+//      }
+// )},
+
+
+//     return db.users.create({
+//         firstname: "Jummy",
+//          addresses: [
+//              {type: "yo gouy"}
+//          ]
+//     },
+//      {
+//          include: [db.users.associations.addresses]
+//      }
+// )},
+

@@ -2,14 +2,16 @@ import React from "react"
 import ReactSelect from "react-select"
 import SimpleValue from "react-select-simple-value"
 
-const Select = ({ options, value, ...props }) => {
+const ReactSelectV2 = ({ options, value, ...props }) => {
+
 	return (
 		<SimpleValue options={options} value={value}>
-			{simpleProps => {
+			{simpleProps => {                                
 				simpleProps.value = simpleProps.value
 					? simpleProps.value
 					: null
-
+                
+                
 				return (
 					<ReactSelect
 						{...simpleProps}
@@ -23,6 +25,31 @@ const Select = ({ options, value, ...props }) => {
 	)
 }
 
+
+
+// const ReactSelectV2 = ({ options, value, ...props }) => {
+
+//     console.log("rsv2",props)
+// 	return (
+// 		<SimpleValue options={options} value={value}>
+// 			{simpleProps => {
+// 				simpleProps.value = simpleProps.value
+// 					? simpleProps.value
+// 					: null
+
+// 				return (
+// 					<ReactSelect
+// 						{...simpleProps}
+// 						{...props}
+// 						className="basic-select"
+// 						classNamePrefix="select"
+// 					/>
+// 				)
+// 			}}
+// 		</SimpleValue>
+// 	)
+// }
+
 export const MultiSelect = ({ ...props }) => {
 	return (
 		<ReactSelect
@@ -34,4 +61,4 @@ export const MultiSelect = ({ ...props }) => {
 	)
 }
 
-export default Select
+export default ReactSelectV2

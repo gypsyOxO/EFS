@@ -1,6 +1,12 @@
 import React, { Component, Fragment } from "react"
 import Select, { MultiSelect } from "components/UI/Form/Select/Select"
+import { renderReactSelectField	
+} from "components/Form/Inputs/renderInputs"
+
 //import axios from '../../../axios-api'
+import {Field } from "formik"
+
+
 import {
 	optGroupBuilder,
 	getDistinctOptions
@@ -10,43 +16,33 @@ import { Query } from "react-apollo"
 
 import Grid from "@material-ui/core/Grid"
 import { ColorSelect } from "react-select-material-ui";
+import {withApollo} from "react-apollo"
+import {GET_CANDIDATES} from "graphql/ie/Queries"
+
 
 // This makes the assumption elec_seat_cand_id is stored in comma delmited list. Ideally it is stored in arrays, but this might be in a more nosql environment
 
-const GET_CANDIDATES = gql`
-	query {
-		candidates {
-			ELECTION_ID
-			ELECTION_DESC
-			ELEC_SEAT_ID
-			ELEC_SEAT_CAND_ID
-			CAND_PER_ID
-			PER_FNAME
-			PER_LNAME
-			ELEC_SEAT_LABEL
-			JURIS_ID
-		}
-	}
-`
 
-const CandidateQuery = () => {
-	return (
-		<Query query={GET_CANDIDATES}>
-			{({ loading, error, data, client }) => {
-				if (loading) {
-					return <div>Loading...</div>
-				}
-				if (error) {
-					console.error(error)
-					return <div>Error!</div>
-				}
-				return (
-					<Candidate client={client} candidates={data.candidates} />
-				)
-			}}
-		</Query>
-	)
-}
+// const CandidateQuery = () => {
+// 	return (
+// 		<Query query={GET_CANDIDATES}>
+// 			{({ loading, error, data, client }) => {
+// 				if (loading) {
+// 					return <div>Loading...</div>
+// 				}
+// 				if (error) {
+// 					console.error(error)
+// 					return <div>Error!</div>
+// 				}
+// 				return (
+// 					<Candidate client={client} candidates={data.candidates} />
+// 				)
+// 			}}
+// 		</Query>
+// 	)
+// }
+
+
 
 class Candidate extends Component {
 	state = {
@@ -60,26 +56,43 @@ class Candidate extends Component {
 		Seats: [],
 		Candidates: [],
 		isLoading: false
-	}
+    }
+    
 
-	componentDidMount() {
-		this.setState({ data: this.props.candidates, isLoading: false }, () => {
-			this.initControls()
+
+	componentDidMount = async () => {
+        //get data directly from apollo store??? or populate state????
+        
+        let candidates = await this.GetCandidates()
+        candidates = candidates.data.candidates
+
+        
+		this.setState({ data: candidates, isLoading: false }, () => {
+            this.initControls()            
 		})
-	}
+    }
+    
+    GetCandidates = () => {
+        const {client} = this.props        
+    
+        let res = client.query({ query: GET_CANDIDATES})         
+        return res
+    }
+
 
 	//handle initial default selections here....get incoming props and set select option states.
 	initControls = () => {
+ 
 		const listOfElections = getDistinctOptions(
 			this.state.data,
 			"ELECTION_ID",
 			"ELECTION_DESC"
 		)
 
-		const election_id = this.state.election_id || listOfElections[0].value
+		const election_id = this.props.values.election_id || listOfElections[0].value
 
 		//this.props.onClick({ election_id: election_id }, "candidate")
-		this.handleSelect({ election_id: election_id }, "candidate")
+		//this.handleSelect({ election_id: election_id }, "candidate")
 
 		this.setState({ Elections: listOfElections })
 		this.getListOfSeats(election_id)
@@ -104,9 +117,8 @@ class Candidate extends Component {
 	}
 
 	getListOfCandidates = (election_id, elec_seat_id) => {
-		election_id = election_id || this.state.candidate.election_id
-		//console.log(this.state.candidate.election_id, "this.state.candidate.election_id")
-		//console.log(election_id, "election_id")
+		election_id = election_id || this.props.values.election_id
+		
 		let seatList = []
 		seatList =
 			elec_seat_id !== null
@@ -135,16 +147,16 @@ class Candidate extends Component {
 			elec_seat_cand_id: ""
 		}
 
-		this.handleSelect(value, "candidate")
+		//this.handleSelect(value, "candidate")
 
 		this.getListOfSeats(event.value)
 		this.getListOfCandidates(event.value, null)
 	}
 
 	SeatsSelectHandler = event => {
-		//console.log("SeatsSelectHandler->event", event)
+		
 		const value = { elec_seat_id: event.value, elec_seat_cand_id: "" }
-		this.handleSelect(value, "candidate")
+		//this.handleSelect(value, "candidate")
 		this.getListOfCandidates(null, event.value)
 	}
 
@@ -153,26 +165,29 @@ class Candidate extends Component {
 			//elec_seat_cand_id: event.map(({ value }) => value).join()
 			elec_seat_cand_id: event.value
 		}
-		this.handleSelect(value, "candidate")
+		//this.handleSelect(value, "candidate")
 	}
 
-	handleSelect = (value, type) => {
-		this.setState({
-			[type]: {
-				...this.state[type],
-				...value
-			}
-		})		
-	}
+	// handleSelect = (value, type) => {
+	// 	this.setState({
+	// 		[type]: {
+	// 			...this.state[type],
+	// 			...value
+	// 		}
+	// 	})		
+	// }
+
+
 
 	render() {
 		const { Elections, Seats, Candidates, isLoading } = this.state
 		const {
-			election_id,
-			elec_seat_id,
-			elec_seat_cand_id
-		} = this.state.candidate
+			ELECTION_ID,
+			ELEC_SEAT_ID,
+			ELEC_SEAT_CAND_ID
+        } = this.props.values
 
+        
 		//convert candidate props from comma delimited list to array of integers...Why, you ask? Because Multiselct requires value in array of objects format
 		/*const candProps = elec_seat_cand_id.split(",").map(Number)
 
@@ -185,28 +200,33 @@ class Candidate extends Component {
 		return (
 			<Grid container>
 				<Grid item xs={12} style={{marginBottom: 4}}>
-					<Select
-						value={election_id}
-						onChange={this.ElectionsSelectHandler}
-						options={Elections}
-						isLoading={isLoading}
+					<Field
+                        name="ELECTION_ID"
+                        value={ELECTION_ID}						
+                        options={Elections}                        
+                        isLoading={isLoading}
+                        component={renderReactSelectField}
 					/>
 				</Grid>
 				<Grid item xs={12} style={{marginBottom: 4}}>
-					<Select
-						value={elec_seat_id}
-						onChange={this.SeatsSelectHandler}
+					<Field
+                        name="ELEC_SEAT_ID"
+						value={ELEC_SEAT_ID}
+						// onChange={this.SeatsSelectHandler}
 						options={Seats}
-						isLoading={isLoading}
+                        isLoading={isLoading}
+                        component={renderReactSelectField}
 					/>
 				</Grid>
 				<Grid item xs={12} style={{marginBottom: 4}}>
-					<Select
-						value={elec_seat_cand_id}
-						onChange={this.CandSelectHandler}
-						placeholder="Select Candidate"
+					<Field
+                        name="ELEC_SEAT_CAND_ID"
+						value={ELEC_SEAT_CAND_ID}
+						// onChange={this.CandSelectHandler}
+						placeholder="Select Candidate..."
 						options={Candidates}
-						isLoading={isLoading}
+                        isLoading={isLoading}
+                        component={renderReactSelectField}
 					/>
 				</Grid>
 			</Grid>
@@ -214,5 +234,5 @@ class Candidate extends Component {
 	}
 }
 
-export default CandidateQuery
+export default withApollo(Candidate)
 export { GET_CANDIDATES }

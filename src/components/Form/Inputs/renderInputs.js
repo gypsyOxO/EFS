@@ -3,18 +3,38 @@ import TextField from "@material-ui/core/TextField"
 //import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Checkbox from "@material-ui/core/Checkbox"
 import { Select } from "@material-ui/core"
-import Radio from "@material-ui/core/Radio"
+//import Radio from "@material-ui/core/Radio"
 import RadioGroup from "@material-ui/core/RadioGroup"
 
-export const renderTextField = ({ field, ...props
+
+import ReactSelect from "react-select"
+
+export const renderReactSelectField = ({ options, field, form, placeholder}) => {
+    
+	return (
+		<ReactSelect
+            options={options}
+            name={field.name}
+            placeholder={placeholder}
+            value={options ? options.find(option => option.value === field.value) : ''}
+            onChange={option => form.setFieldValue(field.name, option.value)}
+			className="basic-select"
+			classNamePrefix="select"
+		/>
+	)
+}
+
+export const renderTextField = ({
+	field,
+	...props
 	// input,
 	// label,
 	// meta: { touched, error },
 	// ...custom
 }) => (
 	<TextField
-        {...field}
-        {...props}
+		{...field}
+		{...props}
 		// hintText={label}
 		variant="outlined"
 		// floatingLabelText={label}
@@ -33,12 +53,10 @@ export const renderCheckbox = ({ input, label }) => (
 	/>
 )
 
-export const renderRadioGroup = ({field, ...props}) => {
-	return (
-	<RadioGroup
-		{...field}
-        {...props}        		
-	/>)
+export const renderRadioGroup = ({ field, ...props }) => {
+    
+
+	return <RadioGroup {...field} {...props} />
 }
 
 export const renderSelectField = ({

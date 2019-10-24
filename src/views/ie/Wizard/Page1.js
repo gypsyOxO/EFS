@@ -14,8 +14,10 @@ import {
 import WizardNextButton from "components/Wizard/WizardNextButton"
 import ReactSelectMaterialUi from "react-select-material-ui"
 
+
 import CandidateOrBallotMeasure from "components/Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
 //import GetCandidates from '../Form/Panels/GetCandidates';
+
 
 const useStyles = makeStyles(theme => ({
 	root: {

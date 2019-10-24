@@ -12,7 +12,7 @@ const server = new ApolloServer({
 		origin: "*",
 		credentials: true
 	},
-	typeDefs: gql(schema),
+	typeDefs: schema,
 	resolvers,
 	context: { db }
 })

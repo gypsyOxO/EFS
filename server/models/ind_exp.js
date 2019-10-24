@@ -156,7 +156,18 @@ module.exports = function(sequelize, DataTypes) {
 			NUM_DISTRIBUTED: {
 				type: DataTypes.INTEGER(11),
 				allowNull: true
-			}
+            },
+            SUBJECT: {
+                type: DataTypes.VIRTUAL,
+                get: function() {                    
+                    if(this.get('BM_ID')) {
+                        return "B"
+                    } else {
+                        return "C"
+                    }
+
+                }
+            }
 		},
 		{
 			tableName: "ind_exp"
@@ -164,7 +175,8 @@ module.exports = function(sequelize, DataTypes) {
 	)
 
 	ind_exp.associate = models => {
-		ind_exp.hasMany(models.ind_exp_communication, { foreignKey: "ie_id" })
+        ind_exp.hasMany(models.ind_exp_communication, { foreignKey: "IE_ID" }),
+        ind_exp.hasMany(models.payment, { foreignKey: "IE_ID" })
 	}
 
 	return ind_exp

@@ -104,7 +104,7 @@ const RenderVendors = arrayHelpers => {
 						</Grid>
 						<Grid item xs={11}>
 							<Field
-								name={`${arrayHelpers.name}.${index}.payee_vendor`}
+								name={`${arrayHelpers.name}.${index}.IE_PAYMENT_VENDOR_LNAME`}
 								component={renderTextField}
 								type="text"
 								label={`Payee Vendor #${index + 1}`}
@@ -170,7 +170,7 @@ const RenderPayments = arrayHelpers => {
 						<Grid container spacing={3} className={classes.grid}>
 							<Grid item xs={12} sm={2}>
 								<Field
-									name={`payments.${index}.payeeDate`}
+									name={`payments.${index}.IE_PAYMENT_DATE`}
 									type="text"
 									component={renderTextField}
 									fullWidth
@@ -179,7 +179,7 @@ const RenderPayments = arrayHelpers => {
 							</Grid>
 							<Grid item xs={12} sm={2}>
 								<Field
-									name={`payments.${index}.payeeAmount`}
+									name={`payments.${index}.IE_PAYMENT_AMT`}
 									type="text"
 									component={renderTextField}
 									fullWidth
@@ -189,7 +189,7 @@ const RenderPayments = arrayHelpers => {
 
 							<Grid item xs={12} sm={8}>
 								<Field
-									name={`payments.${index}.payeeInfo`}
+									name={`payments.${index}.IE_PAYEE`}
 									type="text"
 									component={renderTextField}
 									fullWidth
@@ -204,7 +204,7 @@ const RenderPayments = arrayHelpers => {
 									payee for reported amount)
 								</Typography>
 								<Field
-									name={`payments.${index}.payeeServices`}
+									name={`payments.${index}.IE_PAYMENT_DESC`}
 									type="text"
 									component={renderTextField}
 									fullWidth

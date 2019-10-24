@@ -13,9 +13,9 @@ import Candidate from "../../../Form/Group/Candidate/Candidate"
 const CandidateOrBallotMeasure = props => {
     const showCandidateOrBallotmeasure = (
         props.values.SUBJECT === 'C' ? (
-            <div><Candidate /></div>
+            <div><Candidate {...props} /></div>
         ) : (
-            <div><BallotMeasure /></div>
+            <div><BallotMeasure {...props} /></div>
         )
     )
 

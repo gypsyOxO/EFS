@@ -1,76 +1,80 @@
-import React, {Component, Fragment} from "react"
+import React, { Component, Fragment } from "react"
 import Wizard from "../../components/Wizard/Wizard"
-
-import {withApollo} from "react-apollo"
-import { loader } from "graphql.macro"
-const GET_IND_EXP = loader("../../graphql/ie/getIE.graphql")
-
-
-const blankForm = {   //values for a blank form
-    IE_ID: 0,
-    SUBJECT: "B",
-    ELECTION_ID: 53,
-    BM_ID: 72,
-    MC_FLG: "1",
-    SUPPORT_OPPOSE_FLG: "O",
-    CMT_PER_ID: 14389
-}
+import { withApollo } from "react-apollo"
+import {GET_BLANK_FORM, GET_IND_EXP} from "../../graphql/ie/Queries"
 
 
 class IndExp extends Component {
-    constructor() {
-        super()
-        window.IndExp = this  //allows for external app call to internal hook.           
-    }
+	constructor() {
+		super()
+        window.IndExp = this //allows for external app call to internal hook.          
+	}
 
     state = {
-        initValues: {...blankForm}
+        initValues: {}
     }
+
+	// componentDidMount = async () => {
+    //     //*****for testing purposes only*****
+	// 	let initValues = {}
+
+    //     const data = {IE_ID: 6443}
+
+	// 	if (data.IE_ID > 0) {
+	// 		initValues = await this.GetInitValuesFromDB(data)			
+	// 	} else {
+	// 		initValues = await this.GetBlankForm()
+	// 	}
+
+	// 	this.setState({
+	// 		initValues: { ...this.state.initValues, ...initValues }
+	// 	})
+
+    // }
     
 
-    GetInitValues = (data) => {
-        const {client} = this.props        
+	GetInitValuesFromDB = data => {
+		const {client} = this.props
 
-        let res = client.query({ query: GET_IND_EXP,
-        variables: {IE_ID: data.IE_ID}
-        })         
+		let res = client.query({
+			query: GET_IND_EXP,
+			variables: { IE_ID: data.IE_ID }
+        }).then(result => result.data.indexp)
+
         return res
     }
+    
+    GetBlankForm = () => {
+        const {client} = this.props
 
-
-    callInternalHook = async (data) => {   //internal hook for external call; could be better with window ref on index.js
-        
-        let initValues = {}
-        
-        if (data.IE_ID > 0) {
-            initValues = await this.GetInitValues(data) 
-            initValues = initValues.data.indexp
-        } else {
-            initValues = blankForm
-        }
-        //console.log(initValues)
-        //console.log("yes", initValues )
-        //data.IE_ID ? initValues = GetInitValues() : initValues = blankForm   //if IE_ID > 0, call gql and set initvalues, else set to blank form
-        //console.log(initValues)
-        this.setState({initValues: {...this.state.initValues, ...initValues}})        
-
-
+        let res = client.query({
+            query: GET_BLANK_FORM
+        }).then(result => result.data)        
+        return res        
     }
 
-    render() {
-        const {initValues} = this.state
-        //console.log(initValues)
+	callInternalHook = async data => {
+		//internal hook for external call; TODO: could be better with window ref on index.js
 
-        return (
-            <Fragment>
-                {/* <GetInitValues /> */}
-                <Wizard initValues={initValues}/>
-                {/* <Wizard /> */}
-            </Fragment>
-        )
-    }
+		const initValues = data.IE_ID > 0 ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm()		
 
+		this.setState({
+			initValues: { ...this.state.initValues, ...initValues }
+		})
+	}
+
+	render() {
+        
+        const { initValues } = this.state   
+        //****only show wizard if data is loaded****     
+        const showWiz = Object.getOwnPropertyNames(initValues).length ? <Wizard initValues={initValues}/> : null
+		   
+		return (
+			<Fragment>			
+				{showWiz}			
+			</Fragment>
+		)
+	}
 }
-
 
 export default withApollo(IndExp)
