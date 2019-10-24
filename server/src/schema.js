@@ -54,11 +54,7 @@ export default gql`
     }
 
     input IEUpdate {
-<<<<<<< HEAD
-        # IE_ID: Int!
-=======
         IE_ID: Int!
->>>>>>> nested read for ie's, candidateballotmeasure root working, basic updates
         CAND_PER_ID: Int        
         CMT_PER_ID: Int!
         SUPPORT_OPPOSE_FLG: String
