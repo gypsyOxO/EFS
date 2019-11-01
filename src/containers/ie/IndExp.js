@@ -14,23 +14,23 @@ class IndExp extends Component {
         initValues: {}
     }
 
-	// componentDidMount = async () => {
-    //     //*****for testing purposes only*****
-	// 	let initValues = {}
+	componentDidMount = async () => {
+        //*****for testing purposes only*****
+		let initValues = {}
 
-    //     const data = {IE_ID: 6443}
+        const data = {IE_ID: 6443}
 
-	// 	if (data.IE_ID > 0) {
-	// 		initValues = await this.GetInitValuesFromDB(data)			
-	// 	} else {
-	// 		initValues = await this.GetBlankForm()
-	// 	}
+		if (data.IE_ID > 0) {
+			initValues = await this.GetInitValuesFromDB(data)			
+		} else {
+			initValues = await this.GetBlankForm()
+		}
 
-	// 	this.setState({
-	// 		initValues: { ...this.state.initValues, ...initValues }
-	// 	})
+		this.setState({
+			initValues: { ...this.state.initValues, ...initValues }
+		})
 
-    // }
+    }
     
 
 	GetInitValuesFromDB = data => {

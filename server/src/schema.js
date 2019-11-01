@@ -48,7 +48,7 @@ export default gql`
         SUPPORT_OPPOSE_FLG: String
         ELECTION_ID: Int!
         MC_FLG: String!
-        BM_ID: Int        
+        BM_ID: Int                
         ind_exp_communications: [CommInput]        
 
     }
@@ -61,7 +61,7 @@ export default gql`
         ELECTION_ID: Int!
         MC_FLG: String!
         BM_ID: Int        
-        ind_exp_communications: [CommInput]        
+        communications: [CommInput]        
         payments: [PaymentInput]
     }
 
@@ -69,6 +69,8 @@ export default gql`
     input CommInput {                        
         COMM_TYPE: String
         DOC_FILE_NAME: String
+        AUDIO_FILE_NAME: Upload
+        
     }
 
     
@@ -119,18 +121,28 @@ export default gql`
     # }
 
 
+    type CommType {        
+        COMM_TYPE: String!
+        COMM_TYPE_DESC: String!
+        DOC_FILE_TYPES: String
+        AUDIO_FILE_TYPES: String
+        VIDEO_FILE_TYPES: String
+    }    
+
 	type Query {
+        files: [String]
         candidates: [Candidate!]! 
         indexp(IE_ID: Int!): IndExp! 
         indexps(limit: Int): [IndExp!]!
         ballotmeasures: [BallotMeasure!]!
+        commtypes: [CommType!]!
         ballotmeasure(BM_ID: Int!): BallotMeasure!         
         
     }
 
         
     type Mutation {
-        
+        uploadFile(file: Upload!): Boolean        
         createIE(ie: IECreate ): IndExp   
         updateIE(ie: IEUpdate): ID        
 

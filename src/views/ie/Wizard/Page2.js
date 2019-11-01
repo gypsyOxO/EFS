@@ -1,13 +1,19 @@
-import React, { Fragment } from "react"
+import React, { Fragment,useEffect } from "react"
 
-import {Field,FieldArray} from "formik"
+import { Field, FieldArray } from "formik"
+
 
 import { renderTextField } from "components/Form/Inputs/renderInputs"
+
+import {Upload} from 'components/Form/Upload/Upload'
+//import {Files} from 'components/Form/Upload/Files'
+
 
 // import Box from "@material-ui/core/Box"
 // import Button from "@material-ui/core/Button"
 import Paper from "@material-ui/core/Paper"
 import AddIcon from "@material-ui/icons/Add"
+
 
 import DeleteIcon from "@material-ui/icons/Delete"
 
@@ -21,7 +27,7 @@ import WizardBackButton from "components/Wizard/WizardBackButton"
 
 import InputLabel from "@material-ui/core/InputLabel"
 import MenuItem from "@material-ui/core/MenuItem"
-import OutlinedInput from '@material-ui/core/OutlinedInput';
+import OutlinedInput from "@material-ui/core/OutlinedInput"
 
 import FormControl from "@material-ui/core/FormControl"
 import Select from "@material-ui/core/Select"
@@ -31,12 +37,20 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload"
 //import CommunicationBox from "../../assets/IE/communcations/CommunicationBox"
 import ContentBox from "components/UI/Content/ContentBox"
 
-import {communications_box } from "views/ie/Wizard"
+import { communications_box } from "views/ie/Wizard"
+
+import {GET_COMM_TYPES} from "graphql/ie/Queries"
 
 
-import { DropzoneArea } from "material-ui-dropzone"
+import { renderReactSelectField	
+} from "components/Form/Inputs/renderInputs"
+
+
 
 import { makeStyles } from "@material-ui/core/styles"
+import SelectCommType from "components/Form/Inputs/SelectCommType"
+
+
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -91,26 +105,26 @@ const useStyles = makeStyles(theme => ({
 		fontSize: "1rem"
 	},
 	dropzoneContainer: {
-        display: "flex",
-        justifyContent: "center"
+		display: "flex",
+		justifyContent: "center"
 	}
 }))
 
 //const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
-const RenderCommunications = (arrayHelpers) => {
-    const classes = useStyles()    
-    const {communications} = arrayHelpers.form.values
+const RenderCommunications = arrayHelpers => {
+	const classes = useStyles()
+	const { communications } = arrayHelpers.form.values
+    const { setFieldValue } = arrayHelpers.form
 
     
+
 	return (
 		<div>
 			<Typography variant="h6" gutterBottom className={classes.header}>
 				Add Communication(s)
 			</Typography>
-            <ContentBox>
-                {communications_box}
-            </ContentBox>			
+			<ContentBox>{communications_box}</ContentBox>
 
 			<Grid container spacing={3} className={classes.grid}>
 				<Grid item xs={12} style={{ marginTop: 20 }}>
@@ -149,53 +163,48 @@ const RenderCommunications = (arrayHelpers) => {
 
 				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
 			</div>
-            {communications && communications.map((communication, index) => (
-				<Paper key={index} className={classes.paper}>
+			{communications &&
+				communications.map((communication, index) => (
+					<Paper key={index} className={classes.paper}>
+						<Grid container>
+							<Grid item xs={12} sm={11}>
+								<Typography variant="body1" gutterBottom>
+									<b>{`Communication #${index + 1}`}</b>
+								</Typography>
+							</Grid>
+							<Grid item xs={12} sm={1}>
+								<IconButton
+									onClick={() => arrayHelpers.remove(index)} //TODO: deletes file in temp directory? need warning popup dialog box
+									aria-label="delete">
+									<DeleteIcon />
+								</IconButton>
+							</Grid>
+						</Grid>
 
-					<Grid container>
-						<Grid item xs={12} sm={11}>
-							<Typography variant="body1" gutterBottom>
-								<b>{`Communication #${index + 1}`}</b>
-							</Typography>
-						</Grid>
-						<Grid item xs={12} sm={1}>
-							<IconButton
-								onClick={() => arrayHelpers.remove(index)}
-								aria-label="delete">
-								<DeleteIcon />
-							</IconButton>
-						</Grid>
-					</Grid>
+						<Grid container spacing={3} className={classes.grid}>
+                                    <SelectCommType index={index} {...setFieldValue} {...communication} />
+									{/* <InputLabel htmlFor="age-simple">
+										Enter Communication Format
+									</InputLabel> */}
+									{/* <Select
+										input={
+											<OutlinedInput
+												name={`communications.${index}.format`}
+												value="Television"
+											/>
+										}>
+										<MenuItem value="Television">
+											Television
+										</MenuItem>
+										<MenuItem value="Web Video">
+											Web Video
+										</MenuItem>
+										<MenuItem value="Radio">Radio</MenuItem>
+									</Select> */}
+								
+							
 
-					<Grid container spacing={3} className={classes.grid}>
-						<Grid item xs={12} sm={6}>
-							<FormControl
-                            variant="outlined"
-								className={classes.formControl}
-								fullWidth>
-								<InputLabel htmlFor="age-simple">
-									Enter Communication Format
-								</InputLabel>
-								<Select
-                                
-									input={
-										<OutlinedInput
-											name={`communications.${index}.format`}
-                                            value="Television"
-                                            
-										/>
-									}>
-									<MenuItem value="Television">
-										Television
-									</MenuItem>
-									<MenuItem value="Web Video">
-										Web Video
-									</MenuItem>
-									<MenuItem value="Radio">Radio</MenuItem>
-								</Select>
-							</FormControl>
-						</Grid>
-						<Grid container className={classes.dropzoneContainer}>
+							{/* <Grid container className={classes.dropzoneContainer}>
                             
 							<Grid item sm={5}>
 								<DropzoneArea
@@ -218,18 +227,27 @@ const RenderCommunications = (arrayHelpers) => {
 								/>
 							</Grid>
 
+						</Grid> */}
 						</Grid>
-					</Grid>
-				</Paper>
-			))}
+						{/* <Grid container className={classes.grid}>
+							<Grid item xs={12} sm={12}> */}
+                            
+        {/* <Files />     */}
+
+
+								
+							{/* </Grid>
+						</Grid> */}
+					</Paper>
+				))}
 		</div>
 	)
 }
 
 const Page2 = props => {
-	const { handleSubmit} = props
+	const { handleSubmit } = props
     const classes = useStyles()
-    
+
 	return (
 		<Fragment>
 			<FieldArray
@@ -239,83 +257,80 @@ const Page2 = props => {
 
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
-				<WizardNextButton {...props}/>
-			</div>	
-            </Fragment>            	
+				<WizardNextButton {...props} />
+			</div>
+		</Fragment>
 	)
 }
 
 export default Page2
 
+//  <Grid
+// 	container
+// 	alignItems="center"
+// 	className={classes.script}
+// 	gutterTop>
+// 	<Grid item sm={4} className={classes.upload}>
+// 		<input
+// 			accept="image/*"
+// 			className={classes.input}
+// 			style={{ display: "none" }}
+// 			id="raised-button-file"
+// 			multiple
+// 			type="file"
+// 		/>
+// 		<label htmlFor="raised-button-file">
+// 			<Button
+// 				variant="contained"
+// 				className={classes.upload}
+// 				component="span"
+// 				color="primary"
+// 				fullWidth>
+// 				Upload Script (<b>PDF</b>)
+// 				<CloudUploadIcon
+// 					className={classes.rightIcon}
+// 				/>
+// 			</Button>
+// 		</label>
+// 	</Grid>
 
+// 	<Grid item>
+// 		<Typography variant="body1">
+// 			No File Chosen
+// 		</Typography>
+// 	</Grid>
+// </Grid>
+// <Grid
+// 	container
+// 	alignItems="center"
+// 	className={classes.script}
+// 	gutterTop>
+// 	<Grid item className={classes.upload} sm={4}>
+// 		<input
+// 			accept="image/*"
+// 			className={classes.input}
+// 			style={{ display: "none" }}
+// 			id="raised-button-file"
+// 			multiple
+// 			type="file"
+// 		/>
+// 		<label htmlFor="raised-button-file">
+// 			<Button
+// 				color="primary"
+// 				variant="contained"
+// 				component="span"
+// 				fullWidth>
+// 				Upload Video (<b>MP4</b>)
+// 				<CloudUploadIcon
+// 					className={classes.rightIcon}
+// 				/>
+// 			</Button>
+// 		</label>
+// 	</Grid>
 
-
-						//  <Grid
-						// 	container
-						// 	alignItems="center"
-						// 	className={classes.script}
-						// 	gutterTop>
-						// 	<Grid item sm={4} className={classes.upload}>
-						// 		<input
-						// 			accept="image/*"
-						// 			className={classes.input}
-						// 			style={{ display: "none" }}
-						// 			id="raised-button-file"
-						// 			multiple
-						// 			type="file"
-						// 		/>
-						// 		<label htmlFor="raised-button-file">
-						// 			<Button
-						// 				variant="contained"
-						// 				className={classes.upload}
-						// 				component="span"
-						// 				color="primary"
-						// 				fullWidth>
-						// 				Upload Script (<b>PDF</b>)
-						// 				<CloudUploadIcon
-						// 					className={classes.rightIcon}
-						// 				/>
-						// 			</Button>
-						// 		</label>
-						// 	</Grid>
-
-						// 	<Grid item>
-						// 		<Typography variant="body1">
-						// 			No File Chosen
-						// 		</Typography>
-						// 	</Grid>
-						// </Grid> 
-						// <Grid
-						// 	container
-						// 	alignItems="center"
-						// 	className={classes.script}
-						// 	gutterTop>
-						// 	<Grid item className={classes.upload} sm={4}>
-						// 		<input
-						// 			accept="image/*"
-						// 			className={classes.input}
-						// 			style={{ display: "none" }}
-						// 			id="raised-button-file"
-						// 			multiple
-						// 			type="file"
-						// 		/>
-						// 		<label htmlFor="raised-button-file">
-						// 			<Button
-						// 				color="primary"
-						// 				variant="contained"
-						// 				component="span"
-						// 				fullWidth>
-						// 				Upload Video (<b>MP4</b>)
-						// 				<CloudUploadIcon
-						// 					className={classes.rightIcon}
-						// 				/>
-						// 			</Button>
-						// 		</label>
-						// 	</Grid>
-
-						// 	<Grid item>
-						// 		<Typography variant="body1">
-						// 			No File Chosen
-						// 		</Typography>
-						// 	</Grid>
-						// </Grid> 
+// 	<Grid item>
+// 		<Typography variant="body1">
+// 			No File Chosen
+// 		</Typography>
+// 	</Grid>
+// </Grid>

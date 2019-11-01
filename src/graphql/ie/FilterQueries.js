@@ -13,12 +13,15 @@ export const filteredSubmit = gql`
 
 export const filteredUpdate = gql`
 	query {
-		IE_ID
-		indexp
+		IE_ID		
 		CMT_PER_ID
 		MC_FLG
 		ELECTION_ID
 		SUPPORT_OPPOSE_FLG
 		BM_ID
+        communications {
+            COMM_TYPE
+            AUDIO_FILE_NAME
+        }
 	}
 `

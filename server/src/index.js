@@ -1,10 +1,22 @@
 const express = require("express")
 const { ApolloServer, gql } = require("apollo-server-express")
 
+const { existsSync, mkdirSync } = require("fs");  // added
+const path = require("path"); //added
+
+
 import db from "../models"
 import schema from './schema'
 import resolvers from './resolvers'
 var cors = require("cors")
+
+//***Begin file upload */
+
+
+
+existsSync(path.join(__dirname, "../test")) || mkdirSync(path.join(__dirname, "../test"));
+
+//***end file upload */
 
 
 const server = new ApolloServer({
@@ -18,6 +30,8 @@ const server = new ApolloServer({
 })
 
 const app = express()
+
+app.use("/test", express.static(path.join(__dirname, "../test")));  //added this dir
 app.use("*", cors())
 
 server.applyMiddleware({ app })

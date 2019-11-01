@@ -175,7 +175,7 @@ module.exports = function(sequelize, DataTypes) {
 	)
 
 	ind_exp.associate = models => {
-        ind_exp.hasMany(models.ind_exp_communication, { foreignKey: "IE_ID" }),
+        ind_exp.hasMany(models.communication, { foreignKey: "IE_ID" }),
         ind_exp.hasMany(models.payment, { foreignKey: "IE_ID" })
 	}
 

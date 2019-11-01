@@ -41,6 +41,10 @@ export const GET_IND_EXP = gql`
 	}
 `
 
+// ====================================================
+// Auxiliary Queries
+// ====================================================
+
 export const GET_CANDIDATES = gql`
 	query {
 		candidates {
@@ -55,4 +59,17 @@ export const GET_CANDIDATES = gql`
 			JURIS_ID
 		}
 	}
+`
+
+export const GET_COMM_TYPES = gql`
+    query {
+        commtypes {
+            COMM_TYPE
+            COMM_TYPE_DESC
+            DOC_FILE_TYPES
+            AUDIO_FILE_TYPES
+            VIDEO_FILE_TYPES
+        }
+    }
+
 `
