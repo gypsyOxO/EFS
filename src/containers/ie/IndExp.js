@@ -21,14 +21,17 @@ class IndExp extends Component {
         const data = {IE_ID: 6443}
 
 		if (data.IE_ID > 0) {
-			initValues = await this.GetInitValuesFromDB(data)			
+            initValues = await this.GetInitValuesFromDB(data)			
+    
 		} else {
-			initValues = await this.GetBlankForm()
+            initValues = await this.GetBlankForm()
+    
 		}
 
-		this.setState({
-			initValues: { ...this.state.initValues, ...initValues }
-		})
+        this.setState({
+            initValues: { ...this.state.initValues, ...initValues }
+        })
+    
 
     }
     

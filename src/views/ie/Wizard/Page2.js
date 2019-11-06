@@ -1,19 +1,16 @@
-import React, { Fragment,useEffect } from "react"
+import React, { Fragment, useEffect } from "react"
 
 import { Field, FieldArray } from "formik"
 
-
 import { renderTextField } from "components/Form/Inputs/renderInputs"
 
-import {Upload} from 'components/Form/Upload/Upload'
+import { Upload } from "components/Form/Upload/Upload"
 //import {Files} from 'components/Form/Upload/Files'
-
 
 // import Box from "@material-ui/core/Box"
 // import Button from "@material-ui/core/Button"
 import Paper from "@material-ui/core/Paper"
 import AddIcon from "@material-ui/icons/Add"
-
 
 import DeleteIcon from "@material-ui/icons/Delete"
 
@@ -39,18 +36,13 @@ import ContentBox from "components/UI/Content/ContentBox"
 
 import { communications_box } from "views/ie/Wizard"
 
-import {GET_COMM_TYPES} from "graphql/ie/Queries"
+//import { GET_COMM_TYPES } from "graphql/ie/Queries"
 
-
-import { renderReactSelectField	
-} from "components/Form/Inputs/renderInputs"
-
-
+//import { renderReactSelectField } from "components/Form/Inputs/renderInputs"
 
 import { makeStyles } from "@material-ui/core/styles"
 import SelectCommType from "components/Form/Inputs/SelectCommType"
-
-
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -110,14 +102,15 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
+const handleClickAway = event => {
+    console.log("clicked", event )
+}
+
 //const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
 const RenderCommunications = arrayHelpers => {
 	const classes = useStyles()
 	const { communications } = arrayHelpers.form.values
-    const { setFieldValue } = arrayHelpers.form
-
-    
 
 	return (
 		<div>
@@ -163,9 +156,12 @@ const RenderCommunications = arrayHelpers => {
 
 				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
 			</div>
+            <ClickAwayListener onClickAway={handleClickAway}>
+            <div>
 			{communications &&
 				communications.map((communication, index) => (
-					<Paper key={index} className={classes.paper}>
+                    
+					<Paper key={index} className={classes.paper} >
 						<Grid container>
 							<Grid item xs={12} sm={11}>
 								<Typography variant="body1" gutterBottom>
@@ -182,79 +178,35 @@ const RenderCommunications = arrayHelpers => {
 						</Grid>
 
 						<Grid container spacing={3} className={classes.grid}>
-                                    <SelectCommType index={index} {...setFieldValue} {...communication} />
-									{/* <InputLabel htmlFor="age-simple">
-										Enter Communication Format
-									</InputLabel> */}
-									{/* <Select
-										input={
-											<OutlinedInput
-												name={`communications.${index}.format`}
-												value="Television"
-											/>
-										}>
-										<MenuItem value="Television">
-											Television
-										</MenuItem>
-										<MenuItem value="Web Video">
-											Web Video
-										</MenuItem>
-										<MenuItem value="Radio">Radio</MenuItem>
-									</Select> */}
+							<SelectCommType
+								index={index}
+								{...communication}
 								
-							
-
-							{/* <Grid container className={classes.dropzoneContainer}>
-                            
-							<Grid item sm={5}>
-								<DropzoneArea
-									dropzoneText="Upload Script(PDF)"                                    
-                                    dropzoneParagraphClass={classes.dropzone}  
-                                    acceptedFiles= {['application/pdf']} 
-                                    showFileNames         
-									
-								/>
-							</Grid>
-                            <Grid item sm={1}></Grid>
-                                        
-							<Grid item sm={5} className={classes.dropzoneContainer}>
-								<DropzoneArea
-									dropzoneText="Upload Video(MP4)"
-									showPreviews
-                                    dropzoneParagraphClass={classes.dropzone}                                    
-                                    acceptedFiles= {['video/mp4']} 
-                                    showFileNames          
-								/>
-							</Grid>
-
-						</Grid> */}
-						</Grid>
-						{/* <Grid container className={classes.grid}>
-							<Grid item xs={12} sm={12}> */}
-                            
-        {/* <Files />     */}
+							/>
+                        </Grid>
 
 
-								
-							{/* </Grid>
-						</Grid> */}
 					</Paper>
-				))}
+                
+                ))}
+            </div>
+            </ClickAwayListener>
 		</div>
 	)
 }
 
 const Page2 = props => {
-	const { handleSubmit } = props
-    const classes = useStyles()
+	//const { handleSubmit } = props
+	const classes = useStyles()
 
 	return (
 		<Fragment>
+            
 			<FieldArray
 				name="communications"
 				component={RenderCommunications}
 			/>
-
+            
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
 				<WizardNextButton {...props} />
