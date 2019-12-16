@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState,useEffect } from 'react'
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import FormLabel from "@material-ui/core/FormLabel"
 import Radio from "@material-ui/core/Radio"
@@ -8,21 +8,40 @@ import { Field} from "formik"
 import BallotMeasure from "../../../Form/Group/BallotMeasure/BallotMeasure"
 import Candidate from "../../../Form/Group/Candidate/Candidate"
 
-//need to take in initialization value. also needs to pass on selected props. spinner happens at candidate or ballot measure level?
-//class CandidateOrBallotMeasure extends Component {
-const CandidateOrBallotMeasure = props => {
-    const showCandidateOrBallotmeasure = (
-        props.values.SUBJECT === 'C' ? (
-            <div><Candidate {...props} /></div>
-        ) : (
-            <div><BallotMeasure {...props} /></div>
-        )
-    )
 
-    return (
-        //have radio button here
-        //which switches between candidate or ballot measure. could be a function maybe? but needs state
-        // <Candidate {...this.props} />					
+
+
+//needs to hold state and handle previous in case it changes from one to the other
+const CandidateOrBallotMeasure = props => {    
+
+    const {setFieldValue, values: {SUBJECT}} = props
+    const [prevSubject, setPrevSubject] = useState(null)
+
+    useEffect(() => {
+
+        if (prevSubject === "C" && SUBJECT === "B") {
+            setFieldValue("ELECTION_ID",null)        
+            setFieldValue("ELEC_SEAT_ID",null)        
+            setFieldValue("ELEC_SEAT_CAND_ID",null)        
+        }
+        if (prevSubject === "B" && SUBJECT === "C") {
+            setFieldValue("ELECTION_ID",null)                
+            setFieldValue("BM_ID",null)        
+        }
+         
+        setPrevSubject(SUBJECT) 
+        
+    }, [SUBJECT])
+
+    let showControl = null
+
+    if (SUBJECT === 'C') {
+        showControl = <div><Candidate {...props} /></div>
+    } else if (SUBJECT === 'B') {
+        showControl = <div><BallotMeasure {...props} /></div>
+    }
+
+    return (			
         <FormControl component="fieldset">
             <FormLabel component="legend">
                 Choose Candidate or Ballot Measure
@@ -49,7 +68,7 @@ const CandidateOrBallotMeasure = props => {
                     labelPlacement="end"
                 />
             </Field>
-            {showCandidateOrBallotmeasure}
+            {showControl}
         </FormControl>
 
     )

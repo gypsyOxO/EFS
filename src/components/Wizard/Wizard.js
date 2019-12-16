@@ -18,10 +18,10 @@ import StepButton from "@material-ui/core/StepButton"
 import { Page1, Page2, Page3, Page4, Page5, Review } from "views/ie/Wizard"
 
 import { graphqlFilter } from "utils/graphqlUtil"
-import { ADD_IE, UPDATE_IE} from "../../graphql/ie/Mutations"
-import {filteredUpdate,filteredSubmit} from "../../graphql/ie/FilterQueries"
-
-
+import { ADD_IE, UPDATE_IE } from "../../graphql/ie/Mutations"
+import { filteredIEUpdate, filteredSubmit } from "../../graphql/ie/FilterQueries"
+import { indexpSchema } from "validation/ie/indexpSchema"
+import isEmpty from "lodash/isEmpty"
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -60,7 +60,6 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-
 export default function Wizard(props) {
 	const classes = useStyles()
 
@@ -73,41 +72,38 @@ export default function Wizard(props) {
 		"Review"
 	]
 
+	// const [createIE] = useMutation(ADD_IE)
+	// const [updateIE] = useMutation(UPDATE_IE)
 
-	const [createIE] = useMutation(ADD_IE)
-	const [updateIE] = useMutation(UPDATE_IE)
-
-    const jumpLink = (document_id) => {
+	const jumpLink = document_id => {
 		window.location.href =
-			"http://cecwebtest.ci.la.ca.us/CFCs/Landing/ie?id=" +
-			document_id        
-    }
-
-
-	const handleUpdate = async ({ filteredResult, updateIE }) => {
-		const updatedResult = await updateIE({
-			variables: { ie: { ...filteredResult } }
-        })
-        
-        jumpLink(updatedResult.data.updateIE)
+			"http://cecwebtest.ci.la.ca.us/CFCs/Landing/ie?id=" + document_id
 	}
 
-	const handleCreate = async ({ filteredResult, createIE }) => {
-		const createdResult = await createIE({
-			variables: { ie: { ...filteredResult } }
-		})
-        
-        jumpLink(createdResult.data.createIE.IE_ID)
-	}
+	// const handleUpdate = async ({ filteredResult, updateIE }) => {
+	// 	const updatedResult = await updateIE({
+	// 		variables: { ie: { ...filteredResult } }
+	// 	})
+
+	// 	jumpLink(updatedResult.data.updateIE)
+	// }
+
+	// const handleCreate = async ({ filteredResult, createIE }) => {
+	// 	const createdResult = await createIE({
+	// 		variables: { ie: { ...filteredResult } }
+	// 	})
+
+	// 	jumpLink(createdResult.data.createIE.IE_ID)
+	// }
 
 	return (
 		<Fragment>
 			<CssBaseline>
 				<main className={classes.layout}>
 					<Wiz
-						pages={[
-							Page1,
-							Page2,
+						pages={[							
+                            Page1,
+                            Page2,
 							Page3,
 							Page4,
 							Page5,
@@ -118,7 +114,7 @@ export default function Wizard(props) {
 						{wizProps => {
 							return (
 								<div>
-									<Stepper
+									{/* <Stepper
 										alternativeLabel
 										nonLinear
 										activeStep={wizProps.pageIndex}
@@ -135,36 +131,42 @@ export default function Wizard(props) {
 												</StepButton>
 											</Step>
 										))}
-									</Stepper>
+									</Stepper> */}
 									<Formik
+                                        validateOnChange
 										enableReinitialize
 										initialValues={props.initValues}
+										validationSchema={indexpSchema}
 										onSubmit={(values, { resetForm }) => {
-											
-                                            let filteredResult = ""
+                                            console.log("submitted", values)
+                                            //TODO check if successful first+
+                                            jumpLink(values.IE_ID)
+											// let filteredResult = ""
 
-											if (values.IE_ID !== undefined && values.IE_ID > 0) {
-                                                filteredResult = graphqlFilter(
-                                                    filteredUpdate,
-                                                    values
-                                                )
-    
-												handleUpdate({
-													filteredResult,
-													updateIE
-												})
+											// if (
+											// 	values.IE_ID !== undefined &&
+											// 	values.IE_ID > 0
+											// ) {
+											// 	filteredResult = graphqlFilter(
+											// 		filteredIEUpdate,
+											// 		values
+											// 	)
 
-											} else {
-                                                filteredResult = graphqlFilter(
-                                                    filteredSubmit,
-                                                    values
-                                                )
+											// 	handleUpdate({
+											// 		filteredResult,
+											// 		updateIE
+											// 	})
+											// } else {
+											// 	filteredResult = graphqlFilter(
+											// 		filteredSubmit,
+											// 		values
+											// 	)
 
-												handleCreate({
-													filteredResult,
-													createIE
-												})
-											}
+											// 	handleCreate({
+											// 		filteredResult,
+											// 		createIE
+											// 	})
+											// }
 										}}>
 										{props => {
 											const {
@@ -175,10 +177,40 @@ export default function Wizard(props) {
 											const result = graphqlFilter(
 												filteredSubmit,
 												values
-											)
+                                            )
+                                            
+                                            
 
 											return (
 												<form onSubmit={handleSubmit}>
+                                                    {JSON.stringify(props.errors)}
+													<Stepper
+                                                        alternativeLabel
+                                                        nonLinear={isEmpty(props.errors)}
+                                                        
+														activeStep={
+															wizProps.pageIndex
+														}
+														className={
+															classes.stepper
+														}>
+														{steps.map(
+															(label, index) => (
+																<Step
+																	key={label}>
+																	<StepButton
+																		onClick={() =>
+																			wizProps.navigateToPage(
+																				index
+																			)
+																		}>
+																		{label}
+																	</StepButton>
+																</Step>
+															)
+														)}
+													</Stepper>
+
 													{wizProps.renderPage(props)}
 													{JSON.stringify(result)}
 													<DisplayFormikState

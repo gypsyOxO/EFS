@@ -1,42 +1,59 @@
 import gql from "graphql-tag"
 
+
 export const GET_BLANK_FORM = gql`
-	query GetDefaultData {
-		IE_ID
-		SUBJECT
-		ELECTION_ID
-		BM_ID
-		MC_FLG
-		SUPPORT_OPPOSE_FLG
-		CMT_PER_ID
-		ELEC_SEAT_ID
-		ELEC_SEAT_CAND_ID
+	query GetDefaultData {				
+        MC_FLG
 	}
 `
 
+// ELECTION_ID
+// BM_ID		
+// CMT_PER_ID
+// ELEC_SEAT_ID
+// ELEC_SEAT_CAND_ID
+// NUM_DISTRIBUTED
+// SUPPORT_OPPOSE_FLG
+// NUM_DISTRIBUTED
+// DATE_DISTRIBUTED
+// MC_FLG
+// REP_CONT_MADE
+// REP_CONT_RECEIVED
+
+
 export const GET_IND_EXP = gql`
-	query indexp($IE_ID: Int!) {
-		indexp(IE_ID: $IE_ID) {
+	query GetIndExp($IE_ID: Int!) {
+		getIndExp(IE_ID: $IE_ID) {
 			IE_ID
 			SUBJECT
 			CMT_PER_ID
 			MC_FLG
 			ELECTION_ID
+            ELEC_SEAT_ID
+            ELEC_SEAT_CAND_ID
 			SUPPORT_OPPOSE_FLG
 			BM_ID
+            CONTRIBUTIONS_MADE
+            CONTRIBUTIONS_RECEIVED
+            NUM_DISTRIBUTED
+            DATE_DISTRIBUTED
+            REP_CONT_MADE
+            REP_CONT_RECEIVED
 			payments {
+                IE_PAYMENT_ID
 				IE_PAYEE
                 IE_PAYMENT_DESC
                 IE_PAYMENT_AMT
                 IE_PAYMENT_DATE
-                vendors {
-                    IE_PAYMENT_VENDOR_ID
-                    IE_PAYMENT_ID
-                    IE_ID
-                    IE_PAYMENT_VENDOR_LNAME
-
-                }
+                IE_PAYEE_VENDORS                
 			}
+            comms {
+                IE_COMM_ID
+                COMM_TYPE
+                AUDIO_FILE_NAME
+                DOC_FILE_NAME
+                VIDEO_FILE_NAME
+            }
 		}
 	}
 `
@@ -47,7 +64,7 @@ export const GET_IND_EXP = gql`
 
 export const GET_CANDIDATES = gql`
 	query {
-		candidates {
+		getCandidates {
 			ELECTION_ID
 			ELECTION_DESC
 			ELEC_SEAT_ID
@@ -61,9 +78,26 @@ export const GET_CANDIDATES = gql`
 	}
 `
 
+export const GET_BALLOTMEASURES = gql`
+query {
+    getBallotmeasures {
+      BM_ID
+      BM_NUM_OR_LETTER
+      BM_NAME
+      BM_FULL_NAME
+      BM_GROUP_LABEL
+	  ELECTION_ID
+	  ELECTION_DESC
+	  JURIS_ID
+    }
+  }
+`
+
+
+
 export const GET_COMM_TYPES = gql`
     query {
-        commtypes {
+        getCommtypes {
             COMM_TYPE
             COMM_TYPE_DESC
             DOC_FILE_TYPES

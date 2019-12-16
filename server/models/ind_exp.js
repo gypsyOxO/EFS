@@ -20,7 +20,7 @@ module.exports = function(sequelize, DataTypes) {
 			},
 			ELECTION_ID: {
 				type: DataTypes.INTEGER(11),
-				allowNull: false,
+				allowNull: true,
 				references: {
 					model: "election",
 					key: "ELECTION_ID"
@@ -157,13 +157,31 @@ module.exports = function(sequelize, DataTypes) {
 				type: DataTypes.INTEGER(11),
 				allowNull: true
             },
+            CONTRIBUTIONS_MADE: {
+                type: DataTypes.JSON,
+				allowNull: true
+            },
+            CONTRIBUTIONS_RECEIVED: {
+                type: DataTypes.JSON,
+				allowNull: true
+            },
+            REP_CONT_MADE: {
+                type: DataTypes.CHAR(1),
+                allowNull: true
+            },
+            REP_CONT_RECEIVED: {
+                type: DataTypes.CHAR(1),
+                allowNull: true
+            },
             SUBJECT: {
                 type: DataTypes.VIRTUAL,
                 get: function() {                    
                     if(this.get('BM_ID')) {
                         return "B"
-                    } else {
+                    } else if(this.get('ELEC_SEAT_ID') || this.get('ELEC_SEAT_CAND_ID')) {
                         return "C"
+                    } else {
+                        return ""
                     }
 
                 }
@@ -175,8 +193,8 @@ module.exports = function(sequelize, DataTypes) {
 	)
 
 	ind_exp.associate = models => {
-        ind_exp.hasMany(models.communication, { foreignKey: "IE_ID" }),
-        ind_exp.hasMany(models.payment, { foreignKey: "IE_ID" })
+        ind_exp.hasMany(models.ind_exp_communication, { foreignKey: "IE_ID" }),
+        ind_exp.hasMany(models.ind_exp_payment, { foreignKey: "IE_ID" })
 	}
 
 	return ind_exp

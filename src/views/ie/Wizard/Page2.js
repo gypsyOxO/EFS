@@ -1,14 +1,12 @@
 import React, { Fragment, useEffect } from "react"
 
 import { Field, FieldArray } from "formik"
+import { useMutation } from "@apollo/react-hooks"
 
-import { renderTextField } from "components/Form/Inputs/renderInputs"
+import { renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
 
 import { Upload } from "components/Form/Upload/Upload"
-//import {Files} from 'components/Form/Upload/Files'
 
-// import Box from "@material-ui/core/Box"
-// import Button from "@material-ui/core/Button"
 import Paper from "@material-ui/core/Paper"
 import AddIcon from "@material-ui/icons/Add"
 
@@ -31,18 +29,24 @@ import Select from "@material-ui/core/Select"
 import Input from "@material-ui/core/Input"
 
 import CloudUploadIcon from "@material-ui/icons/CloudUpload"
-//import CommunicationBox from "../../assets/IE/communcations/CommunicationBox"
+
 import ContentBox from "components/UI/Content/ContentBox"
 
 import { communications_box } from "views/ie/Wizard"
 
-//import { GET_COMM_TYPES } from "graphql/ie/Queries"
-
-//import { renderReactSelectField } from "components/Form/Inputs/renderInputs"
-
 import { makeStyles } from "@material-ui/core/styles"
 import SelectCommType from "components/Form/Inputs/SelectCommType"
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
+import { UPSERT_IND_EXP_COMM, UPDATE_IND_EXP,DELETE_IND_EXP_COMM, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
+
+import { graphqlFilter } from "utils/graphqlUtil"
+import { filteredIEUpdate } from "graphql/ie/FilterQueries"
+
+import * as pageValidations from "validation/ie/indexpSchema"
+
+import DateFnsUtils from "@date-io/date-fns"
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -102,15 +106,25 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const handleClickAway = event => {
-    console.log("clicked", event )
-}
-
 //const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
-const RenderCommunications = arrayHelpers => {
+const RenderCommunications = props => {
 	const classes = useStyles()
-	const { communications } = arrayHelpers.form.values
+	const { arrayHelpers, upsertCommData,updateIEData,deleteCommData } = props
+
+	//const comms = getIn(arrayHelpers.form.values, arrayHelpers.name)
+
+	const { comms } = arrayHelpers.form.values
+	const { errors, touched, setFieldValue } = arrayHelpers.form
+	const initValues = { IE_COMM_ID: "", COMM_TYPE: "", DOC_FILE_NAME: "", AUDIO_FILE_NAME: "", VIDEO_FILE_NAME: "" }
+
+	// const handleDateChange = date => {
+
+	//     setFieldValue("DATE_DISTRIBUTED", date.toLocaleDateString())
+    // }
+    
+
+    
 
 	return (
 		<div>
@@ -118,34 +132,37 @@ const RenderCommunications = arrayHelpers => {
 				Add Communication(s)
 			</Typography>
 			<ContentBox>{communications_box}</ContentBox>
+			<OnChangeHandler handleChange={() => updateIEData() }>
+				<Grid container spacing={3} className={classes.grid}>
+					<Grid item xs={12} style={{ marginTop: 20 }}>
+						<Typography variant="body2">Distribution:</Typography>
+					</Grid>
 
-			<Grid container spacing={3} className={classes.grid}>
-				<Grid item xs={12} style={{ marginTop: 20 }}>
-					<Typography variant="body2">Distribution:</Typography>
+					<Grid item xs={12} sm={4}>
+						<Field
+							name="DATE_DISTRIBUTED"
+							label="Date First Distributed"
+							component={renderDatePicker}
+							//helperText={touched.DATE_DISTRIBUTED && errors.DATE_DISTRIBUTED}
+							//error={touched.DATE_DISTRIBUTED && Boolean(errors.DATE_DISTRIBUTED)}
+						/>
+					</Grid>
+
+					<Grid item xs={12} sm={8}>
+						<Field
+							name="NUM_DISTRIBUTED"
+							type="number"
+							component={renderTextField}
+							fullWidth
+							label="Number of Pieces"
+						/>
+					</Grid>
 				</Grid>
-				<Grid item xs={12} sm={3}>
-					<Field
-						name="DatefirstDistributed"
-						type="text"
-						component={renderTextField}
-						fullWidth
-						label="Date First Distributed"
-					/>
-				</Grid>
-				<Grid item xs={12} sm={9}>
-					<Field
-						name="numberOfPieces"
-						type="text"
-						component={renderTextField}
-						fullWidth
-						label="Number of Pieces"
-					/>
-				</Grid>
-			</Grid>
+			</OnChangeHandler>
 
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => arrayHelpers.push()}
+					onClick={() => arrayHelpers.push(initValues)}
 					variant="extended"
 					size="medium"
 					color="secondary"
@@ -153,63 +170,107 @@ const RenderCommunications = arrayHelpers => {
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Communication
 				</Fab>
-
-				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
 			</div>
-            <ClickAwayListener onClickAway={handleClickAway}>
-            <div>
-			{communications &&
-				communications.map((communication, index) => (
-                    
-					<Paper key={index} className={classes.paper} >
-						<Grid container>
-							<Grid item xs={12} sm={11}>
-								<Typography variant="body1" gutterBottom>
-									<b>{`Communication #${index + 1}`}</b>
-								</Typography>
-							</Grid>
-							<Grid item xs={12} sm={1}>
-								<IconButton
-									onClick={() => arrayHelpers.remove(index)} //TODO: deletes file in temp directory? need warning popup dialog box
-									aria-label="delete">
-									<DeleteIcon />
-								</IconButton>
-							</Grid>
-						</Grid>
 
-						<Grid container spacing={3} className={classes.grid}>
-							<SelectCommType
-								index={index}
-								{...communication}
-								
-							/>
-                        </Grid>
+			<div>
+				{comms &&
+					comms.map((comm, index) => (
+						<OnChangeHandler key={index} handleChange={() => upsertCommData(index, comm)}>
+							<Paper key={index} className={classes.paper}>
+								<Grid container>
+									<Grid item xs={12} sm={11}>
+										<Typography variant="body1" gutterBottom>
+											<b>{`Communication #${index + 1}`}</b>
+										</Typography>
+									</Grid>
+									<Grid item xs={12} sm={1}>
+										<IconButton
+                                            onClick={() => {
+                                                comm.IE_COMM_ID && deleteCommData(comm)
+                                                arrayHelpers.remove(index)
+                                                
+                                            }
+                                        } //TODO: deletes file in temp directory? need warning popup dialog box
+											aria-label="delete">
+											<DeleteIcon />
+										</IconButton>
+									</Grid>
+								</Grid>
 
-
-					</Paper>
-                
-                ))}
-            </div>
-            </ClickAwayListener>
+								<Grid container spacing={3} className={classes.grid}>
+									<SelectCommType index={index} comm={comm} />
+								</Grid>
+							</Paper>
+						</OnChangeHandler>
+					))}
+			</div>
 		</div>
 	)
 }
 
 const Page2 = props => {
-	//const { handleSubmit } = props
+	
 	const classes = useStyles()
+	const { page, setFieldValue, values } = props
+
+    //handle IE Updates
+    const [updateIndExp] = useMutation(UPDATE_IND_EXP)
+
+	const updateIEData = () => {    
+  
+		const filteredResult = graphqlFilter(filteredIEUpdate, values)
+		updateIndExp({ variables: { IE_ID: values.IE_ID, ie: filteredResult } })
+    }
+    
+
+    
+
+    //handle IE Comm updates
+	const [upsertIndExpComm] = useMutation(UPSERT_IND_EXP_COMM)
+
+	const upsertCommData = async (index, communication) => {
+		const { IE_ID } = values
+		const commPayload = {
+			...communication,
+			IE_ID
+		}
+
+		if (commPayload.IE_COMM_ID === "") {
+			delete commPayload.IE_COMM_ID
+		}
+
+		commPayload.__typename && delete commPayload.__typename
+
+		const { data } = await upsertIndExpComm({ variables: { comm: commPayload } })
+
+		setFieldValue(`comms.${index}.IE_COMM_ID`, data.upsertIndExpComm.IE_COMM_ID)
+    }
+    
+    //handle IE Comm deletes
+    const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
+
+    const deleteCommData = (communication) => {        
+        deleteIndExpComm({variables: {IE_COMM_ID: communication.IE_COMM_ID}})
+    }
+
 
 	return (
 		<Fragment>
-            
 			<FieldArray
-				name="communications"
-				component={RenderCommunications}
+				name="comms"
+				render={arrayHelpers => (
+					<RenderCommunications
+						arrayHelpers={arrayHelpers}
+                        upsertCommData={(index, comm) => upsertCommData(index, comm)}
+                        updateIEData={() => updateIEData()}
+                        deleteCommData={(comm) => deleteCommData(comm)}
+					/>
+				)}
 			/>
-            
+
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
-				<WizardNextButton {...props} />
+				<WizardNextButton {...props} validationGroup={pageValidations[page]} />
 			</div>
 		</Fragment>
 	)
@@ -217,72 +278,4 @@ const Page2 = props => {
 
 export default Page2
 
-//  <Grid
-// 	container
-// 	alignItems="center"
-// 	className={classes.script}
-// 	gutterTop>
-// 	<Grid item sm={4} className={classes.upload}>
-// 		<input
-// 			accept="image/*"
-// 			className={classes.input}
-// 			style={{ display: "none" }}
-// 			id="raised-button-file"
-// 			multiple
-// 			type="file"
-// 		/>
-// 		<label htmlFor="raised-button-file">
-// 			<Button
-// 				variant="contained"
-// 				className={classes.upload}
-// 				component="span"
-// 				color="primary"
-// 				fullWidth>
-// 				Upload Script (<b>PDF</b>)
-// 				<CloudUploadIcon
-// 					className={classes.rightIcon}
-// 				/>
-// 			</Button>
-// 		</label>
-// 	</Grid>
 
-// 	<Grid item>
-// 		<Typography variant="body1">
-// 			No File Chosen
-// 		</Typography>
-// 	</Grid>
-// </Grid>
-// <Grid
-// 	container
-// 	alignItems="center"
-// 	className={classes.script}
-// 	gutterTop>
-// 	<Grid item className={classes.upload} sm={4}>
-// 		<input
-// 			accept="image/*"
-// 			className={classes.input}
-// 			style={{ display: "none" }}
-// 			id="raised-button-file"
-// 			multiple
-// 			type="file"
-// 		/>
-// 		<label htmlFor="raised-button-file">
-// 			<Button
-// 				color="primary"
-// 				variant="contained"
-// 				component="span"
-// 				fullWidth>
-// 				Upload Video (<b>MP4</b>)
-// 				<CloudUploadIcon
-// 					className={classes.rightIcon}
-// 				/>
-// 			</Button>
-// 		</label>
-// 	</Grid>
-
-// 	<Grid item>
-// 		<Typography variant="body1">
-// 			No File Chosen
-// 		</Typography>
-// 	</Grid>
-// </Grid>

@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react"
 import Wizard from "../../components/Wizard/Wizard"
 import { withApollo } from "react-apollo"
-import {GET_BLANK_FORM, GET_IND_EXP} from "../../graphql/ie/Queries"
+import {GET_BLANK_FORM, GET_IND_EXP} from "graphql/ie/Queries"
+import {ADD_IND_EXP} from "graphql/ie/Mutations"
 
 
 class IndExp extends Component {
@@ -14,52 +15,65 @@ class IndExp extends Component {
         initValues: {}
     }
 
-	componentDidMount = async () => {
-        //*****for testing purposes only*****
-		let initValues = {}
+	// componentDidMount = async () => {
+    //     //*****for testing purposes only*****
+	// 	let initValues = {}
 
-        const data = {IE_ID: 6443}
+    //     const data = {IE_ID: 0}      
 
-		if (data.IE_ID > 0) {
-            initValues = await this.GetInitValuesFromDB(data)			
+	// 	if (data.IE_ID > 0) {
+            
+    //         initValues = await this.GetInitValuesFromDB(data)
+            
     
-		} else {
-            initValues = await this.GetBlankForm()
+	// 	} else { 
+            
+    //         initValues = await this.GetBlankForm()
     
-		}
+    //     }
 
-        this.setState({
-            initValues: { ...this.state.initValues, ...initValues }
-        })
+    //     this.setState({
+    //         initValues: { ...this.state.initValues, ...initValues }
+    //     })
+
+    // }
     
 
-    }
-    
-
-	GetInitValuesFromDB = data => {
+	GetInitValuesFromDB = async data => {
 		const {client} = this.props
-
-		let res = client.query({
+        // reads from server
+		let res = await client.query({
 			query: GET_IND_EXP,
 			variables: { IE_ID: data.IE_ID }
-        }).then(result => result.data.indexp)
-
-        return res
+        })
+        
+        return res.data.getIndExp
     }
     
-    GetBlankForm = () => {
+    GetBlankForm = async () => {
         const {client} = this.props
-
-        let res = client.query({
+        // reads from cache
+        const defaults = await client.readQuery({
             query: GET_BLANK_FORM
-        }).then(result => result.data)        
-        return res        
+        })
+                
+        const res = await client.mutate({
+            mutation: ADD_IND_EXP,
+            variables: {ie: defaults}
+        }) 
+
+        return res.data.addIndExp
+
+        // this.setState({
+		// 	initValues: { ...this.state.initValues, ...initValues }
+		// })
+        
     }
 
 	callInternalHook = async data => {
 		//internal hook for external call; TODO: could be better with window ref on index.js
 
-		const initValues = data.IE_ID > 0 ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm()		
+		const initValues = data.IE_ID > 0 ? await this.GetInitValuesFromDB(data) : this.GetBlankForm()		
 
 		this.setState({
 			initValues: { ...this.state.initValues, ...initValues }
@@ -73,8 +87,8 @@ class IndExp extends Component {
         const showWiz = Object.getOwnPropertyNames(initValues).length ? <Wizard initValues={initValues}/> : null
 		   
 		return (
-			<Fragment>			
-				{showWiz}			
+			<Fragment>                		                
+				{showWiz || <button onClick={this.GetBlankForm}>Add new</button>}			
 			</Fragment>
 		)
 	}

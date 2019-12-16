@@ -19,6 +19,7 @@ import ContentBox from "components/UI/Content/ContentBox"
 
 import { review_box } from "views/ie/Wizard"
 
+import { convertISODateToJsDate } from "utils/dateUtil"
 
 const useStyles = makeStyles(theme => ({
 	listItem: {
@@ -70,18 +71,16 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-function createData1(date, name, desc, amount) {
-	return { date, name, desc, amount }
-}
-
-const rows1 = [
-	createData1("1/27/2018", "Bob Barnacastle", "Expenditures", "$100.00"),
-	createData1("3/5/2019", "Billy Bob", "Gop takeover", "$350.00")
-]
 
 const Review = props => {
-    const classes = useStyles()
-    const {navigateToPage} = props
+	const classes = useStyles()
+	const {
+		navigateToPage,
+		values,
+		values: { comms, payments, CONTRIBUTIONS_MADE, CONTRIBUTIONS_RECEIVED }
+	} = props
+
+	console.log("muyvalues", values)
 	return (
 		<Fragment>
 			<Typography variant="h6" gutterBottom className={classes.header}>
@@ -97,10 +96,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid>
-					<Fab
-						onClick={() => navigateToPage(0)}
-						size="small"
-						className={classes.fab}>
+					<Fab onClick={() => navigateToPage(0)} size="small" className={classes.fab}>
 						<EditIcon className={classes.icon} />
 					</Fab>
 				</Grid>
@@ -108,18 +104,16 @@ const Review = props => {
 			<Grid container spacing={3} className={classes.grid}>
 				<Grid item xs={12} sm={4}>
 					<Typography variant="body1">
-						Type: Independent Expenditure
+						Type: {values.MC_FLG ? (values.MC_FLG === "0" ? "Independent Expenditure" : "Membership Communication") : null}
 					</Typography>
 				</Grid>
-				<Grid item xs={12} sm={4}>
+				<Grid item xs={12} sm={3}>
 					<Typography variant="body1">
-						Purpose: Independent Expenditure
+						Purpose: {values.SUPPORT_OPPOSE_FLG ? (values.SUPPORT_OPPOSE_FLG === "S" ? "Support" : "Oppose") : null}
 					</Typography>
 				</Grid>
-				<Grid item xs={12} sm={4}>
-					<Typography variant="body1">
-						LAUSD Candidate: Bob Macintosh
-					</Typography>
+				<Grid item xs={12} sm={5}>
+					<Typography variant="body1">LAUSD Candidate: **Need to update**</Typography>
 				</Grid>
 			</Grid>
 
@@ -130,25 +124,18 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid />
-				<Fab
-					onClick={() => navigateToPage(1)}
-					size="small"
-					display="flex"
-					justifyContent="flex-end"
-					className={classes.fab}>
+				<Fab onClick={() => navigateToPage(1)} size="small" display="flex" justifyContent="flex-end" className={classes.fab}>
 					<EditIcon className={classes.icon} />
 				</Fab>
 			</Grid>
 			<Grid container spacing={1} className={classes.grid}>
 				<Grid item xs={12} sm={6}>
 					<Typography variant="body1">
-						Date First Distributed: 5/27/2018
+						Date First Distributed: {values.DATE_DISTRIBUTED ? convertISODateToJsDate(values.DATE_DISTRIBUTED) : "N/A"}
 					</Typography>
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Typography variant="body1">
-						Number of Pieces: 5/27/2018
-					</Typography>
+					<Typography variant="body1">Number of Pieces: {values.NUM_DISTRIBUTED}</Typography>
 				</Grid>
 			</Grid>
 			<Paper className={classes.paper}>
@@ -161,16 +148,26 @@ const Review = props => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						<TableRow>
-							<TableCell align="left">Flyer</TableCell>
-							<TableCell align="left">ImFlying.pdf</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell align="left">Door Hanger</TableCell>
-							<TableCell align="left">
-								JustHangingOut.pdf
-							</TableCell>
-						</TableRow>
+						{comms &&
+							comms.map(comm => {
+								let files = [comm.AUDIO_FILE_NAME, comm.VIDEO_FILE_NAME, comm.DOC_FILE_NAME]
+
+								//Reducer: converts filenames to array, if blank then dont include in final array
+
+								files = Object.entries(files)
+									.reduce((tableCellLabel, filename) => {
+										filename[1] && tableCellLabel.push(filename[1])
+										return tableCellLabel
+									}, [])
+									.join(",")
+
+								return (
+									<TableRow key={comm.IE_COMM_ID}>
+										<TableCell align="left">{comm.COMM_TYPE}</TableCell>
+										<TableCell align="left">{files}</TableCell>
+									</TableRow>
+								)
+							})}
 					</TableBody>
 				</Table>
 			</Paper>
@@ -182,12 +179,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid />
-				<Fab
-					onClick={() => navigateToPage(2)}
-					size="small"
-					display="flex"
-					justifyContent="flex-end"
-					className={classes.fab}>
+				<Fab onClick={() => navigateToPage(2)} size="small" display="flex" justifyContent="flex-end" className={classes.fab}>
 					<EditIcon className={classes.icon} />
 				</Fab>
 			</Grid>
@@ -205,42 +197,33 @@ const Review = props => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						<TableRow>
-							<TableCell align="left" style={{ width: "10px" }}>
-								11/27/2018
-							</TableCell>
-							<TableCell align="center">
-								Bob Barnacastle
-							</TableCell>
-							<TableCell align="center">
-								Need more flyers
-							</TableCell>
-							<TableCell align="center">$225.00</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell colSpan={1} />
-							<TableCell colSpan={1}>
-								Payee Vendor #1: The habedashery
-							</TableCell>
-							<TableCell colSpan={2} />
-						</TableRow>
-						<TableRow>
-							<TableCell colSpan={1} />
-							<TableCell colSpan={1}>
-								Payee Vendor #2: The Parks and recreation
-							</TableCell>
-							<TableCell colSpan={2} />
-						</TableRow>
-						<TableRow>
-							<TableCell align="left" style={{ width: "10px" }}>
-								11/27/2019
-							</TableCell>
-							<TableCell align="center">
-								The philibuster
-							</TableCell>
-							<TableCell align="center">Need more cats</TableCell>
-							<TableCell align="center">$500.00</TableCell>
-						</TableRow>
+						{payments &&
+							payments.map((payment, index) => {
+								const { IE_PAYEE_VENDORS } = payment
+
+								const vendors = IE_PAYEE_VENDORS && IE_PAYEE_VENDORS.map((vendor, vindex) => (
+									<TableRow key={vindex}>
+                                        <TableCell colSpan={1}/>
+										<TableCell align="left">Payee Vendor#{vindex + 1}: &nbsp;{vendor.IE_PAYMENT_VENDOR_LNAME}</TableCell>
+                                        <TableCell colSpan={2}/>
+									</TableRow>
+								))
+								return (
+                                    <Fragment key={index}>
+									<TableRow >
+										<TableCell align="left" style={{ width: "10px" }}>
+											{payment.IE_PAYMENT_DATE ? convertISODateToJsDate(payment.IE_PAYMENT_DATE) : "N/A"}
+										</TableCell>
+										<TableCell align="center">{payment.IE_PAYEE}</TableCell>
+										<TableCell align="center">{payment.IE_PAYMENT_DESC}</TableCell>
+										<TableCell align="center" style={{ width: "10px" }}>
+											{payment.IE_PAYMENT_AMT ? "$" + Number.parseFloat(payment.IE_PAYMENT_AMT).toFixed(2) : "N/A"}
+										</TableCell>
+									</TableRow>
+                                    {vendors}
+                                    </Fragment>
+								)
+							})}
 					</TableBody>
 				</Table>
 			</Paper>
@@ -252,12 +235,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid />
-				<Fab
-					onClick={() => navigateToPage(3)}
-					size="small"
-					display="flex"
-					justifyContent="flex-end"
-					className={classes.fab}>
+				<Fab onClick={() => navigateToPage(3)} size="small" display="flex" justifyContent="flex-end" className={classes.fab}>
 					<EditIcon className={classes.icon} />
 				</Fab>
 			</Grid>
@@ -265,26 +243,24 @@ const Review = props => {
 				<Table className={classes.table}>
 					<TableHead>
 						<TableRow>
-							<TableCell align="left">
-								Candidate or Committee Name
-							</TableCell>
 							<TableCell align="left">Date Contributed</TableCell>
-							<TableCell align="left">
-								Amount Contributed
-							</TableCell>
+							<TableCell align="left">Candidate or Committee Name</TableCell>
+							<TableCell align="left">Amount Contributed</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						<TableRow>
-							<TableCell align="left">Horseman</TableCell>
-							<TableCell align="left">1/28/2018</TableCell>
-							<TableCell align="left">$75.00</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell align="left">Penelope Cruz</TableCell>
-							<TableCell align="left">4/28/2017</TableCell>
-							<TableCell align="left">$35.00</TableCell>
-						</TableRow>
+						{CONTRIBUTIONS_MADE &&
+							CONTRIBUTIONS_MADE.map((contribution, index) => (
+								<TableRow key={index}>
+									<TableCell align="left">
+										{contribution.dateContributed ? convertISODateToJsDate(contribution.dateContributed) : "N/A"}
+									</TableCell>
+									<TableCell align="left">{contribution.candidateOrCommitteeName}</TableCell>
+									<TableCell align="left">
+										{contribution.amountContributed ? "$" + Number.parseFloat(contribution.amountContributed).toFixed(2) : "N/A"}
+									</TableCell>
+								</TableRow>
+							))}
 					</TableBody>
 				</Table>
 			</Paper>
@@ -296,12 +272,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid />
-				<Fab
-					onClick={() => navigateToPage(4)}
-					size="small"
-					display="flex"
-					justifyContent="flex-end"
-					className={classes.fab}>
+				<Fab onClick={() => navigateToPage(4)} size="small" display="flex" justifyContent="flex-end" className={classes.fab}>
 					<EditIcon className={classes.icon} />
 				</Fab>
 			</Grid>
@@ -309,26 +280,22 @@ const Review = props => {
 				<Table className={classes.table}>
 					<TableHead>
 						<TableRow>
-							<TableCell align="left">
-								Contributor's Full Name
-							</TableCell>
+							<TableCell align="left">Contributor's Full Name</TableCell>
 							<TableCell align="left">Date Recived</TableCell>
-							<TableCell align="left">
-								Amount Contributed
-							</TableCell>
+							<TableCell align="left">Amount Contributed</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						<TableRow>
-							<TableCell align="left">UnHorseman</TableCell>
-							<TableCell align="left">9/9/2018</TableCell>
-							<TableCell align="left">$29.95</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell align="left">Swatch</TableCell>
-							<TableCell align="left">2/7/2017</TableCell>
-							<TableCell align="left">$400.00</TableCell>
-						</TableRow>
+						{CONTRIBUTIONS_RECEIVED &&
+							CONTRIBUTIONS_RECEIVED.map((contribution,index) => (
+								<TableRow key={index}>
+									<TableCell align="left">{contribution.dateReceived ? convertISODateToJsDate(contribution.dateReceived) : "N/A"}</TableCell>
+									<TableCell align="left">{contribution.contributorFullName}</TableCell>
+									<TableCell align="left">
+										{contribution.amountReceived ? "$" + Number.parseFloat(contribution.amountReceived).toFixed(2) : "N/A"}
+									</TableCell>
+								</TableRow>
+							))}
 					</TableBody>
 				</Table>
 			</Paper>
@@ -336,11 +303,7 @@ const Review = props => {
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
 
-				<Button
-					className={classes.button}
-					variant="contained"
-					color="secondary"
-					type="submit">
+				<Button className={classes.button} variant="contained" color="secondary" type="submit">
 					Continue to E-sign
 				</Button>
 			</div>

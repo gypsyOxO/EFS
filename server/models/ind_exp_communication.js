@@ -1,8 +1,8 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-	const communication = sequelize.define(
-		"communication",
+	const ind_exp_communication = sequelize.define(
+		"ind_exp_communication",
 		{
 			IE_COMM_ID: {
 				type: DataTypes.INTEGER(11),
@@ -18,9 +18,9 @@ module.exports = function(sequelize, DataTypes) {
 					key: "IE_ID"
 				}
 			},
-			file_name: {
+			FILE_NAME: {
 				type: DataTypes.STRING(255),
-				allowNull: false
+				allowNull: true
 			},
 			COMM_TYPE: {
 				type: DataTypes.STRING(10),
@@ -30,15 +30,7 @@ module.exports = function(sequelize, DataTypes) {
 					key: "COMM_TYPE"
 				}
 			},
-			ie_comm_num: {
-				type: DataTypes.INTEGER(11),
-				allowNull: true
-			},
-			date_distributed: {
-				type: DataTypes.DATEONLY,
-				allowNull: true
-			},
-			num_distributed: {
+			IE_COMM_NUM: {
 				type: DataTypes.INTEGER(11),
 				allowNull: true
 			},
@@ -60,8 +52,8 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	)
 
-	communication.associate = models => {
-		communication.belongsTo(models.ind_exp, { foreignKey: "IE_ID" })
+	ind_exp_communication.associate = models => {
+		ind_exp_communication.belongsTo(models.ind_exp, { foreignKey: "IE_ID" })
 	}
-	return communication
+	return ind_exp_communication
 }

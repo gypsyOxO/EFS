@@ -1,5 +1,6 @@
-import React, { useState, Fragment } from "react"
+import React, { Fragment } from "react"
 import { Field } from "formik"
+import { useMutation } from "@apollo/react-hooks"
 import Typography from "@material-ui/core/Typography"
 import { makeStyles } from "@material-ui/core/styles"
 import Grid from "@material-ui/core/Grid"
@@ -7,17 +8,18 @@ import FormControlLabel from "@material-ui/core/FormControlLabel"
 import FormLabel from "@material-ui/core/FormLabel"
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
-import {
-	renderTextField,
-	renderRadioGroup
-} from "components/Form/Inputs/renderInputs"
+import FormHelperText from "@material-ui/core/FormHelperText"
+import { renderRadioGroup } from "components/Form/Inputs/renderInputs"
 import WizardNextButton from "components/Wizard/WizardNextButton"
-import ReactSelectMaterialUi from "react-select-material-ui"
-
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 
 import CandidateOrBallotMeasure from "components/Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
-//import GetCandidates from '../Form/Panels/GetCandidates';
+import * as pageValidations from "validation/ie/indexpSchema"
 
+//import GetCandidates from '../Form/Panels/GetCandidates';
+import { graphqlFilter } from "utils/graphqlUtil"
+import { filteredIEUpdate } from "graphql/ie/FilterQueries"
+import { UPDATE_IND_EXP } from "graphql/ie/Mutations"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -34,62 +36,93 @@ const useStyles = makeStyles(theme => ({
 
 const Page1 = props => {
 	const classes = useStyles()
+	const { errors, touched, page, values } = props
+
+	const [updateIndExp] = useMutation(UPDATE_IND_EXP)
+
+	const updateIEData = () => {
+		const filteredResult = graphqlFilter(filteredIEUpdate, values)
+		updateIndExp({ variables: {IE_ID: values.IE_ID, ie: filteredResult } })
+	}
 
 	return (
 		<Fragment>
 			<Typography variant="h6" gutterBottom className={classes.header}>
 				Purpose
 			</Typography>
+			<OnChangeHandler handleChange={updateIEData}>
+				<Grid container spacing={3} style={{ marginTop: 10 }}>
+					<Grid item xs={12} sm={2}>
+						<FormControl component="fieldset">
+							<FormLabel component="legend">Purpose</FormLabel>
+							<Field
+								name="SUPPORT_OPPOSE_FLG"
+								component={renderRadioGroup}
+								row>
+								<FormControlLabel
+									value="S"
+									control={<Radio color="primary" />}
+									label="Support"
+									labelPlacement="end"
+								/>
+								<FormControlLabel
+									value="O"
+									control={<Radio color="primary" />}
+									label="Oppose"
+									labelPlacement="end"
+								/>
+							</Field>
+							{touched.SUPPORT_OPPOSE_FLG &&
+							Boolean(errors.SUPPORT_OPPOSE_FLG) ? (
+								<FormHelperText error>
+									{errors.SUPPORT_OPPOSE_FLG}
+								</FormHelperText>
+							) : null}
+						</FormControl>
+					</Grid>
 
-			<Grid container spacing={3} style={{ marginTop: 10 }}>
-				<Grid item xs={12} sm={4}>
-					<FormControl component="fieldset">
-						<FormLabel component="legend">Purpose</FormLabel>
-						<Field
-							name="SUPPORT_OPPOSE_FLG"
-							component={renderRadioGroup}
-							row>
-							<FormControlLabel
-								value="S"
-								control={<Radio color="primary" />}
-								label="Support"
-								labelPlacement="end"
-							/>
-							<FormControlLabel
-								value="O"
-								control={<Radio color="primary" />}
-								label="Oppose"
-								labelPlacement="end"
-							/>
-						</Field>
-					</FormControl>
-				</Grid>
+					<Grid item xs={12} sm={6}>
+						<CandidateOrBallotMeasure {...props} />
+						{touched.SUBJECT && Boolean(errors.SUBJECT) ? (
+							<FormHelperText error>
+								{errors.SUBJECT}
+							</FormHelperText>
+						) : null}
+					</Grid>
 
-				<Grid item xs={12} sm={4}>
-					<CandidateOrBallotMeasure {...props} />
+					<Grid item xs={12} sm={4}>
+						<FormControl component="fieldset">
+							<FormLabel component="legend">Type</FormLabel>
+							<Field
+								name="MC_FLG"
+								component={renderRadioGroup}
+								row>
+								<FormControlLabel
+									value="0"
+									control={<Radio color="primary" />}
+									label="Independent Expenditure"
+									labelPlacement="end"
+								/>
+								<FormControlLabel
+									value="1"
+									control={<Radio color="primary" />}
+									label="Membership Communication"
+									labelPlacement="end"
+								/>
+							</Field>
+							{touched.MC_FLG && Boolean(errors.MC_FLG) ? (
+								<FormHelperText error>
+									{errors.MC_FLG}
+								</FormHelperText>
+							) : null}
+						</FormControl>
+					</Grid>
 				</Grid>
-
-				<Grid item xs={12} sm={4}>
-					<FormControl component="fieldset">
-						<FormLabel component="legend">Type</FormLabel>
-						<Field name="MC_FLG" component={renderRadioGroup} row>
-							<FormControlLabel
-								value="0"
-								control={<Radio color="primary" />}
-								label="Independent Expenditure"
-								labelPlacement="end"
-							/>
-							<FormControlLabel
-								value="1"
-								control={<Radio color="primary" />}
-								label="Membership Communication"
-								labelPlacement="end"
-							/>
-						</Field>
-					</FormControl>
-				</Grid>
-			</Grid>
-			<WizardNextButton {...props} />
+			</OnChangeHandler>
+			<WizardNextButton
+				{...props}
+				validationGroup={pageValidations[page]}
+			/>
 		</Fragment>
 	)
 }

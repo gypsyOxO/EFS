@@ -1,8 +1,8 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-	const payment = sequelize.define(
-		"payment",
+	const ind_exp_payment = sequelize.define(
+		"ind_exp_payment",
 		{
 			IE_PAYMENT_ID: {
 				type: DataTypes.INTEGER(11),
@@ -66,16 +66,19 @@ module.exports = function(sequelize, DataTypes) {
 			IE_PAYEE_ADDR_ZIP_4: {
 				type: DataTypes.CHAR(4),
 				allowNull: true
-			}
+            },
+			IE_PAYEE_VENDORS: {
+				type: DataTypes.JSON,
+				allowNull: true
+			},            
 		},
 		{
 			tableName: "ind_exp_payment"
 		}
 	)
 
-	payment.associate = models => {
-        payment.belongsTo(models.ind_exp, { foreignKey: "IE_ID" }),
-        payment.hasMany(models.vendor, { foreignKey: "IE_PAYMENT_ID" })
+	ind_exp_payment.associate = models => {
+        ind_exp_payment.belongsTo(models.ind_exp, { foreignKey: "IE_ID" })        
 	}
-	return payment
+	return ind_exp_payment
 }

@@ -1,5 +1,10 @@
 import gql from 'graphql-tag';
 
+import { graphqlFilter } from 'utils/graphqlUtil';
+import {useQuery} from "@apollo/react-hooks"
+import { filteredIEUpdate } from "graphql/ie/FilterQueries"
+
+
 export const typeDefs = gql`
   extend type Query {
     isFolded: Boolean!
@@ -21,6 +26,9 @@ export const resolvers = {
             })
 
             return val
+        },
+        addIndExp: (_, {args}, {cache}) => {
+            console.log("local resolver:", args)
         }
     }
 

@@ -1,31 +1,24 @@
 import React, { Component } from 'react';
 
+//import RequestHandler from 'graphql/ie/requestHandler';
+import {connect} from 'formik'
+
 
 
 class Wiz extends Component {
-    // constructor() {
-    //     super()
-    //     window.globalv = this
-    // }
-
-
-    // callit(data){
-    //     alert(data)
-    // }
 
 	state = {
 		pageIndex: 0
     };
 
-
-
-	render() {
+	render() {        
 		const renderProps = {
 			navigateBack: this._navigateBack,
             navigateNext: this._navigateNext,
             navigateToPage: this._navigateToPage,            
             pageIndex: this.state.pageIndex,            
-			renderPage: this._renderPage
+            renderPage: this._renderPage,
+            handleRequest: this._handleRequest
 		};
 		return this.props.children(renderProps);
     }
@@ -33,7 +26,11 @@ class Wiz extends Component {
 
     _navigateToPage = pageIndex => {
         this.setState({pageIndex: pageIndex})
-    }    
+    }   
+    
+    _handleRequest = (req) => {        
+        console.log("this.props", this.props)
+    }
 
 	_navigateBack = () => {
 		this.setState(prevState => ({
@@ -54,14 +51,16 @@ class Wiz extends Component {
 
 		return (
 			<Page
+                page={this.props.pages[pageIndex].name}
 				{...formProps}
 				navigateBack={this._navigateBack}
                 navigateNext={this._navigateNext}
-                navigateToPage={this._navigateToPage}                
+                navigateToPage={this._navigateToPage}    
+                handleRequest={this._handleRequest}            
 				pageIndex={pageIndex}
 			/>
 		);
 	};
 }
 
-export default Wiz;
+export default connect(Wiz);

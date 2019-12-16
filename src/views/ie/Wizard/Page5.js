@@ -25,10 +25,14 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
-import {
-	renderRadioGroup,
-	renderTextField
-} from "components/Form/Inputs/renderInputs"
+import { renderRadioGroup, renderTextField } from "components/Form/Inputs/renderInputs"
+import * as pageValidations from "validation/ie/indexpSchema"
+
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
+import { graphqlFilter } from "utils/graphqlUtil"
+import { filteredIEUpdate } from "graphql/ie/FilterQueries"
+import { UPDATE_IND_EXP } from "graphql/ie/Mutations"
+import { useMutation } from "@apollo/react-hooks"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -68,14 +72,24 @@ const useStyles = makeStyles(theme => ({
 
 //const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
-const RenderContributions = ({ form, push, remove }) => {
+const RenderContributions = props => {
 	const classes = useStyles()
-	const { receivedContributions } = form.values
+	const { arrayHelpers } = props
+	const { CONTRIBUTIONS_RECEIVED } = arrayHelpers.form.values
+
+	const initValues = {
+		contributorFullName: "",
+		dateReceived: "",
+		amountReceived: "",
+		contributorAddress: "",
+        contributorEmployerOccupation: "",
+        REPT_CONT_RECEIVED: ""
+	}
 	return (
 		<div>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => push()}
+					onClick={() => arrayHelpers.push(initValues)}
 					variant="extended"
 					size="medium"
 					color="secondary"
@@ -87,100 +101,103 @@ const RenderContributions = ({ form, push, remove }) => {
 				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
 			</div>
 
-			{receivedContributions &&
-				receivedContributions.map((contribution, index) => (
-					<Paper key={index} className={classes.paper}>
-						<Grid container alignItems="center">
-							<Grid item xs={12} sm={11}>
-								<Typography variant="body1">
-									<b>{`Contribution Received #${index +
-										1}`}</b>
-								</Typography>
+			{CONTRIBUTIONS_RECEIVED &&
+				CONTRIBUTIONS_RECEIVED.map((contribution, index) => (
+					
+						<Paper key={index} className={classes.paper}>
+							<Grid container alignItems="center">
+								<Grid item xs={12} sm={11}>
+									<Typography variant="body1">
+										<b>{`Contribution Received #${index + 1}`}</b>
+									</Typography>
+								</Grid>
+								<Grid item xs={12} sm={1}>
+									<IconButton onClick={() => arrayHelpers.remove(index)} aria-label="delete">
+										<DeleteIcon />
+									</IconButton>
+								</Grid>
 							</Grid>
-							<Grid item xs={12} sm={1}>
-								<IconButton
-									onClick={() => remove(index)}
-									aria-label="delete">
-									<DeleteIcon />
-								</IconButton>
-							</Grid>
-						</Grid>
 
-						<Grid container spacing={3} className={classes.grid}>
-							<Grid item xs={12} sm={6}>
-								<Field
-									name={`receivedContributions.${index}.contributorFullName`}
-									type="text"
-									component={renderTextField}
-									fullWidth
-									label="Contributor's Full Name"
-								/>
+							<Grid container spacing={3} className={classes.grid}>
+								<Grid item xs={12} sm={6}>
+									<Field
+										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorFullName`}
+										type="text"
+										component={renderTextField}
+										fullWidth
+										label="Contributor's Full Name"
+									/>
+								</Grid>
+								<Grid item xs={12} sm={3}>
+									<Field
+										name={`CONTRIBUTIONS_RECEIVED.${index}.dateReceived`}
+										type="text"
+										component={renderTextField}
+										fullWidth
+										label="Date Received"
+									/>
+								</Grid>
+								<Grid item xs={12} sm={3}>
+									<Field
+										name={`CONTRIBUTIONS_RECEIVED.${index}.amountReceived`}
+										type="text"
+										component={renderTextField}
+										fullWidth
+										label="Amount Received"
+									/>
+								</Grid>
 							</Grid>
-							<Grid item xs={12} sm={3}>
-								<Field
-									name={`receivedContributions.${index}.dateReceived`}
-									type="text"
-									component={renderTextField}
-									fullWidth
-									label="Date Received"
-								/>
+							<Grid container spacing={3} className={classes.grid}>
+								<Grid item xs={12} sm={12}>
+									<Field
+										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddress`}
+										type="text"
+										component={renderTextField}
+										fullWidth
+										label="Contributor's Address"
+									/>
+								</Grid>
 							</Grid>
-							<Grid item xs={12} sm={3}>
-								<Field
-									name={`receivedContributions.${index}.amountReceived`}
-									type="text"
-									component={renderTextField}
-									fullWidth
-									label="Amount Received"
-								/>
+							<Grid container spacing={3} className={classes.grid}>
+								<Grid item xs={12} sm={12}>
+									<Field
+										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorEmployerOccupation`}
+										type="text"
+										component={renderTextField}
+										fullWidth
+										label="Contributor's Employer/Occupation"
+									/>
+								</Grid>
 							</Grid>
-						</Grid>
-						<Grid container spacing={3} className={classes.grid}>
-							<Grid item xs={12} sm={12}>
-								<Field
-									name={`receivedContributions.${index}.contributorAddress`}
-									type="text"
-									component={renderTextField}
-									fullWidth
-									label="Contributor's Address"
-								/>
-							</Grid>
-						</Grid>
-						<Grid container spacing={3} className={classes.grid}>
-							<Grid item xs={12} sm={12}>
-								<Field
-									name={`receivedContributions.${index}.contributorEmployerOccupation`}
-									type="text"
-									component={renderTextField}
-									fullWidth
-									label="Contributor's Employer/Occupation"
-								/>
-							</Grid>
-						</Grid>
-					</Paper>
+						</Paper>
+					
 				))}
 		</div>
 	)
 }
 
 const Page5 = props => {
-	const { handleSubmit } = props
+	const { page, values } = props
 	const classes = useStyles()
+
+	const [updateIndExp] = useMutation(UPDATE_IND_EXP)
+
+	const updateIEData = () => {
+		const filteredResult = graphqlFilter(filteredIEUpdate, values)
+		updateIndExp({ variables: { IE_ID: values.IE_ID, ie: filteredResult } })
+	}
+
 	return (
 		<Fragment>
 			<Typography variant="h6" gutterBottom className={classes.header}>
 				Add Contribution(s) Received
 			</Typography>
 			<ContentBox>{contributions_received_box}</ContentBox>
-			<Grid
-				container
-				spacing={3}
-				style={{ marginTop: 10, marginLeft: 10 }}>
+            <OnChangeHandler handleChange={() => updateIEData()}>
+			<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
 				<Grid item>
 					<FormControl component="fieldset">
-						<Field
-							name="isContributionsMade"
-							component={renderRadioGroup}>
+						<Field name="REP_CONT_RECEIVED" component={renderRadioGroup}>
 							<FormControlLabel
 								value="N"
 								control={<Radio color="primary" />}
@@ -199,13 +216,17 @@ const Page5 = props => {
 			</Grid>
 
 			<FieldArray
-				name="receivedContributions"
-				component={RenderContributions}
+				name="CONTRIBUTIONS_RECEIVED"
+				render={arrayHelpers => (
+					<RenderContributions
+						arrayHelpers={arrayHelpers}						
+					/>
+				)}
 			/>
-
+            </OnChangeHandler>
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
-				<WizardNextButton {...props} />
+				<WizardNextButton {...props} validationGroup={pageValidations[page]} />
 			</div>
 		</Fragment>
 	)
