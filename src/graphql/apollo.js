@@ -32,7 +32,8 @@ export const client = new ApolloClient({
 const initData = () => {
 	client.writeData({
 		data: {            			            
-            MC_FLG: "0"			
+            MC_FLG: "0",   
+            SUPPORT_OPPOSE_FLG: "S"
 		}
 	})
 }

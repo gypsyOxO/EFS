@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && rimraf ../../inetpub/wwwroot/CFCs/PDF/IE/Stepper/* && rimraf ../../inetpub/wwwroot/static/* && cp -a ./build/* ../../inetpub/wwwroot/CFCs/PDF/IE/Stepper/ && cp -a ./build/static/* ../../inetpub/wwwroot/static/",
+    "build": "react-scripts build && rimraf ../../wwwroot/CFCs/PDF/IE/Stepper/* && rimraf ../../wwwroot/static/* && cp -a ./build/* ../../wwwroot/CFCs/PDF/IE/Stepper/ && cp -a ./build/static/* ../../wwwroot/static/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

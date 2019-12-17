@@ -28,7 +28,7 @@ class IndExp extends Component {
     
 	// 	} else { 
             
-    //         initValues = await this.GetBlankForm()
+    //         //initValues = await this.GetBlankForm()
     
     //     }
 
@@ -39,42 +39,70 @@ class IndExp extends Component {
     // }
     
 
-	GetInitValuesFromDB = async data => {
+	GetInitValuesFromDB = async ({IE_ID}) => {
 		const {client} = this.props
         // reads from server
 		let res = await client.query({
 			query: GET_IND_EXP,
-			variables: { IE_ID: data.IE_ID }
+			variables: { IE_ID: IE_ID }
         })
         
         return res.data.getIndExp
     }
     
-    GetBlankForm = async () => {
+    GetBlankForm = async ({CMT_PER_ID}) => {
         const {client} = this.props
         // reads from cache
-        const defaults = await client.readQuery({
+        let defaults = await client.readQuery({
             query: GET_BLANK_FORM
         })
+
+        defaults.CMT_PER_ID = CMT_PER_ID
                 
         const res = await client.mutate({
             mutation: ADD_IND_EXP,
             variables: {ie: defaults}
         }) 
+        
+        //default candidate or ballotmeasure
+        res.data.addIndExp.SUBJECT = "C"
 
         return res.data.addIndExp
 
-        // this.setState({
-		// 	initValues: { ...this.state.initValues, ...initValues }
-		// })
+    }
+
+    testBlankForm = async data => {
+        const {client} = this.props
+        // reads from cache
+        let defaults = await client.readQuery({
+            query: GET_BLANK_FORM
+        })
+                
+        defaults.CMT_PER_ID = data
+
+        const res = await client.mutate({
+            mutation: ADD_IND_EXP,
+            variables: {ie: defaults}
+        }) 
+
+        //default candidate or ballotmeasure
+        res.data.addIndExp.SUBJECT = "C"
+        
+        this.setState({
+			initValues: { ...this.state.initValues, ...res.data.addIndExp }
+		})
         
     }
 
+
+
 	callInternalHook = async data => {
-		//internal hook for external call; TODO: could be better with window ref on index.js
+        //internal hook for external call; TODO: could be better with window ref on index.js
+        
+        
 
-		const initValues = data.IE_ID > 0 ? await this.GetInitValuesFromDB(data) : this.GetBlankForm()		
-
+        const initValues = data.IE_ID > 0 ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)
+        
 		this.setState({
 			initValues: { ...this.state.initValues, ...initValues }
 		})
@@ -82,13 +110,15 @@ class IndExp extends Component {
 
 	render() {
         
-        const { initValues } = this.state   
+        const { initValues } = this.state 
+        
         //****only show wizard if data is loaded****     
         const showWiz = Object.getOwnPropertyNames(initValues).length ? <Wizard initValues={initValues}/> : null
 		   
 		return (
 			<Fragment>                		                
-				{showWiz || <button onClick={this.GetBlankForm}>Add new</button>}			
+				{showWiz || <button onClick={() => this.testBlankForm(14389)}>Add new</button>}			 
+                
 			</Fragment>
 		)
 	}

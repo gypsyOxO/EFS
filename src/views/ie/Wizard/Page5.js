@@ -226,7 +226,7 @@ const Page5 = props => {
             </OnChangeHandler>
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
-				<WizardNextButton {...props} validationGroup={pageValidations[page]} />
+				<WizardNextButton {...props} validationGroup={pageValidations.Page5} />
 			</div>
 		</Fragment>
 	)

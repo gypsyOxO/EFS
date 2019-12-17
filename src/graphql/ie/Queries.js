@@ -4,6 +4,7 @@ import gql from "graphql-tag"
 export const GET_BLANK_FORM = gql`
 	query GetDefaultData {				
         MC_FLG
+        SUPPORT_OPPOSE_FLG        
 	}
 `
 

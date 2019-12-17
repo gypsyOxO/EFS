@@ -138,7 +138,7 @@ export default function Wizard(props) {
 										initialValues={props.initValues}
 										validationSchema={indexpSchema}
 										onSubmit={(values, { resetForm }) => {
-                                            console.log("submitted", values)
+                                            // console.log("submitted", values)
                                             //TODO check if successful first+
                                             jumpLink(values.IE_ID)
 											// let filteredResult = ""
@@ -183,7 +183,7 @@ export default function Wizard(props) {
 
 											return (
 												<form onSubmit={handleSubmit}>
-                                                    {JSON.stringify(props.errors)}
+                                                    {/* {JSON.stringify(props.errors)} */}
 													<Stepper
                                                         alternativeLabel
                                                         nonLinear={isEmpty(props.errors)}
@@ -212,10 +212,10 @@ export default function Wizard(props) {
 													</Stepper>
 
 													{wizProps.renderPage(props)}
-													{JSON.stringify(result)}
-													<DisplayFormikState
+													{/* {JSON.stringify(result)} */}
+													{/* <DisplayFormikState
 														{...props}
-													/>
+													/> */}
 												</form>
 											)
 										}}

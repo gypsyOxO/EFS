@@ -1,4 +1,4 @@
-import * as Yup from "yup"
+import * as Yup from "yup";
 
 export const indexpSchema = Yup.object().shape({
 	
@@ -16,14 +16,14 @@ export const indexpSchema = Yup.object().shape({
 
     // )
 
-})
+});
 
 
-export const Page1 = ["SUPPORT_OPPOSE_FLG","MC_FLG","SUBJECT"]
-export const Page2 = []
-export const Page3 = []
-export const Page4 = []
-export const Page5 = []
+export const Page1 = ["SUPPORT_OPPOSE_FLG","MC_FLG","SUBJECT"];
+export const Page2 = [];
+export const Page3 = [];
+export const Page4 = [];
+export const Page5 = [];
 
 
 

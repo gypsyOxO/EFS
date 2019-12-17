@@ -16,6 +16,8 @@ export const filteredIEUpdate = gql`
 		CMT_PER_ID
 		MC_FLG
 		ELECTION_ID
+        ELEC_SEAT_ID
+        ELEC_SEAT_CAND_ID
 		SUPPORT_OPPOSE_FLG
 		BM_ID
         REP_CONT_MADE

@@ -327,7 +327,7 @@ const Page3 = props => {
 
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
-				<WizardNextButton {...props} validationGroup={pageValidations[page]} />
+				<WizardNextButton {...props} validationGroup={pageValidations.Page3} />
 			</div>
 		</Fragment>
 	)

@@ -3,7 +3,7 @@ import React, { Fragment, useEffect } from "react"
 import { Field, FieldArray } from "formik"
 import { useMutation } from "@apollo/react-hooks"
 
-import { renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
+
 
 import { Upload } from "components/Form/Upload/Upload"
 
@@ -20,15 +20,15 @@ import Grid from "@material-ui/core/Grid"
 import WizardNextButton from "components/Wizard/WizardNextButton"
 import WizardBackButton from "components/Wizard/WizardBackButton"
 
-import InputLabel from "@material-ui/core/InputLabel"
-import MenuItem from "@material-ui/core/MenuItem"
-import OutlinedInput from "@material-ui/core/OutlinedInput"
+// import InputLabel from "@material-ui/core/InputLabel"
+// import MenuItem from "@material-ui/core/MenuItem"
+// import OutlinedInput from "@material-ui/core/OutlinedInput"
 
-import FormControl from "@material-ui/core/FormControl"
-import Select from "@material-ui/core/Select"
-import Input from "@material-ui/core/Input"
+// import FormControl from "@material-ui/core/FormControl"
+// import Select from "@material-ui/core/Select"
+// import Input from "@material-ui/core/Input"
 
-import CloudUploadIcon from "@material-ui/icons/CloudUpload"
+// import CloudUploadIcon from "@material-ui/icons/CloudUpload"
 
 import ContentBox from "components/UI/Content/ContentBox"
 
@@ -38,15 +38,13 @@ import { makeStyles } from "@material-ui/core/styles"
 import SelectCommType from "components/Form/Inputs/SelectCommType"
 
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
-import { UPSERT_IND_EXP_COMM, UPDATE_IND_EXP,DELETE_IND_EXP_COMM, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
+import { UPSERT_IND_EXP_COMM, UPDATE_IND_EXP,DELETE_IND_EXP_COMM } from "graphql/ie/Mutations"
 
 import { graphqlFilter } from "utils/graphqlUtil"
 import { filteredIEUpdate } from "graphql/ie/FilterQueries"
 
 import * as pageValidations from "validation/ie/indexpSchema"
 
-import DateFnsUtils from "@date-io/date-fns"
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -110,7 +108,7 @@ const useStyles = makeStyles(theme => ({
 
 const RenderCommunications = props => {
 	const classes = useStyles()
-	const { arrayHelpers, upsertCommData,updateIEData,deleteCommData } = props
+	const { arrayHelpers, upsertCommData,deleteCommData } = props
 
 	//const comms = getIn(arrayHelpers.form.values, arrayHelpers.name)
 
@@ -132,34 +130,6 @@ const RenderCommunications = props => {
 				Add Communication(s)
 			</Typography>
 			<ContentBox>{communications_box}</ContentBox>
-			<OnChangeHandler handleChange={() => updateIEData() }>
-				<Grid container spacing={3} className={classes.grid}>
-					<Grid item xs={12} style={{ marginTop: 20 }}>
-						<Typography variant="body2">Distribution:</Typography>
-					</Grid>
-
-					<Grid item xs={12} sm={4}>
-						<Field
-							name="DATE_DISTRIBUTED"
-							label="Date First Distributed"
-							component={renderDatePicker}
-							//helperText={touched.DATE_DISTRIBUTED && errors.DATE_DISTRIBUTED}
-							//error={touched.DATE_DISTRIBUTED && Boolean(errors.DATE_DISTRIBUTED)}
-						/>
-					</Grid>
-
-					<Grid item xs={12} sm={8}>
-						<Field
-							name="NUM_DISTRIBUTED"
-							type="number"
-							component={renderTextField}
-							fullWidth
-							label="Number of Pieces"
-						/>
-					</Grid>
-				</Grid>
-			</OnChangeHandler>
-
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
 					onClick={() => arrayHelpers.push(initValues)}
@@ -247,11 +217,11 @@ const Page2 = props => {
     }
     
     //handle IE Comm deletes
-    const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
+    // const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
 
-    const deleteCommData = (communication) => {        
-        deleteIndExpComm({variables: {IE_COMM_ID: communication.IE_COMM_ID}})
-    }
+    // const deleteCommData = (communication) => {        
+    //     deleteIndExpComm({variables: {IE_COMM_ID: communication.IE_COMM_ID}})
+    // }
 
 
 	return (
@@ -263,14 +233,14 @@ const Page2 = props => {
 						arrayHelpers={arrayHelpers}
                         upsertCommData={(index, comm) => upsertCommData(index, comm)}
                         updateIEData={() => updateIEData()}
-                        deleteCommData={(comm) => deleteCommData(comm)}
+                        // deleteCommData={(comm) => deleteCommData(comm)}
 					/>
 				)}
 			/>
 
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
-				<WizardNextButton {...props} validationGroup={pageValidations[page]} />
+				<WizardNextButton {...props} validationGroup={pageValidations.Page2} />
 			</div>
 		</Fragment>
 	)

@@ -9,12 +9,15 @@ import FormLabel from "@material-ui/core/FormLabel"
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
 import FormHelperText from "@material-ui/core/FormHelperText"
-import { renderRadioGroup } from "components/Form/Inputs/renderInputs"
+import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
+
+
+
 import WizardNextButton from "components/Wizard/WizardNextButton"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 
 import CandidateOrBallotMeasure from "components/Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
-import * as pageValidations from "validation/ie/indexpSchema"
+import * as pageValidations from "validation/ie/indexpSchema";
 
 //import GetCandidates from '../Form/Panels/GetCandidates';
 import { graphqlFilter } from "utils/graphqlUtil"
@@ -51,6 +54,8 @@ const Page1 = props => {
 				Purpose
 			</Typography>
 			<OnChangeHandler handleChange={updateIEData}>
+
+		
 				<Grid container spacing={3} style={{ marginTop: 10 }}>
 					<Grid item xs={12} sm={2}>
 						<FormControl component="fieldset">
@@ -118,10 +123,38 @@ const Page1 = props => {
 						</FormControl>
 					</Grid>
 				</Grid>
+
+                <Grid container spacing={3} className={classes.grid} style={{ marginTop: 10 }}>
+                    <Grid item xs={12} style={{ marginTop: 20 }}>
+                        <Typography variant="body2">Distribution:</Typography>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                        <Field
+                            name="DATE_DISTRIBUTED"
+                            label="Date First Distributed"
+                            component={renderDatePicker}
+                            //helperText={touched.DATE_DISTRIBUTED && errors.DATE_DISTRIBUTED}
+                            //error={touched.DATE_DISTRIBUTED && Boolean(errors.DATE_DISTRIBUTED)}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={8}>
+                        <Field
+                            name="NUM_DISTRIBUTED"
+                            type="number"
+                            component={renderTextField}
+                            fullWidth
+                            label="Number of Pieces"
+                        />
+                    </Grid>
+                </Grid>
+
+
 			</OnChangeHandler>
 			<WizardNextButton
 				{...props}
-				validationGroup={pageValidations[page]}
+				validationGroup={pageValidations.Page1}
 			/>
 		</Fragment>
 	)
