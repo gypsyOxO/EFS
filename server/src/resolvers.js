@@ -5,7 +5,7 @@ const { createWriteStream } = require("fs") // added
 const path = require("path") //added
 const files = []
 
-const ROOT_PATH = "C:\\wwwroot"
+const ROOT_PATH = "C:\\inetpub\\wwwroot"
 //const TEST_PATH = "../test"
 const AUDIO_PATH = "audiodisclosurecommie"
 const VIDEO_PATH = "\videodisclosurecommie"
