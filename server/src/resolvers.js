@@ -7,8 +7,8 @@ const files = []
 
 const ROOT_PATH = "C:\\inetpub\\wwwroot"
 //const TEST_PATH = "../test"
-const AUDIO_PATH = "audiodisclosurecommie"
-const VIDEO_PATH = "\videodisclosurecommie"
+const AUDIO_PATH = "\\audio\\disclosure\\comm\\ie\\"
+const VIDEO_PATH = "\\video\\disclosure\\comm\\ie\\"
 const DOC_PATH = "\\PDF\\disclosure\\comm\\ie\\"
 
 export default {
