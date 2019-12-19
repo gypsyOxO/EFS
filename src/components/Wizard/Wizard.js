@@ -7,7 +7,7 @@ import { DisplayFormikState } from "./helper"
 import Wiz from "./Wiz"
 import { makeStyles } from "@material-ui/core/styles"
 
-import { useMutation } from "@apollo/react-hooks"
+
 
 //import PropTypes from "prop-types"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -18,8 +18,7 @@ import StepButton from "@material-ui/core/StepButton"
 import { Page1, Page2, Page3, Page4, Page5, Review } from "views/ie/Wizard"
 
 import { graphqlFilter } from "utils/graphqlUtil"
-import { ADD_IE, UPDATE_IE } from "../../graphql/ie/Mutations"
-import { filteredIEUpdate, filteredSubmit } from "../../graphql/ie/FilterQueries"
+import {  filteredSubmit } from "../../graphql/ie/FilterQueries"
 import { indexpSchema } from "validation/ie/indexpSchema"
 import isEmpty from "lodash/isEmpty"
 
@@ -114,24 +113,6 @@ export default function Wizard(props) {
 						{wizProps => {
 							return (
 								<div>
-									{/* <Stepper
-										alternativeLabel
-										nonLinear
-										activeStep={wizProps.pageIndex}
-										className={classes.stepper}>
-										{steps.map((label, index) => (
-											<Step key={label}>
-												<StepButton
-													onClick={() =>
-														wizProps.navigateToPage(
-															index
-														)
-													}>
-													{label}
-												</StepButton>
-											</Step>
-										))}
-									</Stepper> */}
 									<Formik
                                         validateOnChange
 										enableReinitialize
@@ -212,8 +193,8 @@ export default function Wizard(props) {
 													</Stepper>
 
 													{wizProps.renderPage(props)}
-													{/* {JSON.stringify(result)} */}
-													{/* <DisplayFormikState
+													{/* {JSON.stringify(result)}
+													<DisplayFormikState
 														{...props}
 													/> */}
 												</form>

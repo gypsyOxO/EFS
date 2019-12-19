@@ -15,7 +15,9 @@ const useStyles = makeStyles(theme => ({
 
 const WizardBackButton = props => {
 	const classes = useStyles()
-	const { navigateBack } = props
+    const { navigateBack } = props
+    
+
 
 	return (
 		<div className={classes.buttons}>

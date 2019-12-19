@@ -3,8 +3,6 @@ import { Field, FieldArray, getIn } from "formik"
 import { renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
 import { useMutation } from "@apollo/react-hooks"
 
-import Box from "@material-ui/core/Box"
-import Button from "@material-ui/core/Button"
 import Paper from "@material-ui/core/Paper"
 import AddIcon from "@material-ui/icons/Add"
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever"
@@ -26,7 +24,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import * as pageValidations from "validation/ie/indexpSchema"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 import { UPSERT_IND_EXP_PAYMENT, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
-import isEmpty from "lodash/isEmpty"
+
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -122,11 +120,7 @@ const RenderPayments = props => {
 
 	const classes = useStyles()
 	const initValues = {
-		//IE_PAYMENT_DATE: "",
-		//IE_PAYMENT_AMT: "",
-		//IE_PAYMENT_VENDOR_LNAME: "",
 		IE_PAYEE: "",
-		//IE_PAYEE_VENDORS: [],
 		IE_PAYMENT_ID: "",
 		IE_PAYMENT_DESC: ""
 	}
@@ -275,7 +269,7 @@ const RenderPayments = props => {
 }
 
 const Page3 = props => {
-	const { page, values, setFieldValue } = props
+	const { values, setFieldValue } = props
 	const classes = useStyles()
 
 	const [upsertIndExpPayment] = useMutation(UPSERT_IND_EXP_PAYMENT)

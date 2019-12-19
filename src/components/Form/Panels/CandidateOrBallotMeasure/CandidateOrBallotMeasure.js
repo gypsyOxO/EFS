@@ -1,9 +1,9 @@
-import React, { Component, useState,useEffect } from 'react'
+import React, { useState,useEffect } from 'react'
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import FormLabel from "@material-ui/core/FormLabel"
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
-import { renderTextField, renderRadioGroup } from "../../../Form/Inputs/renderInputs"
+import { renderRadioGroup } from "../../../Form/Inputs/renderInputs"
 import { Field} from "formik"
 import BallotMeasure from "../../../Form/Group/BallotMeasure/BallotMeasure"
 import Candidate from "../../../Form/Group/Candidate/Candidate"

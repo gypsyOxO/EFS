@@ -1,59 +1,34 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag"
 
-import { graphqlFilter } from 'utils/graphqlUtil';
-import {useQuery} from "@apollo/react-hooks"
-import { filteredIEUpdate } from "graphql/ie/FilterQueries"
 
+import {GET_CANDIDATE_NAMES, GET_BALLOTMEASURE_NAMES} from "graphql/ie/Queries"
 
 export const typeDefs = gql`
-  extend type Query {
-    isFolded: Boolean!
-  }
-`
-
-const GET_DEFAULT_DATA = gql`
-    query GetDefaultData {
-        IE_ID @client
-    }
+	extend type Query {
+		isFolded: Boolean!
+	}
 `
 
 export const resolvers = {
-    Query: {
-        getBlankForm: (parent, {args}, {cache}, info) => {
-            console.log("args",args)
-            const{val} = cache.readQuery({
-                query: GET_DEFAULT_DATA
-            })
+	Query: {
+		getCandidateOrBallotMeasureName: (_, { id, type }, { cache }) => {
+            
+            //candidate
+            if (type === "C") {
+                
+                const {getCandidates : gc} = cache.readQuery({ query: GET_CANDIDATE_NAMES })                
+                const {PER_FNAME, PER_LNAME} = gc.find(candidate => candidate.ELEC_SEAT_CAND_ID === id)
+                return {"name" : PER_FNAME + " " + PER_LNAME, "type" : "Candidate", __typename: "candidate"}
+            }
 
-            return val
-        },
-        addIndExp: (_, {args}, {cache}) => {
-            console.log("local resolver:", args)
-        }
-    }
+            //ballotmeasure
+            if (type === "B") {                
+                const {getBallotmeasures : gb} = cache.readQuery({ query: GET_BALLOTMEASURE_NAMES })
+                const {BM_FULL_NAME} = gb.find(bm => bm.BM_ID === id)               
+                return {"name" : BM_FULL_NAME, "type" : "Ballot Measure", __typename: "ballotmeasure"}
+            }
+			
+		},
 
-
+	}
 }
-
-
-// export const typeDefs = gql`
-//   extend type Query {
-//     isFolded: Boolean
-//     # isLoggedIn: Boolean!
-//     # cartItems: [ID!]!
-//   }
-
-
-// # ***** TODO: need to handle folded values.
-// #   extend type comms {
-
-// #   }
-
-// #   extend type Launch {
-// #     isInCart: Boolean!
-// #   }
-
-//   extend type Mutation {
-//     # addOrRemoveFromCart(id: ID!): [Launch]
-//   }
-// `

@@ -1,8 +1,6 @@
 import React, { Fragment } from "react"
 import { Field, FieldArray } from "formik"
 
-import Box from "@material-ui/core/Box"
-import Button from "@material-ui/core/Button"
 import Paper from "@material-ui/core/Paper"
 import AddIcon from "@material-ui/icons/Add"
 
@@ -158,7 +156,7 @@ const RenderContributions = props => {
 }
 
 const Page4 = props => {
-	const { page, values } = props
+	const { values } = props
 	const classes = useStyles()
 
 	const [updateIndExp] = useMutation(UPDATE_IND_EXP)

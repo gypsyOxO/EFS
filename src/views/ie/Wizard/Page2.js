@@ -1,11 +1,8 @@
-import React, { Fragment, useEffect } from "react"
+import React, { Fragment } from "react"
 
-import { Field, FieldArray } from "formik"
+import { FieldArray } from "formik"
 import { useMutation } from "@apollo/react-hooks"
 
-
-
-import { Upload } from "components/Form/Upload/Upload"
 
 import Paper from "@material-ui/core/Paper"
 import AddIcon from "@material-ui/icons/Add"
@@ -19,16 +16,6 @@ import Typography from "@material-ui/core/Typography"
 import Grid from "@material-ui/core/Grid"
 import WizardNextButton from "components/Wizard/WizardNextButton"
 import WizardBackButton from "components/Wizard/WizardBackButton"
-
-// import InputLabel from "@material-ui/core/InputLabel"
-// import MenuItem from "@material-ui/core/MenuItem"
-// import OutlinedInput from "@material-ui/core/OutlinedInput"
-
-// import FormControl from "@material-ui/core/FormControl"
-// import Select from "@material-ui/core/Select"
-// import Input from "@material-ui/core/Input"
-
-// import CloudUploadIcon from "@material-ui/icons/CloudUpload"
 
 import ContentBox from "components/UI/Content/ContentBox"
 
@@ -181,7 +168,7 @@ const RenderCommunications = props => {
 const Page2 = props => {
 	
 	const classes = useStyles()
-	const { page, setFieldValue, values } = props
+	const {  setFieldValue, values } = props
 
     //handle IE Updates
     const [updateIndExp] = useMutation(UPDATE_IND_EXP)
@@ -191,8 +178,6 @@ const Page2 = props => {
 		const filteredResult = graphqlFilter(filteredIEUpdate, values)
 		updateIndExp({ variables: { IE_ID: values.IE_ID, ie: filteredResult } })
     }
-    
-
     
 
     //handle IE Comm updates
@@ -217,11 +202,11 @@ const Page2 = props => {
     }
     
     //handle IE Comm deletes
-    // const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
+    const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
 
-    // const deleteCommData = (communication) => {        
-    //     deleteIndExpComm({variables: {IE_COMM_ID: communication.IE_COMM_ID}})
-    // }
+    const deleteCommData = (communication) => {        
+        deleteIndExpComm({variables: {IE_COMM_ID: communication.IE_COMM_ID}})
+    }
 
 
 	return (
@@ -233,7 +218,7 @@ const Page2 = props => {
 						arrayHelpers={arrayHelpers}
                         upsertCommData={(index, comm) => upsertCommData(index, comm)}
                         updateIEData={() => updateIEData()}
-                        // deleteCommData={(comm) => deleteCommData(comm)}
+                        deleteCommData={(comm) => deleteCommData(comm)}
 					/>
 				)}
 			/>

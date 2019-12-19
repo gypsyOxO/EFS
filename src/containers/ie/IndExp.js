@@ -15,28 +15,28 @@ class IndExp extends Component {
         initValues: {}
     }
 
-	// componentDidMount = async () => {
-    //     //*****for testing purposes only*****
-	// 	let initValues = {}
+	componentDidMount = async () => {
+        //*****for testing purposes only*****
+		let initValues = {}
 
-    //     const data = {IE_ID: 0}      
+        const data = {IE_ID: 6448}      
 
-	// 	if (data.IE_ID > 0) {
+		if (data.IE_ID > 0) {
             
-    //         initValues = await this.GetInitValuesFromDB(data)
+            initValues = await this.GetInitValuesFromDB(data)
             
     
-	// 	} else { 
+		} else { 
             
-    //         //initValues = await this.GetBlankForm()
+            //initValues = await this.GetBlankForm()
     
-    //     }
+        }
 
-    //     this.setState({
-    //         initValues: { ...this.state.initValues, ...initValues }
-    //     })
+        this.setState({
+            initValues: { ...this.state.initValues, ...initValues }
+        })
 
-    // }
+    }
     
 
 	GetInitValuesFromDB = async ({IE_ID}) => {

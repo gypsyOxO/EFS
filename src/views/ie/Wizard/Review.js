@@ -1,5 +1,8 @@
-import React, { Fragment } from "react"
+import React, { Fragment, useEffect, useState } from "react"
 
+import { useQuery } from "@apollo/react-hooks"
+
+import { GET_CANDIDATE_OR_BALLOTMEASURE_NAME } from "graphql/ie/Queries"
 import { makeStyles } from "@material-ui/core/styles"
 import Typography from "@material-ui/core/Typography"
 import Grid from "@material-ui/core/Grid"
@@ -13,7 +16,6 @@ import Paper from "@material-ui/core/Paper"
 import Button from "@material-ui/core/Button"
 import WizardBackButton from "components/Wizard/WizardBackButton"
 import Fab from "@material-ui/core/Fab"
-import Icon from "@material-ui/core/Icon"
 import EditIcon from "@material-ui/icons/Edit"
 import ContentBox from "components/UI/Content/ContentBox"
 
@@ -71,16 +73,26 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-
 const Review = props => {
 	const classes = useStyles()
 	const {
 		navigateToPage,
 		values,
-		values: { comms, payments, CONTRIBUTIONS_MADE, CONTRIBUTIONS_RECEIVED }
+		values: { comms, payments, CONTRIBUTIONS_MADE, CONTRIBUTIONS_RECEIVED, BM_ID, ELEC_SEAT_CAND_ID, SUBJECT }
 	} = props
 
-	console.log("muyvalues", values)
+    const [name, setName] = useState("")
+    
+
+	//gets info about candidate or ballot measure from the cache
+	const {
+		data: { getCandidateOrBallotMeasureName: candidateOrBallotMeasureName = "" }
+	} = useQuery(GET_CANDIDATE_OR_BALLOTMEASURE_NAME, { variables: { id: BM_ID ? BM_ID : ELEC_SEAT_CAND_ID, type: SUBJECT } })
+
+	useEffect(() => {
+		candidateOrBallotMeasureName && setName(candidateOrBallotMeasureName.type + ": " + candidateOrBallotMeasureName.name)
+	}, [candidateOrBallotMeasureName])
+
 	return (
 		<Fragment>
 			<Typography variant="h6" gutterBottom className={classes.header}>
@@ -113,7 +125,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid item xs={12} sm={5}>
-					<Typography variant="body1">LAUSD Candidate: **Need to update**</Typography>
+					<Typography variant="body1">{name}</Typography>
 				</Grid>
 			</Grid>
 
@@ -124,7 +136,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid />
-				<Fab onClick={() => navigateToPage(1)} size="small" display="flex" justifyContent="flex-end" className={classes.fab}>
+				<Fab onClick={() => navigateToPage(1)} size="small" display="flex" className={classes.fab}>
 					<EditIcon className={classes.icon} />
 				</Fab>
 			</Grid>
@@ -179,7 +191,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid />
-				<Fab onClick={() => navigateToPage(2)} size="small" display="flex" justifyContent="flex-end" className={classes.fab}>
+				<Fab onClick={() => navigateToPage(2)} size="small" display="flex" className={classes.fab}>
 					<EditIcon className={classes.icon} />
 				</Fab>
 			</Grid>
@@ -201,27 +213,31 @@ const Review = props => {
 							payments.map((payment, index) => {
 								const { IE_PAYEE_VENDORS } = payment
 
-								const vendors = IE_PAYEE_VENDORS && IE_PAYEE_VENDORS.map((vendor, vindex) => (
-									<TableRow key={vindex}>
-                                        <TableCell colSpan={1}/>
-										<TableCell align="left">Payee Vendor#{vindex + 1}: &nbsp;{vendor.IE_PAYMENT_VENDOR_LNAME}</TableCell>
-                                        <TableCell colSpan={2}/>
-									</TableRow>
-								))
+								const vendors =
+									IE_PAYEE_VENDORS &&
+									IE_PAYEE_VENDORS.map((vendor, vindex) => (
+										<TableRow key={vindex}>
+											<TableCell colSpan={1} />
+											<TableCell align="left">
+												Payee Vendor#{vindex + 1}: &nbsp;{vendor.IE_PAYMENT_VENDOR_LNAME}
+											</TableCell>
+											<TableCell colSpan={2} />
+										</TableRow>
+									))
 								return (
-                                    <Fragment key={index}>
-									<TableRow >
-										<TableCell align="left" style={{ width: "10px" }}>
-											{payment.IE_PAYMENT_DATE ? convertISODateToJsDate(payment.IE_PAYMENT_DATE) : "N/A"}
-										</TableCell>
-										<TableCell align="center">{payment.IE_PAYEE}</TableCell>
-										<TableCell align="center">{payment.IE_PAYMENT_DESC}</TableCell>
-										<TableCell align="center" style={{ width: "10px" }}>
-											{payment.IE_PAYMENT_AMT ? "$" + Number.parseFloat(payment.IE_PAYMENT_AMT).toFixed(2) : "N/A"}
-										</TableCell>
-									</TableRow>
-                                    {vendors}
-                                    </Fragment>
+									<Fragment key={index}>
+										<TableRow>
+											<TableCell align="left" style={{ width: "10px" }}>
+												{payment.IE_PAYMENT_DATE ? convertISODateToJsDate(payment.IE_PAYMENT_DATE) : "N/A"}
+											</TableCell>
+											<TableCell align="center">{payment.IE_PAYEE}</TableCell>
+											<TableCell align="center">{payment.IE_PAYMENT_DESC}</TableCell>
+											<TableCell align="center" style={{ width: "10px" }}>
+												{payment.IE_PAYMENT_AMT ? "$" + Number.parseFloat(payment.IE_PAYMENT_AMT).toFixed(2) : "N/A"}
+											</TableCell>
+										</TableRow>
+										{vendors}
+									</Fragment>
 								)
 							})}
 					</TableBody>
@@ -235,7 +251,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid />
-				<Fab onClick={() => navigateToPage(3)} size="small" display="flex" justifyContent="flex-end" className={classes.fab}>
+				<Fab onClick={() => navigateToPage(3)} size="small" display="flex" className={classes.fab}>
 					<EditIcon className={classes.icon} />
 				</Fab>
 			</Grid>
@@ -272,7 +288,7 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid />
-				<Fab onClick={() => navigateToPage(4)} size="small" display="flex" justifyContent="flex-end" className={classes.fab}>
+				<Fab onClick={() => navigateToPage(4)} size="small" display="flex" className={classes.fab}>
 					<EditIcon className={classes.icon} />
 				</Fab>
 			</Grid>
@@ -287,7 +303,7 @@ const Review = props => {
 					</TableHead>
 					<TableBody>
 						{CONTRIBUTIONS_RECEIVED &&
-							CONTRIBUTIONS_RECEIVED.map((contribution,index) => (
+							CONTRIBUTIONS_RECEIVED.map((contribution, index) => (
 								<TableRow key={index}>
 									<TableCell align="left">{contribution.dateReceived ? convertISODateToJsDate(contribution.dateReceived) : "N/A"}</TableCell>
 									<TableCell align="left">{contribution.contributorFullName}</TableCell>

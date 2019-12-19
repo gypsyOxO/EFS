@@ -19,7 +19,6 @@ import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 import CandidateOrBallotMeasure from "components/Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
 import * as pageValidations from "validation/ie/indexpSchema";
 
-//import GetCandidates from '../Form/Panels/GetCandidates';
 import { graphqlFilter } from "utils/graphqlUtil"
 import { filteredIEUpdate } from "graphql/ie/FilterQueries"
 import { UPDATE_IND_EXP } from "graphql/ie/Mutations"
@@ -39,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 
 const Page1 = props => {
 	const classes = useStyles()
-	const { errors, touched, page, values } = props
+	const { errors, touched, values } = props
 
 	const [updateIndExp] = useMutation(UPDATE_IND_EXP)
 
