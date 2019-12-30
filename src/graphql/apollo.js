@@ -20,7 +20,9 @@ const initData = () => {
 		data: {            			            
             MC_FLG: "0",   
             SUPPORT_OPPOSE_FLG: "S",
-            SUBJECT: "C"
+            SUBJECT: "C",
+            NUM_DISTRIBUTED: "",
+            DATE_DISTRIBUTED: ""
 		}
 	})
 }

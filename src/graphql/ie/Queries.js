@@ -5,6 +5,8 @@ export const GET_BLANK_FORM = gql`
 		MC_FLG
 		SUPPORT_OPPOSE_FLG
         SUBJECT    
+        NUM_DISTRIBUTED
+        DATE_DISTRIBUTED
 	}
 `
 

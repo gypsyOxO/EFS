@@ -20,7 +20,7 @@ class IndExp extends Component {
 
     //     //TODO: Handle amend = true
 
-    //     const data = {IE_ID: 6448}      
+    //     const data = {IE_ID: 0}      
 
 	// 	if (data.IE_ID > 0) {
             
@@ -82,12 +82,12 @@ class IndExp extends Component {
 	callInternalHook = async data => {
         //internal hook for external call; TODO: could be better with window ref on index.js
    
-        const initValues = data.IE_ID > 0 ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)
+        const initValues = data.IE_ID ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)
 
         data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
         
 		this.setState({
-			initValues: { ...this.state.initValues, ...initValues }
+			initValues: initValues
 		})
 	}
 

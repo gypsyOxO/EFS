@@ -146,8 +146,7 @@ const Page1 = props => {
 
                     <Grid item xs={12} sm={8}>
                         <Field
-                            name="NUM_DISTRIBUTED"
-                            type="number"
+                            name="NUM_DISTRIBUTED"                            
                             component={renderTextField}
                             fullWidth
                             label="Number of Pieces"
