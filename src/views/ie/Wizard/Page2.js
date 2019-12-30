@@ -1,8 +1,7 @@
-import React, { Fragment } from "react"
+import React, { Fragment, useState } from "react"
 
 import { FieldArray } from "formik"
 import { useMutation } from "@apollo/react-hooks"
-
 
 import Paper from "@material-ui/core/Paper"
 import AddIcon from "@material-ui/icons/Add"
@@ -10,6 +9,8 @@ import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete"
 
 import IconButton from "@material-ui/core/IconButton"
+import Collapse from "@material-ui/core/Collapse"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 
 import Fab from "@material-ui/core/Fab"
 import Typography from "@material-ui/core/Typography"
@@ -23,15 +24,13 @@ import { communications_box } from "views/ie/Wizard"
 
 import { makeStyles } from "@material-ui/core/styles"
 import SelectCommType from "components/Form/Inputs/SelectCommType"
-
+import clsx from "clsx"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
-import { UPSERT_IND_EXP_COMM, UPDATE_IND_EXP,DELETE_IND_EXP_COMM } from "graphql/ie/Mutations"
+import { UPSERT_IND_EXP_COMM, DELETE_IND_EXP_COMM } from "graphql/ie/Mutations"
 
 import { graphqlFilter } from "utils/graphqlUtil"
-import { filteredIEUpdate } from "graphql/ie/FilterQueries"
 
 import * as pageValidations from "validation/ie/indexpSchema"
-
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -50,14 +49,10 @@ const useStyles = makeStyles(theme => ({
 	},
 	paper: {
 		padding: 10,
-		marginBottom: theme.spacing(3)
+		marginBottom: theme.spacing(2)
 	},
 	grid: {
 		marginBottom: theme.spacing(3)
-	},
-	expand: {
-		display: "flex",
-		justifyContent: "flex-end"
 	},
 	script: {
 		marginLeft: theme.spacing(4),
@@ -81,35 +76,40 @@ const useStyles = makeStyles(theme => ({
 	margins: {
 		margin: theme.spacing(2)
 	},
-	dropzone: {
-		fontFamily: "roboto",
-		fontSize: "1rem"
+	expand: {
+		transform: "rotate(0deg)",
+		marginLeft: "auto",
+		transition: theme.transitions.create("transform", {
+			duration: theme.transitions.duration.shortest
+		})
 	},
-	dropzoneContainer: {
-		display: "flex",
-		justifyContent: "center"
+	expandOpen: {
+		transform: "rotate(180deg)"
 	}
 }))
 
 //const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
-const RenderCommunications = props => {
+const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove }, upsertCommData, deleteCommData }) => {
 	const classes = useStyles()
-	const { arrayHelpers, upsertCommData,deleteCommData } = props
 
 	//const comms = getIn(arrayHelpers.form.values, arrayHelpers.name)
 
 	const { comms } = arrayHelpers.form.values
+
+	//initializes expanded paper with first one open and all others closed
+	const [expanded, setExpanded] = useState(
+		comms ? (comms.length === 1 ? [true] : [true, ...new Array(comms.length - 1).fill(false, 0, comms.length - 1)]) : []
+	)
+
 	const { errors, touched, setFieldValue } = arrayHelpers.form
 	const initValues = { IE_COMM_ID: "", COMM_TYPE: "", DOC_FILE_NAME: "", AUDIO_FILE_NAME: "", VIDEO_FILE_NAME: "" }
 
-	// const handleDateChange = date => {
-
-	//     setFieldValue("DATE_DISTRIBUTED", date.toLocaleDateString())
-    // }
-    
-
-    
+	function handleExpandClick(index) {
+		let newExpandList = [...new Array(comms.length).fill(false, 0, comms.length)]
+		newExpandList.splice(index, 1, true)
+		setExpanded(newExpandList)
+	}
 
 	return (
 		<div>
@@ -119,7 +119,10 @@ const RenderCommunications = props => {
 			<ContentBox>{communications_box}</ContentBox>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => arrayHelpers.push(initValues)}
+					onClick={() => {
+                        unshift(initValues)
+						comms ? setExpanded([true, ...new Array(comms.length).fill(false, 0, comms.length)]) : setExpanded([true]) 						
+					}}
 					variant="extended"
 					size="medium"
 					color="secondary"
@@ -128,37 +131,58 @@ const RenderCommunications = props => {
 					&nbsp;Add Communication
 				</Fab>
 			</div>
-
 			<div>
 				{comms &&
 					comms.map((comm, index) => (
-						<OnChangeHandler key={index} handleChange={() => upsertCommData(index, comm)}>
-							<Paper key={index} className={classes.paper}>
+						<Paper key={comm.IE_COMM_ID} className={classes.paper} onClick={() => handleExpandClick(index)}>
+							<OnChangeHandler handleChange={() => upsertCommData(index, comm)}>
 								<Grid container>
-									<Grid item xs={12} sm={11}>
-										<Typography variant="body1" gutterBottom>
-											<b>{`Communication #${index + 1}`}</b>
-										</Typography>
-									</Grid>
+                                    { 
+                                    expanded[index] ?
+									<Grid item xs={12} sm={10}>
+                                    <Typography variant="body1" gutterBottom>
+												<b>Choose a communication:</b>
+												
+											</Typography>
+
+                                    </Grid>
+                                    : (
+										<Grid item xs={12} sm={10}>
+											<Typography variant="body1" gutterBottom>
+												<b>Type:&nbsp;</b>
+												{comm.COMM_TYPE}
+											</Typography>
+										</Grid>
+									)}
+
 									<Grid item xs={12} sm={1}>
 										<IconButton
-                                            onClick={() => {
-                                                comm.IE_COMM_ID && deleteCommData(comm)
-                                                arrayHelpers.remove(index)
-                                                
-                                            }
-                                        } //TODO: deletes file in temp directory? need warning popup dialog box
+											onClick={() => {
+												comm.IE_COMM_ID && deleteCommData(comm)
+												remove(index)
+												setExpanded([true, ...new Array(comms.length).fill(false, 0, comms.length)])
+											}} //TODO: deletes file in temp directory? need warning popup dialog box
 											aria-label="delete">
 											<DeleteIcon />
 										</IconButton>
 									</Grid>
+									<Grid item xs={12} sm={1}>
+										<IconButton
+											className={clsx(classes.expand, {
+												[classes.expandOpen]: expanded[index]
+											})}
+											>
+											<ExpandMoreIcon />
+										</IconButton>
+									</Grid>
 								</Grid>
-
-								<Grid container spacing={3} className={classes.grid}>
-									<SelectCommType index={index} comm={comm} />
-								</Grid>
-							</Paper>
-						</OnChangeHandler>
+								<Collapse in={expanded[index]} unmountOnExit>
+									<Grid container spacing={3} className={classes.grid}>
+										<SelectCommType index={index} comm={comm} />
+									</Grid>
+								</Collapse>
+							</OnChangeHandler>
+						</Paper>
 					))}
 			</div>
 		</div>
@@ -166,21 +190,10 @@ const RenderCommunications = props => {
 }
 
 const Page2 = props => {
-	
 	const classes = useStyles()
-	const {  setFieldValue, values } = props
+	const { setFieldValue, values } = props
 
-    //handle IE Updates
-    const [updateIndExp] = useMutation(UPDATE_IND_EXP)
-
-	const updateIEData = () => {    
-  
-		const filteredResult = graphqlFilter(filteredIEUpdate, values)
-		updateIndExp({ variables: { IE_ID: values.IE_ID, ie: filteredResult } })
-    }
-    
-
-    //handle IE Comm updates
+	//handle IE Comm updates
 	const [upsertIndExpComm] = useMutation(UPSERT_IND_EXP_COMM)
 
 	const upsertCommData = async (index, communication) => {
@@ -199,15 +212,14 @@ const Page2 = props => {
 		const { data } = await upsertIndExpComm({ variables: { comm: commPayload } })
 
 		setFieldValue(`comms.${index}.IE_COMM_ID`, data.upsertIndExpComm.IE_COMM_ID)
-    }
-    
-    //handle IE Comm deletes
-    const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
+	}
 
-    const deleteCommData = (communication) => {        
-        deleteIndExpComm({variables: {IE_COMM_ID: communication.IE_COMM_ID}})
-    }
+	//handle IE Comm deletes
+	const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
 
+	const deleteCommData = communication => {
+	    deleteIndExpComm({ variables: { IE_COMM_ID: communication.IE_COMM_ID } })
+	}
 
 	return (
 		<Fragment>
@@ -216,9 +228,8 @@ const Page2 = props => {
 				render={arrayHelpers => (
 					<RenderCommunications
 						arrayHelpers={arrayHelpers}
-                        upsertCommData={(index, comm) => upsertCommData(index, comm)}
-                        updateIEData={() => updateIEData()}
-                        deleteCommData={(comm) => deleteCommData(comm)}
+						upsertCommData={(index, comm) => upsertCommData(index, comm)}
+						deleteCommData={comm => deleteCommData(comm)}
 					/>
 				)}
 			/>
@@ -232,5 +243,3 @@ const Page2 = props => {
 }
 
 export default Page2
-
-

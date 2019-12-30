@@ -21,6 +21,18 @@ export default gql`
         getIndExpPayment(IE_PAYMENT_ID: Int!): IndExpPayment
 	}
 
+	type Mutation {
+        deleteIndExpComm(IE_COMM_ID: Int!): Int
+        deleteIndExpPayment(IE_PAYMENT_ID: Int!): Int
+		uploadFile(file: Upload!,meta: FileMetaData!): Boolean
+		addIndExp(ie: IndExpInput!): IndExp
+		updateIndExp(IE_ID: Int!, ie: IndExpInput): IndExp        
+        upsertIndExp(ie: IndExpInput!): IndExp
+		upsertIndExpPayment(payment: IndExpPaymentInput): IndExpPayment
+        upsertIndExpComm(comm: IndExpCommInput): IndExpComm
+	}
+
+
     enum IndExpFileTypes {
         AUDIO
         VIDEO
@@ -34,16 +46,6 @@ export default gql`
     }
 
 
-	type Mutation {
-        deleteIndExpComm(IE_COMM_ID: Int!): Int
-        deleteIndExpPayment(IE_PAYMENT_ID: Int!): Int
-		uploadFile(file: Upload!,meta: FileMetaData!): Boolean
-		addIndExp(ie: IndExpInput): IndExp
-		updateIndExp(IE_ID: Int!, ie: IndExpInput): IndExp        
-		upsertIndExpPayment(payment: IndExpPaymentInput): IndExpPayment
-        upsertIndExpComm(comm: IndExpCommInput): IndExpComm
-	}
-
 	type IndExp {
 		IE_ID: Int!
 		SUBJECT: String
@@ -51,6 +53,7 @@ export default gql`
 		ELEC_SEAT_ID: Int
 		ELEC_SEAT_CAND_ID: Int
 		CAND_PER_ID: Int
+        AMEND_NUM: Int
 		BM_ID: Int
 		MC_FLG: String
 		CMT_PER_ID: Int
@@ -66,8 +69,10 @@ export default gql`
 	}
 
 	input IndExpInput {
+        IE_ID: Int
 		CAND_PER_ID: Int
-		CMT_PER_ID: Int        
+		CMT_PER_ID: Int  
+        AMEND_NUM: Int      
 		SUPPORT_OPPOSE_FLG: String
 		ELECTION_ID: Int
         ELEC_SEAT_ID: Int

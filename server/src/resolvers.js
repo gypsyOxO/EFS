@@ -6,7 +6,6 @@ const path = require("path") //added
 const files = []
 
 const ROOT_PATH = "C:\\inetpub\\wwwroot"
-//const TEST_PATH = "../test"
 const AUDIO_PATH = "\\audio\\disclosure\\comm\\ie\\"
 const VIDEO_PATH = "\\video\\disclosure\\comm\\ie\\"
 const DOC_PATH = "\\PDF\\disclosure\\comm\\ie\\"
@@ -49,15 +48,24 @@ export default {
 			return true
 		},
 
-		updateIndExp: async (parent, args, { db }) => {
-			console.log(args.ie.DATE_DISTRIBUTED)
+		updateIndExp: async (parent, args, { db }) => {		
 			await db.ind_exp.update(args.ie, { where: { IE_ID: args.IE_ID } })
 			return db.ind_exp.findByPk(args.IE_ID)
 		},
 
 		addIndExp: (parent, args, { db }) => {
 			return db.ind_exp.create(args.ie)
-		},
+        },
+        
+        upsertIndExp: async (_,args, {db}) => {
+            if (typeof args.ie.IE_ID !== "undefined") {
+                await db.ind_exp.update(args.ie, { where: { IE_ID: args.ie.IE_ID } })
+
+				return db.ind_exp.findByPk(args.ie.IE_ID)
+			} else {
+				return db.ind_exp.create(args.ie)
+			}                
+        },
 
 		upsertIndExpPayment: async (parent, args, { db }) => {
 			if (typeof args.payment.IE_PAYMENT_ID !== "undefined") {

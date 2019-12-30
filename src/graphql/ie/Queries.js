@@ -4,21 +4,9 @@ export const GET_BLANK_FORM = gql`
 	query GetDefaultData {
 		MC_FLG
 		SUPPORT_OPPOSE_FLG
+        SUBJECT    
 	}
 `
-
-// ELECTION_ID
-// BM_ID
-// CMT_PER_ID
-// ELEC_SEAT_ID
-// ELEC_SEAT_CAND_ID
-// NUM_DISTRIBUTED
-// SUPPORT_OPPOSE_FLG
-// NUM_DISTRIBUTED
-// DATE_DISTRIBUTED
-// MC_FLG
-// REP_CONT_MADE
-// REP_CONT_RECEIVED
 
 export const GET_IND_EXP = gql`
 	query GetIndExp($IE_ID: Int!) {
@@ -27,6 +15,7 @@ export const GET_IND_EXP = gql`
 			SUBJECT
 			CMT_PER_ID
 			MC_FLG
+            AMEND_NUM
 			ELECTION_ID
 			ELEC_SEAT_ID
 			ELEC_SEAT_CAND_ID
