@@ -82,6 +82,7 @@ const Review = props => {
 	} = props
 
     const [name, setName] = useState("")
+    const [type, setType] = useState("")
     
 
 	//gets info about candidate or ballot measure from the cache
@@ -90,7 +91,8 @@ const Review = props => {
 	} = useQuery(GET_CANDIDATE_OR_BALLOTMEASURE_NAME, { variables: { id: BM_ID ? BM_ID : ELEC_SEAT_CAND_ID, type: SUBJECT } })
 
 	useEffect(() => {
-		candidateOrBallotMeasureName && setName(candidateOrBallotMeasureName.type + ": " + candidateOrBallotMeasureName.name)
+        candidateOrBallotMeasureName && setName(candidateOrBallotMeasureName.name)
+        candidateOrBallotMeasureName && setType(candidateOrBallotMeasureName.type)
 	}, [candidateOrBallotMeasureName])
 
 	return (
@@ -115,17 +117,17 @@ const Review = props => {
 			</Grid>
 			<Grid container spacing={3} className={classes.grid}>
 				<Grid item xs={12} sm={4}>
-					<Typography variant="body1">
-						Type: {values.MC_FLG ? (values.MC_FLG === "0" ? "Independent Expenditure" : "Membership Communication") : null}
+					<Typography variant="body2">
+						<b>Type:</b> {values.MC_FLG ? (values.MC_FLG === "0" ? "Independent Expenditure" : "Membership Communication") : null}
 					</Typography>
 				</Grid>
 				<Grid item xs={12} sm={3}>
-					<Typography variant="body1">
-						Purpose: {values.SUPPORT_OPPOSE_FLG ? (values.SUPPORT_OPPOSE_FLG === "S" ? "Support" : "Oppose") : null}
+					<Typography variant="body2">
+						<b>Purpose:</b> {values.SUPPORT_OPPOSE_FLG ? (values.SUPPORT_OPPOSE_FLG === "S" ? "Support" : "Oppose") : null}
 					</Typography>
 				</Grid>
 				<Grid item xs={12} sm={5}>
-					<Typography variant="body1">{name}</Typography>
+					<Typography variant="body2"><b>{type}:</b>&nbsp;{name}</Typography>
 				</Grid>
 			</Grid>
 
@@ -142,12 +144,12 @@ const Review = props => {
 			</Grid>
 			<Grid container spacing={1} className={classes.grid}>
 				<Grid item xs={12} sm={6}>
-					<Typography variant="body1">
-						Date First Distributed: {values.DATE_DISTRIBUTED ? convertISODateToJsDate(values.DATE_DISTRIBUTED) : "N/A"}
+					<Typography variant="body2">
+						<b>Date First Distributed:</b> {values.DATE_DISTRIBUTED ? convertISODateToJsDate(values.DATE_DISTRIBUTED) : "N/A"}
 					</Typography>
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Typography variant="body1">Number of Pieces: {values.NUM_DISTRIBUTED}</Typography>
+					<Typography variant="body2"><b>Number of Pieces:</b> {values.NUM_DISTRIBUTED}</Typography>
 				</Grid>
 			</Grid>
 			<Paper className={classes.paper}>
@@ -294,19 +296,19 @@ const Review = props => {
 			</Grid>
 			<Paper className={classes.paper}>
 				<Table className={classes.table}>
-					<TableHead>
+					<TableHead>                        
 						<TableRow>
+                            <TableCell align="left">Date Recived</TableCell>
 							<TableCell align="left">Contributor's Full Name</TableCell>
-							<TableCell align="left">Date Recived</TableCell>
 							<TableCell align="left">Amount Contributed</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{CONTRIBUTIONS_RECEIVED &&
 							CONTRIBUTIONS_RECEIVED.map((contribution, index) => (
-								<TableRow key={index}>
-									<TableCell align="left">{contribution.dateReceived ? convertISODateToJsDate(contribution.dateReceived) : "N/A"}</TableCell>
-									<TableCell align="left">{contribution.contributorFullName}</TableCell>
+								<TableRow key={index}>                                    
+									<TableCell align="left">{contribution.dateReceived ? convertISODateToJsDate(contribution.dateReceived) : "N/A"}</TableCell>	
+                                    <TableCell align="left">{contribution.contributorFullName}</TableCell>
 									<TableCell align="left">
 										{contribution.amountReceived ? "$" + Number.parseFloat(contribution.amountReceived).toFixed(2) : "N/A"}
 									</TableCell>

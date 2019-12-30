@@ -11,10 +11,12 @@ export const filteredSubmit = gql`
 	}
 `
 
-export const filteredIEUpdate = gql`
+export const filteredIEUpsert = gql`
 	query {			
+        IE_ID
 		CMT_PER_ID
 		MC_FLG
+        AMEND_NUM
 		ELECTION_ID
         ELEC_SEAT_ID
         ELEC_SEAT_CAND_ID

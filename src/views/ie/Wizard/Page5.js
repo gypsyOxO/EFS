@@ -28,8 +28,8 @@ import * as pageValidations from "validation/ie/indexpSchema"
 
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 import { graphqlFilter } from "utils/graphqlUtil"
-import { filteredIEUpdate } from "graphql/ie/FilterQueries"
-import { UPDATE_IND_EXP } from "graphql/ie/Mutations"
+import { filteredIEUpsert } from "graphql/ie/FilterQueries"
+import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
 import { useMutation } from "@apollo/react-hooks"
 
 const useStyles = makeStyles(theme => ({
@@ -179,11 +179,11 @@ const Page5 = props => {
 	const { values } = props
 	const classes = useStyles()
 
-	const [updateIndExp] = useMutation(UPDATE_IND_EXP)
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
 
-	const updateIEData = () => {
-		const filteredResult = graphqlFilter(filteredIEUpdate, values)
-		updateIndExp({ variables: { IE_ID: values.IE_ID, ie: filteredResult } })
+	const upsertIEData = () => {
+		const filteredResult = graphqlFilter(filteredIEUpsert, values)
+		upsertIndExp({ variables: { ie: filteredResult } })
 	}
 
 	return (
@@ -192,7 +192,7 @@ const Page5 = props => {
 				Add Contribution(s) Received
 			</Typography>
 			<ContentBox>{contributions_received_box}</ContentBox>
-            <OnChangeHandler handleChange={() => updateIEData()}>
+            <OnChangeHandler handleChange={() => upsertIEData()}>
 			<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
 				<Grid item>
 					<FormControl component="fieldset">

@@ -20,8 +20,8 @@ import CandidateOrBallotMeasure from "components/Form/Panels/CandidateOrBallotMe
 import * as pageValidations from "validation/ie/indexpSchema";
 
 import { graphqlFilter } from "utils/graphqlUtil"
-import { filteredIEUpdate } from "graphql/ie/FilterQueries"
-import { UPDATE_IND_EXP } from "graphql/ie/Mutations"
+import { filteredIEUpsert } from "graphql/ie/FilterQueries"
+import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -38,13 +38,19 @@ const useStyles = makeStyles(theme => ({
 
 const Page1 = props => {
 	const classes = useStyles()
-	const { errors, touched, values } = props
+	const { errors, touched, values, setFieldValue } = props
 
-	const [updateIndExp] = useMutation(UPDATE_IND_EXP)
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
 
-	const updateIEData = () => {
-		const filteredResult = graphqlFilter(filteredIEUpdate, values)
-		updateIndExp({ variables: {IE_ID: values.IE_ID, ie: filteredResult } })
+	const upsertIEData = async () => {
+        
+        if(values.DATE_DISTRIBUTED && (values.ELEC_SEAT_CAND_ID || values.BM_ID)) {            
+		    const filteredResult = graphqlFilter(filteredIEUpsert, values)
+            const {data} = await upsertIndExp({ variables: {ie: filteredResult } })
+            
+            !values.IE_ID && setFieldValue("IE_ID", data.upsertIndExp.IE_ID) 
+
+        }
 	}
 
 	return (
@@ -52,7 +58,7 @@ const Page1 = props => {
 			<Typography variant="h6" gutterBottom className={classes.header}>
 				Purpose
 			</Typography>
-			<OnChangeHandler handleChange={updateIEData}>
+			<OnChangeHandler handleChange={upsertIEData}>
 
 		
 				<Grid container spacing={3} style={{ marginTop: 10 }}>

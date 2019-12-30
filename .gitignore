@@ -1,5 +1,37 @@
 logs
 *.log
+*.bak
+npm-debug.log*
 node_modules/
 server_loopback/
 build/
+dist/
+apollo.js
+
+
+# dotenv environment variables file
+.env
+.env.test
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Serverless directories
+.serverless/
+
+# ==================================
+# local dev files with diffs on test
+# ================================== 
+
+# should use environment variables for deciding to use forever npm pkg. *** turn off if changes to package.json ***
+/package.json 
+
+# holds the server url. need to move into environment variables. *** turn off if changes to apollo.js ***
+src/graphql/apollo.js  
+

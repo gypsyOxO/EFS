@@ -1,29 +1,10 @@
 import gql from "graphql-tag"
 
-export const ADD_IND_EXP = gql`
-	mutation AddIndEXP($ie: IndExpInput!) {
-		addIndExp(ie: $ie) {
-			IE_ID
-			SUBJECT
-			ELECTION_ID
-			ELEC_SEAT_ID
-			ELEC_SEAT_CAND_ID
-			CAND_PER_ID
-			BM_ID
-			MC_FLG
-			CMT_PER_ID
-			REP_CONT_MADE
-			REP_CONT_RECEIVED
-			DATE_DISTRIBUTED
-			NUM_DISTRIBUTED
-			SUPPORT_OPPOSE_FLG
-		}
-	}
-`
 
-export const UPDATE_IND_EXP = gql`
-	mutation UpdateIndExp($IE_ID: Int!, $ie: IndExpInput!) {
-		updateIndExp(IE_ID: $IE_ID, ie: $ie) {
+
+export const UPSERT_IND_EXP = gql`
+	mutation UpsertIndExp($ie: IndExpInput!) {
+		upsertIndExp(ie: $ie) {
 			IE_ID
 		}
 	}
@@ -61,5 +42,26 @@ export const DELETE_IND_EXP_PAYMENT = gql`
         deleteIndExpPayment(IE_PAYMENT_ID: $IE_PAYMENT_ID)
     }
 `
+
+// export const ADD_IND_EXP = gql`
+// 	mutation AddIndEXP($ie: IndExpInput!) {
+// 		addIndExp(ie: $ie) {
+// 			IE_ID
+// 			SUBJECT
+// 			ELECTION_ID
+// 			ELEC_SEAT_ID
+// 			ELEC_SEAT_CAND_ID
+// 			CAND_PER_ID
+// 			BM_ID
+// 			MC_FLG
+// 			CMT_PER_ID
+// 			REP_CONT_MADE
+// 			REP_CONT_RECEIVED
+// 			DATE_DISTRIBUTED
+// 			NUM_DISTRIBUTED
+// 			SUPPORT_OPPOSE_FLG
+// 		}
+// 	}
+// `
 
 

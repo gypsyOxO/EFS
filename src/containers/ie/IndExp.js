@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react"
 import Wizard from "../../components/Wizard/Wizard"
 import { withApollo } from "react-apollo"
 import {GET_BLANK_FORM, GET_IND_EXP} from "graphql/ie/Queries"
-import {ADD_IND_EXP} from "graphql/ie/Mutations"
 
 
 class IndExp extends Component {
@@ -15,28 +14,28 @@ class IndExp extends Component {
         initValues: {}
     }
 
-	componentDidMount = async () => {
-        //*****for testing purposes only*****
-		let initValues = {}
+	// componentDidMount = async () => {
+    //     //*****for testing purposes only*****
+	// 	let initValues = {}
 
-        const data = {IE_ID: 6448}      
+    //     //TODO: Handle amend = true
 
-		if (data.IE_ID > 0) {
+    //     const data = {IE_ID: 6448}      
+
+	// 	if (data.IE_ID > 0) {
             
-            initValues = await this.GetInitValuesFromDB(data)
+    //         initValues = await this.GetInitValuesFromDB(data)
+
+    //         data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
             
     
-		} else { 
-            
-            //initValues = await this.GetBlankForm()
-    
-        }
+	// 	} 
 
-        this.setState({
-            initValues: { ...this.state.initValues, ...initValues }
-        })
+    //     this.setState({
+    //         initValues: { ...this.state.initValues, ...initValues }
+    //     })
 
-    }
+    // }
     
 
 	GetInitValuesFromDB = async ({IE_ID}) => {
@@ -53,43 +52,27 @@ class IndExp extends Component {
     GetBlankForm = async ({CMT_PER_ID}) => {
         const {client} = this.props
         // reads from cache
-        let defaults = await client.readQuery({
+        let res = await client.readQuery({
             query: GET_BLANK_FORM
         })
 
-        defaults.CMT_PER_ID = CMT_PER_ID
-                
-        const res = await client.mutate({
-            mutation: ADD_IND_EXP,
-            variables: {ie: defaults}
-        }) 
-        
-        //default candidate or ballotmeasure
-        res.data.addIndExp.SUBJECT = "C"
+        res.CMT_PER_ID = CMT_PER_ID
 
-        return res.data.addIndExp
+        return res
 
     }
 
     testBlankForm = async data => {
         const {client} = this.props
         // reads from cache
-        let defaults = await client.readQuery({
+        let res = await client.readQuery({
             query: GET_BLANK_FORM
         })
-                
-        defaults.CMT_PER_ID = data
 
-        const res = await client.mutate({
-            mutation: ADD_IND_EXP,
-            variables: {ie: defaults}
-        }) 
-
-        //default candidate or ballotmeasure
-        res.data.addIndExp.SUBJECT = "C"
+        res.CMT_PER_ID = 14389
         
         this.setState({
-			initValues: { ...this.state.initValues, ...res.data.addIndExp }
+			initValues: { ...this.state.initValues, ...res }
 		})
         
     }
@@ -98,10 +81,10 @@ class IndExp extends Component {
 
 	callInternalHook = async data => {
         //internal hook for external call; TODO: could be better with window ref on index.js
-        
-        
-
+   
         const initValues = data.IE_ID > 0 ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)
+
+        data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
         
 		this.setState({
 			initValues: { ...this.state.initValues, ...initValues }
@@ -117,7 +100,7 @@ class IndExp extends Component {
 		   
 		return (
 			<Fragment>                		                
-				{showWiz || <button onClick={() => this.testBlankForm(14389)}>Add new</button>}			 
+				{showWiz || <button onClick={() => this.testBlankForm()}>Add new</button>}			 
                 
 			</Fragment>
 		)

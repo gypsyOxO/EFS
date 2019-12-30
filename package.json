@@ -12,6 +12,7 @@
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-upload-client": "^11.0.0",
     "babel-plugin-macros": "^2.6.1",
+    "clsx": "^1.0.4",
     "date-fns": "^2.0.0-beta.5",
     "formik": "^2.0.4",
     "formik-effect": "^1.2.0",
@@ -35,7 +36,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && rimraf ../../inetpub/wwwroot/CFCs/PDF/IE/Stepper/* && rimraf ../../inetpub/wwwroot/static/* && cp -a ./build/* ../../inetpub/wwwroot/CFCs/PDF/IE/Stepper/ && cp -a ./build/static/* ../../inetpub/wwwroot/static/",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -53,5 +54,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^2.3.0"
   }
 }
