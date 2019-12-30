@@ -5,8 +5,8 @@ import { createUploadLink } from "apollo-upload-client"
 import { typeDefs, resolvers } from "./resolvers"
 
 
-const link = createUploadLink({ uri: "http://localhost:4000/graphql" })
 
+const link = createUploadLink({ uri: "http://cecwebtest.ci.la.ca.us:4000/graphql" })
 
 export const client = new ApolloClient({
 	link,

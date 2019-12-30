@@ -1,5 +1,7 @@
 const express = require("express")
+require("babel-polyfill");
 const { ApolloServer, gql } = require("apollo-server-express")
+
 
 const { existsSync, mkdirSync } = require("fs");  // added
 const path = require("path"); //added
