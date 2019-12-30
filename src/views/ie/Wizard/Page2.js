@@ -99,7 +99,7 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 
 	//initializes expanded paper with first one open and all others closed
 	const [expanded, setExpanded] = useState(
-		comms ? (comms.length === 1 ? [true] : [true, ...new Array(comms.length - 1).fill(false, 0, comms.length - 1)]) : []
+		comms && comms.length ? (comms.length === 1 ? [true] : [true, ...new Array(comms.length - 1).fill(false, 0, comms.length - 1)]) : []
 	)
 
 	const { errors, touched, setFieldValue } = arrayHelpers.form
