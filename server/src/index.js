@@ -1,6 +1,6 @@
 const express = require("express")
 require("babel-polyfill");
-require('dotenv').config({path: __dirname + '/.env'})
+
 const { ApolloServer, gql } = require("apollo-server-express")
 
 

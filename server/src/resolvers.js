@@ -1,8 +1,10 @@
 import GraphQLJSON from "graphql-type-json"
 import { GraphQLDate, GraphQLDateTime, GraphQLTime } from "graphql-iso-date"
+require('dotenv').config()
 
 const { createWriteStream } = require("fs") // added
 const path = require("path") //added
+
 const files = []
 
 const ROOT_PATH = process.env.ROOT_PATH
@@ -36,6 +38,7 @@ export default {
 					break
 			}
 
+            console.log(AUDIO_PATH)
 			const { createReadStream, filename } = await file
 			await new Promise(res =>
 				createReadStream()
