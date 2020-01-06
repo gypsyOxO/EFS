@@ -55,6 +55,7 @@ export default gql`
 		CAND_PER_ID: Int
         AMEND_NUM: Int
 		BM_ID: Int
+        ORIG_IE_ID: Int
 		MC_FLG: String
 		CMT_PER_ID: Int
         REP_CONT_MADE: String
@@ -74,6 +75,7 @@ export default gql`
 		CMT_PER_ID: Int  
         AMEND_NUM: Int      
 		SUPPORT_OPPOSE_FLG: String
+        ORIG_IE_ID: Int
 		ELECTION_ID: Int
         ELEC_SEAT_ID: Int
         ELEC_SEAT_CAND_ID: Int

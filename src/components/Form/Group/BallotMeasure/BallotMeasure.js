@@ -99,7 +99,8 @@ class BallotMeasure extends Component {
 
 
 	render() {
-		const { Elections, Ballotmeasures, isLoading } = this.state
+        const { Elections, Ballotmeasures, isLoading } = this.state
+        const {values: {ELECTION_ID}} = this.props
 
         return (
 			<Grid container>
@@ -121,6 +122,7 @@ class BallotMeasure extends Component {
 						placeholder="Select Ballot Measure..."
 						options={Ballotmeasures}
                         isLoading={isLoading}
+                        disabled={!ELECTION_ID}
                         component={renderReactSelectField}
 					/>
 				</Grid>

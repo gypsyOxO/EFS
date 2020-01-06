@@ -1,109 +1,103 @@
 import React, { Component, Fragment } from "react"
 import Wizard from "../../components/Wizard/Wizard"
 import { withApollo } from "react-apollo"
-import {GET_BLANK_FORM, GET_IND_EXP} from "graphql/ie/Queries"
-
+import { GET_BLANK_FORM, GET_IND_EXP } from "graphql/ie/Queries"
+import {numeric_fields} from "views/ie/Wizard"
 
 class IndExp extends Component {
 	constructor() {
 		super()
-        window.IndExp = this //allows for external app call to internal hook.          
+		window.IndExp = this //allows for external app call to internal hook.
 	}
 
-    state = {
-        initValues: {}
-    }
+	state = {
+		initValues: {}
+	}
 
-	// componentDidMount = async () => {
-    //     //*****for testing purposes only*****
-	// 	let initValues = {}
+	componentDidMount = async () => {
+		//*****for testing purposes only*****
+		if (process.env.NODE_ENV === "development") {
+			let initValues = {}
 
-    //     //TODO: Handle amend = true
+			//TODO: Handle amend = true
 
-    //     const data = {IE_ID: 0}      
+			const data = { IE_ID: 6448 }
 
-	// 	if (data.IE_ID > 0) {
-            
-    //         initValues = await this.GetInitValuesFromDB(data)
+			if (data.IE_ID > 0) {
+				initValues = await this.GetInitValuesFromDB(data)
 
-    //         data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
-            
-    
-	// 	} 
+				data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
+			}
 
-    //     this.setState({
-    //         initValues: { ...this.state.initValues, ...initValues }
-    //     })
+			this.setState({
+				initValues: { ...this.state.initValues, ...initValues }
+			})
+		}
+	}
 
-    // }
-    
-
-	GetInitValuesFromDB = async ({IE_ID}) => {
-		const {client} = this.props
-        // reads from server
-		let res = await client.query({
+	GetInitValuesFromDB = async ({ IE_ID }) => {
+		const { client } = this.props
+		// reads from server
+		let {data: {getIndExp}} = await client.query({
 			query: GET_IND_EXP,
 			variables: { IE_ID: IE_ID }
-        })
-        
-        return res.data.getIndExp
-    }
-    
-    GetBlankForm = async ({CMT_PER_ID}) => {
-        const {client} = this.props
-        // reads from cache
-        let res = await client.readQuery({
-            query: GET_BLANK_FORM
-        })
-
-        res.CMT_PER_ID = CMT_PER_ID
-
-        return res
-
-    }
-
-    testBlankForm = async data => {
-        const {client} = this.props
-        // reads from cache
-        let res = await client.readQuery({
-            query: GET_BLANK_FORM
-        })
-
-        res.CMT_PER_ID = 14389
-        
-        this.setState({
-			initValues: { ...this.state.initValues, ...res }
 		})
-        
-    }
 
 
+        //sets numeric null values from db to empty string so formik can update properly
+        for (var fieldName of numeric_fields) {            
+            getIndExp[fieldName] = getIndExp[fieldName] ? getIndExp[fieldName] : ""
+        }
+    
+
+		return getIndExp
+	}
+
+	GetBlankForm = async ({ CMT_PER_ID }) => {
+		const { client } = this.props
+		// reads from cache
+		let res = await client.readQuery({
+			query: GET_BLANK_FORM
+		})
+
+		res.CMT_PER_ID = CMT_PER_ID
+
+		return res
+	}
+
+	testBlankForm = async data => {
+		const { client } = this.props
+		// reads from cache
+		let res = await client.readQuery({
+			query: GET_BLANK_FORM
+		})
+
+		res.CMT_PER_ID = 14389
+
+		this.setState({
+			initValues: res
+		})
+	}
 
 	callInternalHook = async data => {
-        //internal hook for external call; TODO: could be better with window ref on index.js
-   
-        const initValues = data.IE_ID ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)
+		//internal hook for external call; TODO: could be better with window ref on index.js
 
-        data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
-        
+		const initValues = data.IE_ID ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)
+
+		data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
+
 		this.setState({
 			initValues: initValues
 		})
 	}
 
 	render() {
-        
-        const { initValues } = this.state 
-        
-        //****only show wizard if data is loaded****     
-        const showWiz = Object.getOwnPropertyNames(initValues).length ? <Wizard initValues={initValues}/> : null
-		   
-		return (
-			<Fragment>                		                
-				{showWiz || <button onClick={() => this.testBlankForm()}>Add new</button>}			 
-                
-			</Fragment>
-		)
+		const { initValues } = this.state
+
+		//****only show wizard if data is loaded****
+		const showWiz = Object.getOwnPropertyNames(initValues).length ? <Wizard initValues={initValues} /> : null
+
+		return <Fragment>{showWiz || <button onClick={() => this.testBlankForm()}>Add new</button>}</Fragment>
 	}
 }
 

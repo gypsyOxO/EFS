@@ -5,10 +5,10 @@ const { createWriteStream } = require("fs") // added
 const path = require("path") //added
 const files = []
 
-const ROOT_PATH = "C:\\inetpub\\wwwroot"
-const AUDIO_PATH = "\\audio\\disclosure\\comm\\ie\\"
-const VIDEO_PATH = "\\video\\disclosure\\comm\\ie\\"
-const DOC_PATH = "\\PDF\\disclosure\\comm\\ie\\"
+const ROOT_PATH = process.env.ROOT_PATH
+const AUDIO_PATH = process.env.AUDIO_PATH
+const VIDEO_PATH = process.env.VIDEO_PATH
+const DOC_PATH = process.env.DOC_PATH
 
 export default {
 	JSON: GraphQLJSON,

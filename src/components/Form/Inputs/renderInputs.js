@@ -36,8 +36,10 @@ export class renderReactSelectField extends Component {
 	}
 
 	render() {
-		const { options, field, form, placeholder } = this.props
+		const { options, field, form, placeholder, disabled } = this.props
 		const { selectedOptions } = this.state
+
+      
 
 		let finalOptions = null
 
@@ -45,12 +47,15 @@ export class renderReactSelectField extends Component {
 			finalOptions = options.reduce((acc, currentValue) => acc.concat(currentValue.options), [])
 		} else if (field.value && options && options.length) {
 			finalOptions = [...options]
-		}
+        }
+        
+     
 
 		return (
 			<div>
 				<ReactSelect					
-					options={options}
+                    options={options}
+                    isDisabled={disabled}
 					name={field.name}
 					placeholder={placeholder}
 					value={finalOptions && finalOptions.length ? finalOptions.find(option => option.value === field.value) : ""}
@@ -143,6 +148,7 @@ export class renderDatePicker extends Component {
 }
 
 export const renderTextField = ({ field, ...props }) => (
+    
 	<TextField
 		{...field}
 		{...props}

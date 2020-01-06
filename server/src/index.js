@@ -1,5 +1,6 @@
 const express = require("express")
 require("babel-polyfill");
+require('dotenv').config({path: __dirname + '/.env'})
 const { ApolloServer, gql } = require("apollo-server-express")
 
 
@@ -16,7 +17,7 @@ var cors = require("cors")
 
 
 
-existsSync(path.join(__dirname, "../test")) || mkdirSync(path.join(__dirname, "../test"));
+//existsSync(path.join(__dirname, "../test")) || mkdirSync(path.join(__dirname, "../test"));
 
 //***end file upload */
 
@@ -33,7 +34,7 @@ const server = new ApolloServer({
 
 const app = express()
 
-app.use("/test", express.static(path.join(__dirname, "../test")));  //added this dir
+//app.use("/test", express.static(path.join(__dirname, "../test")));  //added this dir
 app.use("*", cors())
 
 server.applyMiddleware({ app })

@@ -11,16 +11,14 @@ import FormControl from "@material-ui/core/FormControl"
 import FormHelperText from "@material-ui/core/FormHelperText"
 import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
 
-
-
 import WizardNextButton from "components/Wizard/WizardNextButton"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 
 import CandidateOrBallotMeasure from "components/Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
-import * as pageValidations from "validation/ie/indexpSchema";
+import * as pageValidations from "validation/ie/indexpSchema"
 
 import { graphqlFilter } from "utils/graphqlUtil"
-import { filteredIEUpsert } from "graphql/ie/FilterQueries"
+import { filteredIEUpsert} from "graphql/ie/FilterQueries"
 import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
 
 const useStyles = makeStyles(theme => ({
@@ -43,14 +41,16 @@ const Page1 = props => {
 	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
 
 	const upsertIEData = async () => {
-        
-        if(values.DATE_DISTRIBUTED && (values.ELEC_SEAT_CAND_ID || values.BM_ID)) {            
-		    const filteredResult = graphqlFilter(filteredIEUpsert, values)
-            const {data} = await upsertIndExp({ variables: {ie: filteredResult } })
-            
-            !values.IE_ID && setFieldValue("IE_ID", data.upsertIndExp.IE_ID) 
-
-        }
+		if (values.DATE_DISTRIBUTED && (values.ELEC_SEAT_CAND_ID || values.BM_ID)) {
+            let filteredResult = graphqlFilter(filteredIEUpsert, values)                        
+            const { data } = await upsertIndExp({ variables: { ie: filteredResult } })
+            if (!values.IE_ID) {
+                setFieldValue("IE_ID", data.upsertIndExp.IE_ID)
+                setFieldValue("ORIG_IE_ID", data.upsertIndExp.IE_ID)
+            }
+			
+			
+		}
 	}
 
 	return (
@@ -59,107 +59,58 @@ const Page1 = props => {
 				Purpose
 			</Typography>
 			<OnChangeHandler handleChange={upsertIEData}>
-
-		
 				<Grid container spacing={3} style={{ marginTop: 10 }}>
 					<Grid item xs={12} sm={2}>
 						<FormControl component="fieldset">
 							<FormLabel component="legend">Purpose</FormLabel>
-							<Field
-								name="SUPPORT_OPPOSE_FLG"
-								component={renderRadioGroup}
-								row>
-								<FormControlLabel
-									value="S"
-									control={<Radio color="primary" />}
-									label="Support"
-									labelPlacement="end"
-								/>
-								<FormControlLabel
-									value="O"
-									control={<Radio color="primary" />}
-									label="Oppose"
-									labelPlacement="end"
-								/>
+							<Field name="SUPPORT_OPPOSE_FLG" component={renderRadioGroup} row>
+								<FormControlLabel value="S" control={<Radio color="primary" />} label="Support" labelPlacement="end" />
+								<FormControlLabel value="O" control={<Radio color="primary" />} label="Oppose" labelPlacement="end" />
 							</Field>
-							{touched.SUPPORT_OPPOSE_FLG &&
-							Boolean(errors.SUPPORT_OPPOSE_FLG) ? (
-								<FormHelperText error>
-									{errors.SUPPORT_OPPOSE_FLG}
-								</FormHelperText>
+							{touched.SUPPORT_OPPOSE_FLG && Boolean(errors.SUPPORT_OPPOSE_FLG) ? (
+								<FormHelperText error>{errors.SUPPORT_OPPOSE_FLG}</FormHelperText>
 							) : null}
 						</FormControl>
 					</Grid>
 
 					<Grid item xs={12} sm={6}>
 						<CandidateOrBallotMeasure {...props} />
-						{touched.SUBJECT && Boolean(errors.SUBJECT) ? (
-							<FormHelperText error>
-								{errors.SUBJECT}
-							</FormHelperText>
-						) : null}
+						{touched.SUBJECT && Boolean(errors.SUBJECT) ? <FormHelperText error>{errors.SUBJECT}</FormHelperText> : null}
 					</Grid>
 
 					<Grid item xs={12} sm={4}>
 						<FormControl component="fieldset">
 							<FormLabel component="legend">Type</FormLabel>
-							<Field
-								name="MC_FLG"
-								component={renderRadioGroup}
-								row>
-								<FormControlLabel
-									value="0"
-									control={<Radio color="primary" />}
-									label="Independent Expenditure"
-									labelPlacement="end"
-								/>
-								<FormControlLabel
-									value="1"
-									control={<Radio color="primary" />}
-									label="Membership Communication"
-									labelPlacement="end"
-								/>
+							<Field name="MC_FLG" component={renderRadioGroup} row>
+								<FormControlLabel value="0" control={<Radio color="primary" />} label="Independent Expenditure" labelPlacement="end" />
+								<FormControlLabel value="1" control={<Radio color="primary" />} label="Membership Communication" labelPlacement="end" />
 							</Field>
-							{touched.MC_FLG && Boolean(errors.MC_FLG) ? (
-								<FormHelperText error>
-									{errors.MC_FLG}
-								</FormHelperText>
-							) : null}
+							{touched.MC_FLG && Boolean(errors.MC_FLG) ? <FormHelperText error>{errors.MC_FLG}</FormHelperText> : null}
 						</FormControl>
 					</Grid>
 				</Grid>
 
-                <Grid container spacing={3} className={classes.grid} style={{ marginTop: 10 }}>
-                    <Grid item xs={12} style={{ marginTop: 20 }}>
-                        <Typography variant="body2">Distribution:</Typography>
-                    </Grid>
+				<Grid container spacing={3} className={classes.grid} style={{ marginTop: 10 }}>
+					<Grid item xs={12} style={{ marginTop: 20 }}>
+						<Typography variant="body2">Distribution:</Typography>
+					</Grid>
 
-                    <Grid item xs={12} sm={4}>
-                        <Field
-                            name="DATE_DISTRIBUTED"
-                            label="Date First Distributed"
-                            component={renderDatePicker}
-                            //helperText={touched.DATE_DISTRIBUTED && errors.DATE_DISTRIBUTED}
-                            //error={touched.DATE_DISTRIBUTED && Boolean(errors.DATE_DISTRIBUTED)}
-                        />
-                    </Grid>
+					<Grid item xs={12} sm={4}>
+						<Field
+							name="DATE_DISTRIBUTED"
+							label="Date First Distributed"
+							component={renderDatePicker}
+							//helperText={touched.DATE_DISTRIBUTED && errors.DATE_DISTRIBUTED}
+							//error={touched.DATE_DISTRIBUTED && Boolean(errors.DATE_DISTRIBUTED)}
+						/>
+					</Grid>
 
-                    <Grid item xs={12} sm={8}>
-                        <Field
-                            name="NUM_DISTRIBUTED"                            
-                            component={renderTextField}
-                            fullWidth
-                            label="Number of Pieces"
-                        />
-                    </Grid>
-                </Grid>
-
-
+					<Grid item xs={12} sm={8}>
+						<Field name="NUM_DISTRIBUTED" value={values.NUM_DISTRIBUTED || ""} component={renderTextField} fullWidth label="Number of Pieces" />
+					</Grid>
+				</Grid>
 			</OnChangeHandler>
-			<WizardNextButton
-				{...props}
-				validationGroup={pageValidations.Page1}
-			/>
+			<WizardNextButton {...props} validationGroup={pageValidations.Page1} />
 		</Fragment>
 	)
 }

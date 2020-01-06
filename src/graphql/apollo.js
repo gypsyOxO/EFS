@@ -4,9 +4,9 @@ import { createUploadLink } from "apollo-upload-client"
 // import { resolvers,typeDefs } from "./resolvers"
 import { typeDefs, resolvers } from "./resolvers"
 
+const link = createUploadLink({ uri: process.env.REACT_APP_SERVER_ENDPOINT })
 
 
-const link = createUploadLink({ uri: "http://cecwebtest.ci.la.ca.us:4000/graphql" })
 
 export const client = new ApolloClient({
 	link,
@@ -22,7 +22,12 @@ const initData = () => {
             SUPPORT_OPPOSE_FLG: "S",
             SUBJECT: "C",
             NUM_DISTRIBUTED: "",
-            DATE_DISTRIBUTED: ""
+            DATE_DISTRIBUTED: "",
+            ELECTION_ID: "",
+            ELEC_SEAT_ID: "",
+            ELEC_SEAT_CAND_ID: "",
+            BM_ID: ""
+
 		}
 	})
 }

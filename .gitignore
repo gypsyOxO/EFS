@@ -6,12 +6,11 @@ node_modules/
 server_loopback/
 build/
 dist/
-apollo.js
-
 
 # dotenv environment variables file
 .env
 .env.test
+.env*.local
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

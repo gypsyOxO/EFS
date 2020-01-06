@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Wizard(props) {
 	const classes = useStyles()
-
+    
 	const steps = [
 		"Purpose",
 		"Communications",
@@ -119,35 +119,10 @@ export default function Wizard(props) {
 										initialValues={props.initValues}
 										validationSchema={indexpSchema}
 										onSubmit={(values, { resetForm }) => {
-                                            // console.log("submitted", values)
-                                            //TODO check if successful first+
+                                            //TODO: should do a final ie upsert before submitting
                                             jumpLink(values.IE_ID)
-											// let filteredResult = ""
+                                            
 
-											// if (
-											// 	values.IE_ID !== undefined &&
-											// 	values.IE_ID > 0
-											// ) {
-											// 	filteredResult = graphqlFilter(
-											// 		filteredIEUpdate,
-											// 		values
-											// 	)
-
-											// 	handleUpdate({
-											// 		filteredResult,
-											// 		updateIE
-											// 	})
-											// } else {
-											// 	filteredResult = graphqlFilter(
-											// 		filteredSubmit,
-											// 		values
-											// 	)
-
-											// 	handleCreate({
-											// 		filteredResult,
-											// 		createIE
-											// 	})
-											// }
 										}}>
 										{props => {
 											const {
@@ -164,7 +139,7 @@ export default function Wizard(props) {
 
 											return (
 												<form onSubmit={handleSubmit}>
-                                                    {/* {JSON.stringify(props.errors)} */}
+                                                    {process.env.REACT_APP_IS_LOCAL_DEV === "true" && JSON.stringify(props.errors)}
 													<Stepper
                                                         alternativeLabel
                                                         nonLinear={isEmpty(props.errors)}
@@ -193,10 +168,13 @@ export default function Wizard(props) {
 													</Stepper>
 
 													{wizProps.renderPage(props)}
-													{/* {JSON.stringify(result)}
+                                                    
+													{process.env.REACT_APP_IS_LOCAL_DEV === "true" && JSON.stringify(result)}
+                                                    {process.env.REACT_APP_IS_LOCAL_DEV === "true" && 
 													<DisplayFormikState
 														{...props}
-													/> */}
+													/>
+                                                    }
 												</form>
 											)
 										}}

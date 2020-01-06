@@ -1,4 +1,4 @@
-import React, { PureComponent} from "react"
+import React, { PureComponent } from "react"
 import { renderReactSelectField } from "components/Form/Inputs/renderInputs"
 import { Field } from "formik"
 import { optGroupBuilder, getDistinctOptions } from "utils/selectUtil"
@@ -6,10 +6,7 @@ import Grid from "@material-ui/core/Grid"
 import { withApollo } from "react-apollo"
 import { GET_CANDIDATES } from "graphql/ie/Queries"
 
-
-
 class Candidate extends PureComponent {
-    
 	state = {
 		data: [],
 		Elections: [],
@@ -19,13 +16,13 @@ class Candidate extends PureComponent {
 	}
 
 	componentDidMount = async () => {
-        //get data directly from apollo store??? or populate state????
-        
+		//get data directly from apollo store??? or populate state????
+
 		const { client } = this.props
 		const {
 			data: { getCandidates }
 		} = await client.query({ query: GET_CANDIDATES })
-        
+
 		this.setState({ data: getCandidates, isLoading: false }, () => {
 			this.initControls()
 		})
@@ -33,10 +30,9 @@ class Candidate extends PureComponent {
 
 	//handle initial default selections here....get incoming props and set select option states.
 	initControls = () => {
-        
-        const listOfElections = getDistinctOptions(this.state.data, "ELECTION_ID", "ELECTION_DESC")
+		const listOfElections = getDistinctOptions(this.state.data, "ELECTION_ID", "ELECTION_DESC")
 		const election_id = this.props.values.ELECTION_ID || listOfElections[0].value
-        this.setState({ Elections: listOfElections })        
+		this.setState({ Elections: listOfElections })
 		this.getListOfSeats(election_id)
 		this.getListOfCandidates(election_id, null)
 	}
@@ -44,7 +40,7 @@ class Candidate extends PureComponent {
 	getListOfSeats = election_id => {
 		//filter list of seats and candidate list down to election_id and election_seat_id
 
-		const listOfSeats = [			
+		const listOfSeats = [
 			...getDistinctOptions(
 				this.state.data.filter(({ ELECTION_ID }) => ELECTION_ID === election_id),
 				"ELEC_SEAT_ID",
@@ -73,7 +69,7 @@ class Candidate extends PureComponent {
 		switch (type) {
 			case "ELECTION_ID":
 				this.props.setFieldValue("ELEC_SEAT_ID", null)
-                this.props.setFieldValue("ELEC_SEAT_CAND_ID", null)
+				this.props.setFieldValue("ELEC_SEAT_CAND_ID", null)
 				this.getListOfSeats(value)
 				this.getListOfCandidates(value, null)
 				break
@@ -82,12 +78,13 @@ class Candidate extends PureComponent {
 				this.getListOfCandidates(null, value)
 				break
 			default:
+			//TODO: handle ELEC_SEAT_CAND_ID
 		}
-    }
-    
+	}
 
 	render() {
-        const { Elections, Seats, Candidates, isLoading } = this.state
+		const { Elections, Seats, Candidates, isLoading } = this.state
+		const { values: {ELECTION_ID,ELEC_SEAT_ID} } = this.props
 
 		return (
 			<Grid container>
@@ -95,10 +92,10 @@ class Candidate extends PureComponent {
 					<Field
 						name="ELECTION_ID"
 						options={Elections}
-                        SelectHandler={(type, value) => this.SelectHandler(type, value)}
-                        placeholder="Select Election..."
-                        isLoading={isLoading}
-                        clearDependentFields="ELEC_SEAT_ID,ELEC_SEAT_CAND_ID"                        
+						SelectHandler={(type, value) => this.SelectHandler(type, value)}
+                        placeholder="Select Election..."                        
+						isLoading={isLoading}
+						clearDependentFields="ELEC_SEAT_ID,ELEC_SEAT_CAND_ID"
 						component={renderReactSelectField}
 					/>
 				</Grid>
@@ -106,8 +103,9 @@ class Candidate extends PureComponent {
 					<Field
 						name="ELEC_SEAT_ID"
 						SelectHandler={(type, value) => this.SelectHandler(type, value)}
-                        options={Seats}
+						options={Seats}
                         placeholder="Select Seat..."
+                        disabled={!ELECTION_ID}
 						isLoading={isLoading}
 						component={renderReactSelectField}
 					/>
@@ -117,7 +115,8 @@ class Candidate extends PureComponent {
 						name="ELEC_SEAT_CAND_ID"
 						placeholder="Select Candidate..."
 						options={Candidates}
-						isLoading={isLoading}
+                        isLoading={isLoading}
+                        disabled={!ELEC_SEAT_ID}
 						component={renderReactSelectField}
 					/>
 				</Grid>
