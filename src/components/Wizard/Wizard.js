@@ -1,13 +1,12 @@
 import React, { Fragment } from "react"
 
 import { Formik } from "formik"
+import { useMutation } from "@apollo/react-hooks"
 //import * as Yup from "yup"
 import { DisplayFormikState } from "./helper"
 
 import Wiz from "./Wiz"
 import { makeStyles } from "@material-ui/core/styles"
-
-
 
 //import PropTypes from "prop-types"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -18,7 +17,9 @@ import StepButton from "@material-ui/core/StepButton"
 import { Page1, Page2, Page3, Page4, Page5, Review } from "views/ie/Wizard"
 
 import { graphqlFilter } from "utils/graphqlUtil"
-import {  filteredSubmit } from "../../graphql/ie/FilterQueries"
+import { filteredIEUpsert, filteredSubmit } from "graphql/ie/FilterQueries"
+import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
+
 import { indexpSchema } from "validation/ie/indexpSchema"
 import isEmpty from "lodash/isEmpty"
 
@@ -61,120 +62,61 @@ const useStyles = makeStyles(theme => ({
 
 export default function Wizard(props) {
 	const classes = useStyles()
-    
-	const steps = [
-		"Purpose",
-		"Communications",
-		"Payments",
-		"Contributions Made",
-		"Contributions Received",
-		"Review"
-	]
 
-	// const [createIE] = useMutation(ADD_IE)
-	// const [updateIE] = useMutation(UPDATE_IE)
+	const steps = ["Purpose", "Communications", "Payments", "Contributions Made", "Contributions Received", "Review"]
 
-	const jumpLink = document_id => {
-		window.location.href =
-			"http://cecwebtest.ci.la.ca.us/CFCs/Landing/ie?id=" + document_id
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
+
+	const handleSubmit = async values => {
+		const filteredResult = graphqlFilter(filteredIEUpsert, values)
+		const { data } = await upsertIndExp({ variables: { ie: filteredResult } })
+
+		window.location.href = process.env.REACT_APP_DOMAIN + process.env.REACT_APP_JUMPLINK_PATH + "?id=" + data.upsertIndExp.IE_ID
 	}
 
-	// const handleUpdate = async ({ filteredResult, updateIE }) => {
-	// 	const updatedResult = await updateIE({
-	// 		variables: { ie: { ...filteredResult } }
-	// 	})
 
-	// 	jumpLink(updatedResult.data.updateIE)
-	// }
-
-	// const handleCreate = async ({ filteredResult, createIE }) => {
-	// 	const createdResult = await createIE({
-	// 		variables: { ie: { ...filteredResult } }
-	// 	})
-
-	// 	jumpLink(createdResult.data.createIE.IE_ID)
-	// }
+    
 
 	return (
 		<Fragment>
 			<CssBaseline>
 				<main className={classes.layout}>
-					<Wiz
-						pages={[							
-                            Page1,
-                            Page2,
-							Page3,
-							Page4,
-							Page5,
-							Review
-
-							//, Page3, Page4, Page5, Review
-						]}>
+					<Wiz pages={[Page1, Page2, Page3, Page4, Page5, Review]}>
 						{wizProps => {
 							return (
 								<div>
 									<Formik
-                                        validateOnChange
+										validateOnChange
 										enableReinitialize
 										initialValues={props.initValues}
 										validationSchema={indexpSchema}
 										onSubmit={(values, { resetForm }) => {
-                                            //TODO: should do a final ie upsert before submitting
-                                            jumpLink(values.IE_ID)
-                                            
-
+											handleSubmit(values)
 										}}>
 										{props => {
-											const {
-												handleSubmit,
-												values
-											} = props
+											const { handleSubmit, values } = props
 
-											const result = graphqlFilter(
-												filteredSubmit,
-												values
-                                            )
-                                            
-                                            
+											const result = graphqlFilter(filteredSubmit, values)
 
 											return (
 												<form onSubmit={handleSubmit}>
-                                                    {process.env.REACT_APP_IS_LOCAL_DEV === "true" && JSON.stringify(props.errors)}
+													{process.env.REACT_APP_IS_LOCAL_DEV === "true" && JSON.stringify(props.errors)}
 													<Stepper
-                                                        alternativeLabel
-                                                        nonLinear={isEmpty(props.errors)}
-                                                        
-														activeStep={
-															wizProps.pageIndex
-														}
-														className={
-															classes.stepper
-														}>
-														{steps.map(
-															(label, index) => (
-																<Step
-																	key={label}>
-																	<StepButton
-																		onClick={() =>
-																			wizProps.navigateToPage(
-																				index
-																			)
-																		}>
-																		{label}
-																	</StepButton>
-																</Step>
-															)
-														)}
+														alternativeLabel
+														nonLinear={isEmpty(props.errors)}
+														activeStep={wizProps.pageIndex}
+														className={classes.stepper}>
+														{steps.map((label, index) => (
+															<Step key={label}>
+																<StepButton onClick={() => wizProps.navigateToPage(index)}>{label}</StepButton>
+															</Step>
+														))}
 													</Stepper>
 
 													{wizProps.renderPage(props)}
-                                                    
+
 													{process.env.REACT_APP_IS_LOCAL_DEV === "true" && JSON.stringify(result)}
-                                                    {process.env.REACT_APP_IS_LOCAL_DEV === "true" && 
-													<DisplayFormikState
-														{...props}
-													/>
-                                                    }
+													{process.env.REACT_APP_IS_LOCAL_DEV === "true" && <DisplayFormikState {...props} />}
 												</form>
 											)
 										}}

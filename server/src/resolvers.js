@@ -38,7 +38,6 @@ export default {
 					break
 			}
 
-            console.log(AUDIO_PATH)
 			const { createReadStream, filename } = await file
 			await new Promise(res =>
 				createReadStream()
