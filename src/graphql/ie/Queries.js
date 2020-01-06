@@ -20,6 +20,7 @@ export const GET_IND_EXP = gql`
             AMEND_NUM
 			ELECTION_ID
 			ELEC_SEAT_ID
+            ORIG_IE_ID
 			ELEC_SEAT_CAND_ID
 			SUPPORT_OPPOSE_FLG
 			BM_ID
