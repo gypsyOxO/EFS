@@ -16,6 +16,7 @@ export const filteredIEUpsert = gql`
         IE_ID
 		CMT_PER_ID
 		MC_FLG
+        ORIG_IE_ID
         AMEND_NUM
 		ELECTION_ID
         ELEC_SEAT_ID
