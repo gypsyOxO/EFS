@@ -11,8 +11,7 @@ class Candidate extends PureComponent {
 		data: [],
 		Elections: [],
 		Seats: [],
-		Candidates: [],
-		isLoading: false
+		Candidates: []
 	}
 
 	componentDidMount = async () => {
@@ -23,7 +22,7 @@ class Candidate extends PureComponent {
 			data: { getCandidates }
 		} = await client.query({ query: GET_CANDIDATES })
 
-		this.setState({ data: getCandidates, isLoading: false }, () => {
+		this.setState({ data: getCandidates}, () => {
 			this.initControls()
 		})
 	}
@@ -84,7 +83,9 @@ class Candidate extends PureComponent {
 
 	render() {
 		const { Elections, Seats, Candidates, isLoading } = this.state
-		const { values: {ELECTION_ID,ELEC_SEAT_ID} } = this.props
+		const {
+			values: { ELECTION_ID, ELEC_SEAT_ID }
+		} = this.props
 
 		return (
 			<Grid container>
@@ -93,7 +94,7 @@ class Candidate extends PureComponent {
 						name="ELECTION_ID"
 						options={Elections}
 						SelectHandler={(type, value) => this.SelectHandler(type, value)}
-                        placeholder="Select Election..."                        
+						placeholder="Select Election..."
 						isLoading={isLoading}
 						clearDependentFields="ELEC_SEAT_ID,ELEC_SEAT_CAND_ID"
 						component={renderReactSelectField}
@@ -104,8 +105,8 @@ class Candidate extends PureComponent {
 						name="ELEC_SEAT_ID"
 						SelectHandler={(type, value) => this.SelectHandler(type, value)}
 						options={Seats}
-                        placeholder="Select Seat..."
-                        disabled={!ELECTION_ID}
+						placeholder="Select Seat..."
+						disabled={!ELECTION_ID}
 						isLoading={isLoading}
 						component={renderReactSelectField}
 					/>
@@ -115,8 +116,8 @@ class Candidate extends PureComponent {
 						name="ELEC_SEAT_CAND_ID"
 						placeholder="Select Candidate..."
 						options={Candidates}
-                        isLoading={isLoading}
-                        disabled={!ELEC_SEAT_ID}
+						isLoading={isLoading}
+						disabled={!ELEC_SEAT_ID}
 						component={renderReactSelectField}
 					/>
 				</Grid>

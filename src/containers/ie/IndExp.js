@@ -4,6 +4,11 @@ import { withApollo } from "react-apollo"
 import { GET_BLANK_FORM, GET_IND_EXP } from "graphql/ie/Queries"
 import {numeric_fields} from "views/ie/Wizard"
 
+import { graphqlFilter } from "utils/graphqlUtil"
+import { filteredIEUpsert} from "graphql/ie/FilterQueries"
+import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
+
+
 class IndExp extends Component {
 	constructor() {
 		super()
@@ -17,25 +22,25 @@ class IndExp extends Component {
 	componentDidMount = async () => {
 		//*****for testing purposes only*****
 		if (process.env.NODE_ENV === "development") {
-			let initValues = {}
+            let initValues = {}
+            const { client } = this.props
 
 			//TODO: Handle amend = true
 
-			const data = { IE_ID: 6448 }
+			const data = { IE_ID: 6448}
 
 			if (data.IE_ID > 0) {
-				initValues = await this.GetInitValuesFromDB(data)
-
-				data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
+                initValues = await this.GetInitValuesFromDB(data)
+                				
 			}
-
+            
 			this.setState({
-				initValues: { ...this.state.initValues, ...initValues }
+				initValues: initValues
 			})
 		}
 	}
 
-	GetInitValuesFromDB = async ({ IE_ID }) => {
+	GetInitValuesFromDB = async ({ IE_ID,amend }) => {
 		const { client } = this.props
 		// reads from server
 		let {data: {getIndExp}} = await client.query({
@@ -45,9 +50,20 @@ class IndExp extends Component {
 
 
         //sets numeric null values from db to empty string so formik can update properly
-        for (var fieldName of numeric_fields) {            
+        for (var fieldName of numeric_fields) {                      
             getIndExp[fieldName] = getIndExp[fieldName] ? getIndExp[fieldName] : ""
         }
+        
+
+        if (amend) {
+            delete getIndExp.IE_ID
+            getIndExp.AMEND_NUM++
+            const filteredResult = graphqlFilter(filteredIEUpsert, getIndExp) 
+            const { data: {upsertIndExp}} = await client.mutate({ mutation: UPSERT_IND_EXP,variables: { ie: filteredResult } })
+            getIndExp.IE_ID = upsertIndExp.IE_ID
+        }
+
+
     
 
 		return getIndExp
@@ -82,9 +98,7 @@ class IndExp extends Component {
 	callInternalHook = async data => {
 		//internal hook for external call; TODO: could be better with window ref on index.js
 
-		const initValues = data.IE_ID ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)
-
-		data.amend && delete initValues.IE_ID && initValues.AMEND_NUM++
+		const initValues = data.IE_ID ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)		
 
 		this.setState({
 			initValues: initValues
@@ -97,7 +111,7 @@ class IndExp extends Component {
 		//****only show wizard if data is loaded****
 		const showWiz = Object.getOwnPropertyNames(initValues).length ? <Wizard initValues={initValues} /> : null
 
-		return <Fragment>{showWiz || <button onClick={() => this.testBlankForm()}>Add new</button>}</Fragment>
+		return <Fragment>{showWiz || (process.env.REACT_APP_IS_LOCAL_DEV && <button onClick={() => this.testBlankForm()}>Add new</button>)}</Fragment>
 	}
 }
 

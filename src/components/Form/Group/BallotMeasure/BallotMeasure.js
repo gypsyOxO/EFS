@@ -52,8 +52,7 @@ class BallotMeasure extends Component {
 	state = {
 		data: [],
 		Elections: [],
-		Ballotmeasures: [],
-		isLoading: false
+		Ballotmeasures: []
 	}
 
 	componentDidMount = async () => {
@@ -61,7 +60,7 @@ class BallotMeasure extends Component {
 		const { client } = this.props
         const {data: {getBallotmeasures}} = await client.query({ query: GET_BALLOTMEASURES })
 
-		this.setState({ data: getBallotmeasures, isLoading: false }, () => {
+		this.setState({ data: getBallotmeasures}, () => {
 			this.initControls()
 		})
 	}

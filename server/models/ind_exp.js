@@ -10,14 +10,6 @@ module.exports = function(sequelize, DataTypes) {
 				primaryKey: true,
 				autoIncrement: true
 			},
-			PER_MAJOR_DONOR_ID: {
-				type: DataTypes.INTEGER(11),
-				allowNull: true,
-				references: {
-					model: "per_major_donor",
-					key: "PER_MAJOR_DONOR_ID"
-				}
-			},
 			ELECTION_ID: {
 				type: DataTypes.INTEGER(11),
 				allowNull: true,
