@@ -17,8 +17,8 @@ import StepButton from "@material-ui/core/StepButton"
 import { Page1, Page2, Page3, Page4, Page5, Review } from "views/ie/Wizard"
 
 import { graphqlFilter } from "utils/graphqlUtil"
-import { filteredIEUpsert, filteredSubmit } from "graphql/ie/FilterQueries"
-import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
+import { filteredSubmit } from "graphql/ie/FilterQueries"
+
 
 import { indexpSchema } from "validation/ie/indexpSchema"
 import isEmpty from "lodash/isEmpty"
@@ -65,18 +65,11 @@ export default function Wizard(props) {
 
 	const steps = ["Purpose", "Communications", "Payments", "Contributions Made", "Contributions Received", "Review"]
 
-	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
+	const handleSubmit = async document_id => {
 
-	const handleSubmit = async values => {
-		const filteredResult = graphqlFilter(filteredIEUpsert, values)
-		const { data } = await upsertIndExp({ variables: { ie: filteredResult } })
-
-		window.location.href = process.env.REACT_APP_DOMAIN + process.env.REACT_APP_JUMPLINK_PATH + "?id=" + data.upsertIndExp.IE_ID
+		window.location.href = process.env.REACT_APP_DOMAIN + process.env.REACT_APP_JUMPLINK_PATH + "?id=" + document_id
 	}
-
-
-    
-
+   
 	return (
 		<Fragment>
 			<CssBaseline>
@@ -91,7 +84,7 @@ export default function Wizard(props) {
 										initialValues={props.initValues}
 										validationSchema={indexpSchema}
 										onSubmit={(values, { resetForm }) => {
-											handleSubmit(values)
+											handleSubmit(values.IE_ID)
 										}}>
 										{props => {
 											const { handleSubmit, values } = props

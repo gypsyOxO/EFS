@@ -94,7 +94,8 @@ class Candidate extends PureComponent {
 						name="ELECTION_ID"
 						options={Elections}
 						SelectHandler={(type, value) => this.SelectHandler(type, value)}
-						placeholder="Select Election..."
+                        placeholder="Select Election..."
+                        type="number"
 						isLoading={isLoading}
 						clearDependentFields="ELEC_SEAT_ID,ELEC_SEAT_CAND_ID"
 						component={renderReactSelectField}
@@ -104,7 +105,8 @@ class Candidate extends PureComponent {
 					<Field
 						name="ELEC_SEAT_ID"
 						SelectHandler={(type, value) => this.SelectHandler(type, value)}
-						options={Seats}
+                        options={Seats}
+                        type="number"
 						placeholder="Select Seat..."
 						disabled={!ELECTION_ID}
 						isLoading={isLoading}
@@ -115,7 +117,8 @@ class Candidate extends PureComponent {
 					<Field
 						name="ELEC_SEAT_CAND_ID"
 						placeholder="Select Candidate..."
-						options={Candidates}
+                        options={Candidates}
+                        type="number"
 						isLoading={isLoading}
 						disabled={!ELEC_SEAT_ID}
 						component={renderReactSelectField}

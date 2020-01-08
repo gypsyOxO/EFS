@@ -39,7 +39,7 @@ const Page1 = props => {
 	const { errors, touched, values, setFieldValue } = props
 
 	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
-
+    
 	const upsertIEData = async () => {
 		if (values.DATE_DISTRIBUTED && (values.ELEC_SEAT_CAND_ID || values.BM_ID)) {
             let filteredResult = graphqlFilter(filteredIEUpsert, values)                        
@@ -106,7 +106,7 @@ const Page1 = props => {
 					</Grid>
 
 					<Grid item xs={12} sm={8}>
-						<Field name="NUM_DISTRIBUTED" value={values.NUM_DISTRIBUTED || ""} component={renderTextField} fullWidth label="Number of Pieces" />
+						<Field type="number" name="NUM_DISTRIBUTED" value={values.NUM_DISTRIBUTED || ""} component={renderTextField} fullWidth label="Number of Pieces" />
 					</Grid>
 				</Grid>
 			</OnChangeHandler>

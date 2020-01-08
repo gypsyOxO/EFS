@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react"
 import Wizard from "../../components/Wizard/Wizard"
 import { withApollo } from "react-apollo"
 import { GET_BLANK_FORM, GET_IND_EXP } from "graphql/ie/Queries"
-import {numeric_fields} from "views/ie/Wizard"
 
 import { graphqlFilter } from "utils/graphqlUtil"
 import { filteredIEUpsert} from "graphql/ie/FilterQueries"
@@ -31,30 +30,31 @@ class IndExp extends Component {
 
 			if (data.IE_ID > 0) {
                 initValues = await this.GetInitValuesFromDB(data)
-                				
+                		
 			}
-            
+          
+
 			this.setState({
-				initValues: initValues
+                initValues: {...initValues}
+                
 			})
 		}
 	}
 
 	GetInitValuesFromDB = async ({ IE_ID,amend }) => {
-		const { client } = this.props
+        const { client } = this.props
+        
+        //reinitialize state 
+        await client.clearStore()
+        this.setState({initValues: {}})
+        
 		// reads from server
 		let {data: {getIndExp}} = await client.query({
 			query: GET_IND_EXP,
 			variables: { IE_ID: IE_ID }
 		})
 
-
-        //sets numeric null values from db to empty string so formik can update properly
-        for (var fieldName of numeric_fields) {                      
-            getIndExp[fieldName] = getIndExp[fieldName] ? getIndExp[fieldName] : ""
-        }
         
-
         if (amend) {
             delete getIndExp.IE_ID
             getIndExp.AMEND_NUM++
@@ -62,9 +62,8 @@ class IndExp extends Component {
             const { data: {upsertIndExp}} = await client.mutate({ mutation: UPSERT_IND_EXP,variables: { ie: filteredResult } })
             getIndExp.IE_ID = upsertIndExp.IE_ID
         }
-
-
-    
+        
+        
 
 		return getIndExp
 	}
@@ -88,10 +87,11 @@ class IndExp extends Component {
 			query: GET_BLANK_FORM
 		})
 
-		res.CMT_PER_ID = 14389
+        res.CMT_PER_ID = 14389
+        
 
 		this.setState({
-			initValues: res
+			initValues: {...res}
 		})
 	}
 
@@ -100,8 +100,9 @@ class IndExp extends Component {
 
 		const initValues = data.IE_ID ? await this.GetInitValuesFromDB(data) : await this.GetBlankForm(data)		
 
+
 		this.setState({
-			initValues: initValues
+			initValues: {...initValues}
 		})
 	}
 
