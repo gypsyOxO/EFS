@@ -6,8 +6,30 @@ export {default as Page5} from "./Page5"
 export {default as Review} from "./Review"
 
 
+
+/****************************/
+//App variables and content
+/****************************/
+
 //used to help convert numeric values in fields to null on filtered graphql queries
 export const numeric_fields = ["NUM_DISTRIBUTED","ELECTION_ID","ELEC_SEAT_ID", "ELEC_SEAT_CAND_ID","BM_ID"]
+
+export const commTypes = ["DOC", "VIDEO", "AUDIO"]
+
+export const disclaimers = [
+    {name: "required", description: "I am aware that required communication file(s) (audio/video/pdf)  have not been uploaded.", value: false, isRequired: true},
+    {name: "color_original", description: " I affirm that communication file(s) (audio/video/pdf) are color originals.", value: false, isRequired: false},
+    {name: "language", description: "I affirm that communication  file(s) (audio/video/pdf)  include all mandatory disclaimer language is included.", value: false, isRequired: false},
+    {name: "funding_names", description: "I affirm that communication  file(s) (audio/video/pdf)  include all major funding names.", value: false, isRequired: false},
+        
+]
+    
+
+
+
+/**********************************/
+//Instructional content on pages
+/**********************************/
 
 export const communications_box = "A separate form is required for each communication. If the communication supports or opposes more than one candidate, separate forms must also be filed for each candidate, and the spending amounts, reported in the payments section must be apportioned among them. A copy of the communication must also be attached to this form. Los Angeles Charter &sect; 803(s)(2) specifies the types of copies that must be filed. If the communication is not available when this form must be filed, the form must be amended to include the communication within one business day after the communication becomes available."
 

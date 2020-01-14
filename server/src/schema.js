@@ -67,6 +67,7 @@ export default gql`
 		payments: [IndExpPayment]
         CONTRIBUTIONS_MADE: JSON
         CONTRIBUTIONS_RECEIVED: JSON
+        PRIMARY_GENERAL_FLG: String
 	}
 
 	input IndExpInput {
@@ -86,7 +87,8 @@ export default gql`
         REP_CONT_MADE: String
         REP_CONT_RECEIVED: String
         CONTRIBUTIONS_MADE: JSON		
-        CONTRIBUTIONS_RECEIVED: JSON		
+        CONTRIBUTIONS_RECEIVED: JSON	
+        PRIMARY_GENERAL_FLG: String	
 	}
 
 	type IndExpComm {
@@ -96,6 +98,7 @@ export default gql`
 		DOC_FILE_NAME: String
         AUDIO_FILE_NAME: String
         VIDEO_FILE_NAME: String
+        DISCLAIMERS: JSON
 	}
 
 
@@ -105,6 +108,7 @@ export default gql`
 		DOC_FILE_TYPES: String
         AUDIO_FILE_TYPES: String
         VIDEO_FILE_TYPES: String
+        DISCLAIMERS: JSON
 	}
 
 
@@ -115,6 +119,7 @@ export default gql`
 		DOC_FILE_NAME: String
 		AUDIO_FILE_NAME: String
         VIDEO_FILE_NAME: String
+        DISCLAIMERS: JSON
 	}
 
 	type IndExpPayment {
@@ -143,6 +148,7 @@ export default gql`
 		BM_ID: Int!
 		BM_NUM_OR_LETTER: String
 		BM_NAME: String
+        PRIMARY_GENERAL_FLG: String
 		ELECTION_ID: Int
 		ELECTION_DESC: String
 		ELECTION_DATE: String
@@ -154,6 +160,8 @@ export default gql`
 	type Candidate {
 		ELECTION_ID: Int!
 		ELECTION_DESC: String!
+        PRIMARY_FLG: Int!
+        GENERAL_FLG: Int!
 		ELEC_SEAT_ID: Int!
 		ELEC_SEAT_CAND_ID: Int!
 		CAND_PER_ID: Int!

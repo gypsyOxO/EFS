@@ -1,52 +1,14 @@
 import React, { Component } from "react"
 
-//import Select, { MultiSelect } from "../../../UI/Form/Select/Select"
-
 import { Field } from "formik"
 import { renderReactSelectField } from "components/Form/Inputs/renderInputs"
 
-//import axios from '../../../axios-api'
 import { optGroupBuilder, getDistinctOptions } from "../../../../utils/selectUtil"
-//import gql from "graphql-tag"
-//import { Query } from "react-apollo"
 
 import Grid from "@material-ui/core/Grid"
 import { GET_BALLOTMEASURES } from "graphql/ie/Queries"
 import { withApollo } from "react-apollo"
 
-// const GET_BALLOTMEASURES = gql`
-// query {
-//     getBallotmeasures {
-//       BM_ID
-//       BM_NUM_OR_LETTER
-//       BM_NAME
-//       BM_FULL_NAME
-//       BM_GROUP_LABEL
-// 	  ELECTION_ID
-// 	  ELECTION_DESC
-// 	  JURIS_ID
-//     }
-//   }
-// `
-
-// const BallotMeasureQuery = () => {
-// 	return (
-// 		<Query query={GET_BALLOTMEASURES}>
-// 			{({ loading, error, data, client }) => {
-// 				if (loading) {
-// 					return <div>Loading...</div>
-// 				}
-// 				if (error) {
-// 					console.error(error)
-// 					return <div>Error!</div>
-// 				}
-// 				return (
-// 					<BallotMeasure client={client} ballotmeasures={data.getBallotmeasures} />
-// 				)
-// 			}}
-// 		</Query>
-// 	)
-// }
 
 class BallotMeasure extends Component {
 	state = {
@@ -90,10 +52,28 @@ class BallotMeasure extends Component {
 		this.setState({ Ballotmeasures: bm_list })
 	}
 
-	SelectHandler = (_, value) => {
+
+    handlePrimaryGeneralFlg = BM_ID => {
+		const { ELECTION_ID } = this.props.values
+		let filterList = {}
+
+		if (ELECTION_ID && BM_ID) {
+			filterList = this.state.data.find(
+				el => el.ELECTION_ID === ELECTION_ID && el.BM_ID === BM_ID
+            )
+            
+             this.props.setFieldValue("PRIMARY_GENERAL_FLG", filterList.PRIMARY_GENERAL_FLG)
+        } 
+    }
+
+	SelectHandler = (type, value) => {
         //defaults as election_id
-        this.props.setFieldValue("ELEC_SEAT_ID", null)
-        this.getListOfBallotmeasures(value)
+        if (type === "ELECTION_ID") {
+            this.props.setFieldValue("BM_ID", null)
+            this.getListOfBallotmeasures(value)
+        } else if (type === "BM_ID") {            
+            this.handlePrimaryGeneralFlg(value)            
+        }
     }
 
 
@@ -106,7 +86,7 @@ class BallotMeasure extends Component {
 				<Grid item xs={12} style={{ marginBottom: 4 }}>
 					<Field
                         name="ELECTION_ID"
-                        SelectHandler={(_, value) => this.SelectHandler(_, value)}                      	
+                        SelectHandler={(type, value) => this.SelectHandler(type, value)}                      	
                         placeholder="Select Election..."	
                         options={Elections}                        
                         isLoading={isLoading}
@@ -117,7 +97,7 @@ class BallotMeasure extends Component {
 					<Field
                         name="BM_ID"
                         multiLevelOptions
-
+                        SelectHandler={(type, value) => this.SelectHandler(type, value)}                      	
 						placeholder="Select Ballot Measure..."
 						options={Ballotmeasures}
                         isLoading={isLoading}

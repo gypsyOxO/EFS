@@ -162,7 +162,10 @@ export const renderTextField = ({ field, ...props }) => (
 	/>
 )
 
-export const renderCheckbox = ({ input, label }) => <Checkbox label={label} checked={input.value ? true : false} onCheck={input.onChange} />
+export const renderCheckbox = ({ field }) => {    
+    return <Checkbox checked={field.value } {...field} />
+}
+    
 
 export const renderRadioGroup = ({ field, ...props }) => {
 	return <RadioGroup {...field} {...props} />

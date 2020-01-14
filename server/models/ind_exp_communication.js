@@ -45,7 +45,11 @@ module.exports = function(sequelize, DataTypes) {
 			VIDEO_FILE_NAME: {
 				type: DataTypes.STRING(255),
 				allowNull: true
-			}
+            },
+            DISCLAIMERS: {
+                type: DataTypes.JSON,
+				allowNull: true
+            }
 		},
 		{
 			tableName: "ind_exp_communication"

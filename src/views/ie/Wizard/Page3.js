@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 const RenderVendors = arrayHelpers => {
 	const classes = useStyles()
 
-	const initValues = { payee_vendor: "", IE_PAYMENT_VENDOR_LNAME: "" }
+	const initValues = { payee_vendor: "", vendorName: "" }
 	const vendors = getIn(arrayHelpers.form.values, arrayHelpers.name)
 
 	return (
@@ -99,7 +99,7 @@ const RenderVendors = arrayHelpers => {
 						</Grid>
 						<Grid item xs={11}>
 							<Field
-								name={`${arrayHelpers.name}.${index}.IE_PAYMENT_VENDOR_LNAME`}
+								name={`${arrayHelpers.name}.${index}.vendorName`}
 								component={renderTextField}
 								type="text"
 								label={`Payee Vendor #${index + 1}`}

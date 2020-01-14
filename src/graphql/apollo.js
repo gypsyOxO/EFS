@@ -26,7 +26,8 @@ const initData = () => {
             ELECTION_ID: "",
             ELEC_SEAT_ID: "",
             ELEC_SEAT_CAND_ID: "",
-            BM_ID: ""
+            BM_ID: "",
+            PRIMARY_GENERAL_FLG: "P"
 
 		}
 	})

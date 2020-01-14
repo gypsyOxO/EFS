@@ -29,6 +29,7 @@ export const filteredIEUpsert = gql`
         CONTRIBUTIONS_RECEIVED
         DATE_DISTRIBUTED
         NUM_DISTRIBUTED
+        PRIMARY_GENERAL_FLG
 
 	}
 `

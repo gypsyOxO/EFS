@@ -43,7 +43,17 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(10),
       allowNull: true,
       defaultValue: '0'
-    }    
+    },
+    PRIMARY_FLG: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true,
+      defaultValue: '0'
+    },
+    GENERAL_FLG: {
+      type: DataTypes.INTEGER(10),
+      allowNull: true,
+      defaultValue: '0'
+    }   
   }, {
     tableName: 'candidates'
   });

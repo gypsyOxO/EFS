@@ -7,6 +7,7 @@ export const GET_BLANK_FORM = gql`
         SUBJECT    
         NUM_DISTRIBUTED
         DATE_DISTRIBUTED
+        PRIMARY_GENERAL_FLG
 	}
 `
 
@@ -17,7 +18,7 @@ export const GET_IND_EXP = gql`
 			SUBJECT
 			CMT_PER_ID
 			MC_FLG
-            AMEND_NUM
+            AMEND_NUM            
 			ELECTION_ID
 			ELEC_SEAT_ID
             ORIG_IE_ID
@@ -30,6 +31,7 @@ export const GET_IND_EXP = gql`
 			DATE_DISTRIBUTED
 			REP_CONT_MADE
 			REP_CONT_RECEIVED
+            PRIMARY_GENERAL_FLG
 			payments {
 				IE_PAYMENT_ID
 				IE_PAYEE
@@ -44,6 +46,7 @@ export const GET_IND_EXP = gql`
 				AUDIO_FILE_NAME
 				DOC_FILE_NAME
 				VIDEO_FILE_NAME
+                DISCLAIMERS
 			}
 		}
 	}
@@ -68,6 +71,8 @@ export const GET_CANDIDATES = gql`
 			PER_LNAME
 			ELEC_SEAT_LABEL
 			JURIS_ID
+            PRIMARY_FLG
+            GENERAL_FLG
 		}
 	}
 `
@@ -83,6 +88,7 @@ export const GET_BALLOTMEASURES = gql`
 			ELECTION_ID
 			ELECTION_DESC
 			JURIS_ID
+            PRIMARY_GENERAL_FLG
 		}
 	}
 `

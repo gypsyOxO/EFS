@@ -22,11 +22,12 @@ const CandidateOrBallotMeasure = props => {
         if (prevSubject === "C" && SUBJECT === "B") {
             setFieldValue("ELECTION_ID",null)        
             setFieldValue("ELEC_SEAT_ID",null)        
-            setFieldValue("ELEC_SEAT_CAND_ID",null)        
+            setFieldValue("ELEC_SEAT_CAND_ID",null)                           
         }
         if (prevSubject === "B" && SUBJECT === "C") {
             setFieldValue("ELECTION_ID",null)                
-            setFieldValue("BM_ID",null)        
+            setFieldValue("BM_ID",null)                    
+            setFieldValue("PRIMARY_GENERAL_FLG","P")        
         }
          
         setPrevSubject(SUBJECT) 

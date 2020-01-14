@@ -20,7 +20,7 @@ import WizardBackButton from "components/Wizard/WizardBackButton"
 
 import ContentBox from "components/UI/Content/ContentBox"
 
-import { communications_box } from "views/ie/Wizard"
+import { communications_box, disclaimers } from "views/ie/Wizard"
 
 import { makeStyles } from "@material-ui/core/styles"
 import SelectCommType from "components/Form/Inputs/SelectCommType"
@@ -28,9 +28,12 @@ import clsx from "clsx"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 import { UPSERT_IND_EXP_COMM, DELETE_IND_EXP_COMM } from "graphql/ie/Mutations"
 
+
+
 import { graphqlFilter } from "utils/graphqlUtil"
 
 import * as pageValidations from "validation/ie/indexpSchema"
+
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -91,6 +94,9 @@ const useStyles = makeStyles(theme => ({
 //const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
 const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove }, upsertCommData, deleteCommData }) => {
+    
+    
+    const { errors, touched, setFieldValue } = arrayHelpers.form
 	const classes = useStyles()
 
 	//const comms = getIn(arrayHelpers.form.values, arrayHelpers.name)
@@ -102,8 +108,8 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 		comms && comms.length ? (comms.length === 1 ? [true] : [true, ...new Array(comms.length - 1).fill(false, 0, comms.length - 1)]) : []
 	)
 
-	const { errors, touched, setFieldValue } = arrayHelpers.form
-	const initValues = { IE_COMM_ID: "", COMM_TYPE: "", DOC_FILE_NAME: "", AUDIO_FILE_NAME: "", VIDEO_FILE_NAME: "" }
+	
+	const initValues = { IE_COMM_ID: "", COMM_TYPE: "", DOC_FILE_NAME: "", AUDIO_FILE_NAME: "", VIDEO_FILE_NAME: "", DISCLAIMERS: {required: false,color_original: false,language: false,funding_names: false}}
 
 	function handleExpandClick(index) {
 		let newExpandList = [...new Array(comms.length).fill(false, 0, comms.length)]
@@ -161,7 +167,7 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 												comm.IE_COMM_ID && deleteCommData(comm)
 												remove(index)
 												setExpanded([true, ...new Array(comms.length).fill(false, 0, comms.length)])
-											}} //TODO: deletes file in temp directory? need warning popup dialog box
+											}} 
 											aria-label="delete">
 											<DeleteIcon />
 										</IconButton>
@@ -178,7 +184,7 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 								</Grid>
 								<Collapse in={expanded[index]} unmountOnExit>
 									<Grid container spacing={3} className={classes.grid}>
-										<SelectCommType index={index} comm={comm} />
+										<SelectCommType index={index} comm={comm} />                                                                         
 									</Grid>
 								</Collapse>
 							</OnChangeHandler>

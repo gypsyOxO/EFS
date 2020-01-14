@@ -1,10 +1,16 @@
-import React, { PureComponent } from "react"
+import React, { PureComponent, Fragment } from "react"
 import { renderReactSelectField } from "components/Form/Inputs/renderInputs"
 import { Field } from "formik"
 import { optGroupBuilder, getDistinctOptions } from "utils/selectUtil"
 import Grid from "@material-ui/core/Grid"
 import { withApollo } from "react-apollo"
 import { GET_CANDIDATES } from "graphql/ie/Queries"
+import FormControlLabel from "@material-ui/core/FormControlLabel"
+import FormLabel from "@material-ui/core/FormLabel"
+import Radio from "@material-ui/core/Radio"
+import FormControl from "@material-ui/core/FormControl"
+
+import { renderRadioGroup } from "components/Form/Inputs/renderInputs"
 
 class Candidate extends PureComponent {
 	state = {
@@ -15,14 +21,14 @@ class Candidate extends PureComponent {
 	}
 
 	componentDidMount = async () => {
-		//get data directly from apollo store??? or populate state????
+		
 
 		const { client } = this.props
 		const {
 			data: { getCandidates }
 		} = await client.query({ query: GET_CANDIDATES })
-
-		this.setState({ data: getCandidates}, () => {
+        
+		this.setState({ data: getCandidates }, () => {
 			this.initControls()
 		})
 	}
@@ -65,6 +71,7 @@ class Candidate extends PureComponent {
 	}
 
 	SelectHandler = (type, value) => {
+
 		switch (type) {
 			case "ELECTION_ID":
 				this.props.setFieldValue("ELEC_SEAT_ID", null)
@@ -77,7 +84,34 @@ class Candidate extends PureComponent {
 				this.getListOfCandidates(null, value)
 				break
 			default:
-			//TODO: handle ELEC_SEAT_CAND_ID
+                //if elec_seat_cand_id changed, init primary_general_flg
+                this.props.setFieldValue("PRIMARY_GENERAL_FLG", "P") 			
+        }
+        
+
+	}
+
+	handlePrimaryGeneralFlg = () => {
+		const { ELECTION_ID, ELEC_SEAT_ID, ELEC_SEAT_CAND_ID } = this.props.values
+		let filterList = {}
+
+		if (ELECTION_ID && ELEC_SEAT_ID && ELEC_SEAT_CAND_ID) {
+			filterList = this.state.data.find(
+				el => el.ELECTION_ID === ELECTION_ID && el.ELEC_SEAT_ID === ELEC_SEAT_ID && el.ELEC_SEAT_CAND_ID === ELEC_SEAT_CAND_ID
+			)
+        } 
+        
+
+		if (filterList && filterList.GENERAL_FLG) {
+			return (
+				<FormControl component="fieldset">
+					<FormLabel component="legend">Election Type</FormLabel>
+					<Field name="PRIMARY_GENERAL_FLG" component={renderRadioGroup} row>
+						<FormControlLabel value="G" control={<Radio color="primary" />} label="General" labelPlacement="end" />
+						<FormControlLabel value="P" control={<Radio color="primary" />} label="Primary" labelPlacement="end" />
+					</Field>
+				</FormControl>
+			)
 		}
 	}
 
@@ -94,8 +128,8 @@ class Candidate extends PureComponent {
 						name="ELECTION_ID"
 						options={Elections}
 						SelectHandler={(type, value) => this.SelectHandler(type, value)}
-                        placeholder="Select Election..."
-                        type="number"
+						placeholder="Select Election..."
+						type="number"
 						isLoading={isLoading}
 						clearDependentFields="ELEC_SEAT_ID,ELEC_SEAT_CAND_ID"
 						component={renderReactSelectField}
@@ -105,24 +139,28 @@ class Candidate extends PureComponent {
 					<Field
 						name="ELEC_SEAT_ID"
 						SelectHandler={(type, value) => this.SelectHandler(type, value)}
-                        options={Seats}
-                        type="number"
+						options={Seats}
+						type="number"
 						placeholder="Select Seat..."
 						disabled={!ELECTION_ID}
 						isLoading={isLoading}
 						component={renderReactSelectField}
 					/>
 				</Grid>
-				<Grid item xs={12} style={{ marginBottom: 4 }}>
+				<Grid item xs={12} style={{ marginBottom: 16 }}>
 					<Field
 						name="ELEC_SEAT_CAND_ID"
-						placeholder="Select Candidate..."
-                        options={Candidates}
-                        type="number"
+                        placeholder="Select Candidate..."
+                        SelectHandler={(type, value) => this.SelectHandler(type, value)}
+						options={Candidates}
+						type="number"
 						isLoading={isLoading}
 						disabled={!ELEC_SEAT_ID}
 						component={renderReactSelectField}
 					/>
+				</Grid>
+				<Grid item xs={12}>
+					{this.handlePrimaryGeneralFlg()}
 				</Grid>
 			</Grid>
 		)
