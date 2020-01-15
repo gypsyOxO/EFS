@@ -49,7 +49,7 @@ function useExpandClick(initialState) {
 
 
 
-	const ExpandButton = index => (
+	const ExpandButton = ({index}) => (
 		<IconButton
 			className={clsx(classes.expand, {
 				[classes.expandOpen]: expanded[index]
