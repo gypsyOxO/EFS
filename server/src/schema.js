@@ -128,7 +128,7 @@ export default gql`
 		IE_PAYEE: String
 		IE_PAYMENT_DESC: String
 		IE_PAYMENT_DATE: String
-		IE_PAYMENT_AMT: String
+		IE_PAYMENT_AMT: Float
         IE_PAYEE_VENDORS: JSON
 
 	}
@@ -139,7 +139,7 @@ export default gql`
 		IE_PAYEE: String
 		IE_PAYMENT_DESC: String
 		IE_PAYMENT_DATE: String
-		IE_PAYMENT_AMT: String
+		IE_PAYMENT_AMT: Float
         IE_PAYEE_VENDORS: JSON
 		
 	}

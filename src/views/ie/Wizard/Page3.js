@@ -18,13 +18,16 @@ import WizardBackButton from "components/Wizard/WizardBackButton"
 
 import ContentBox from "components/UI/Content/ContentBox"
 
+
 import { payment_box } from "views/ie/Wizard"
 
 import { makeStyles } from "@material-ui/core/styles"
 import * as pageValidations from "validation/ie/indexpSchema"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 import { UPSERT_IND_EXP_PAYMENT, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
-
+import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
+import Collapse from "@material-ui/core/Collapse"
+import { convertISODateToJsDate } from "utils/dateUtil"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -47,10 +50,6 @@ const useStyles = makeStyles(theme => ({
 	},
 	grid: {
 		marginBottom: theme.spacing(3)
-	},
-	expand: {
-		display: "flex",
-		justifyContent: "flex-end"
 	},
 	added: {
 		marginLeft: theme.spacing(2)
@@ -119,19 +118,31 @@ const RenderPayments = props => {
 	const { arrayHelpers, upsertPaymentData, deletePaymentData } = props
 
 	const classes = useStyles()
+
 	const initValues = {
 		IE_PAYEE: "",
 		IE_PAYMENT_ID: "",
-		IE_PAYMENT_DESC: ""
+        IE_PAYMENT_DESC: "",
+        IE_PAYMENT_AMT: ""
 	}
 	const payments = getIn(arrayHelpers.form.values, arrayHelpers.name)
 	const errors = getIn(arrayHelpers.form.errors, arrayHelpers.name)
 	const touched = getIn(arrayHelpers.form.touched, arrayHelpers.name)
 
+	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(payments)
+
 	return (
 		<div>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
-				<Fab onClick={() => arrayHelpers.push(initValues)} variant="extended" size="medium" color="secondary" className={classes.button}>
+				<Fab
+					onClick={() => {
+						arrayHelpers.unshift(initValues)
+						addItem(payments)
+					}}
+					variant="extended"
+					size="medium"
+					color="secondary"
+					className={classes.button}>
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Payment
 				</Fab>
@@ -141,34 +152,60 @@ const RenderPayments = props => {
 
 			{payments &&
 				payments.map((payment, index) => {
-					const isError = Array.isArray(errors) && errors.length 
+					const isError = Array.isArray(errors) && errors.length
 					const isTouched = Array.isArray(touched) && typeof touched[index] !== "undefined"
 
 					return (
-						<OnChangeHandler key={index} handleChange={() => upsertPaymentData(index, payment)}>
-							<Paper key={index} className={classes.paper}>
+						<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
+							<OnChangeHandler handleChange={() => upsertPaymentData(index, payment)}>
 								<Grid container>
-									<Grid item xs={12} sm={11}>
-										<Typography variant="h6" gutterBottom>
-											{`Payee #${index + 1}`}
-										</Typography>
-									</Grid>
+									{expanded[index] ? (
+										<Grid item xs={12} sm={10}>
+											<Typography variant="body1" gutterBottom>
+												<b>Enter Payment Information:</b>
+											</Typography>
+										</Grid>
+									) : (
+										<Fragment>
+											<Grid item xs={12} sm={3}>
+												<Typography variant="body1" gutterBottom>
+													<b>Date:&nbsp;</b>													
+                                                    {payment.IE_PAYMENT_DATE ? convertISODateToJsDate(payment.IE_PAYMENT_DATE) : "N/A"}
+												</Typography>
+											</Grid>
+											<Grid item xs={12} sm={2}>
+												<Typography variant="body1" gutterBottom>
+													<b>Amount:&nbsp;</b>
+													{payment.IE_PAYMENT_AMT}
+												</Typography>
+											</Grid>
+											<Grid item xs={12} sm={5}>
+												<Typography variant="body1" gutterBottom>
+													<b>Payee:&nbsp;</b>
+                                                    
+													{payment.IE_PAYEE}
+												</Typography>
+											</Grid>
+										</Fragment>
+									)}
 									<Grid item xs={12} sm={1}>
 										<IconButton
 											onClick={() => {
-                                                payment.IE_PAYMENT_ID && deletePaymentData(payment)
-												arrayHelpers.remove(index)												
+												payment.IE_PAYMENT_ID && deletePaymentData(payment)
+												arrayHelpers.remove(index)
+												deleteItem(payments)
 											}}
 											aria-label="delete">
 											<DeleteIcon />
 										</IconButton>
 									</Grid>
+									<Grid item xs={12} sm={1}>
+										<ExpandButton index={index} />
+									</Grid>
 								</Grid>
-								<Typography variant="body2" gutterBottom>
-									Payee Info:
-								</Typography>
-								<Grid container spacing={3} className={classes.grid}>
-									{/* <Grid item xs={12}>                   
+								<Collapse in={expanded[index]} unmountOnExit>
+									<Grid container spacing={3} className={classes.grid}>
+										{/* <Grid item xs={12}>                   
                             index: {index}             
 								{isError
 									? JSON.stringify(errors)
@@ -178,90 +215,90 @@ const RenderPayments = props => {
 									? JSON.stringify(touched[index])
 									: null}
 							</Grid> */}
-									<Grid item xs={12} sm={3}>
-										<Field
-											name={`payments.${index}.IE_PAYMENT_DATE`}
-											//helperText={isTouched && typeof touched[index].IE_PAYMENT_DATE !== "undefined" ? isError ? errors[index].IE_PAYMENT_DATE : null : null}
-											//error={isTouched && typeof touched[index].IE_PAYMENT_DATE !== "undefined" ? isError ? Boolean(errors[index].IE_PAYMENT_DATE) : null : null}
-											component={renderDatePicker}
-											fullWidth
-											label="Enter Date"
-										/>
+										<Grid item xs={12} sm={3}>
+											<Field
+												name={`payments.${index}.IE_PAYMENT_DATE`}
+												//helperText={isTouched && typeof touched[index].IE_PAYMENT_DATE !== "undefined" ? isError ? errors[index].IE_PAYMENT_DATE : null : null}
+												//error={isTouched && typeof touched[index].IE_PAYMENT_DATE !== "undefined" ? isError ? Boolean(errors[index].IE_PAYMENT_DATE) : null : null}
+												component={renderDatePicker}
+												fullWidth
+												label="Date"
+											/>
+										</Grid>
+
+										<Grid item xs={12} sm={3}>
+											<Field
+												name={`payments.${index}.IE_PAYMENT_AMT`}
+												type="number"
+												//helperText={isTouched && typeof touched[index].IE_PAYMENT_AMT !== "undefined" ? isError ? errors[index].IE_PAYMENT_AMT : null : null}
+												//error={isTouched && typeof touched[index].IE_PAYMENT_AMT !== "undefined" ? isError ? Boolean(errors[index].IE_PAYMENT_AMT) : null : null}
+												component={renderTextField}
+												fullWidth
+												label="Amount"
+											/>
+										</Grid>
+
+										<Grid item xs={12} sm={6}>
+											<Field
+												name={`payments.${index}.IE_PAYEE`}
+												type="text"
+												// helperText={
+												// 	isTouched && typeof touched[index].IE_PAYEE !== "undefined"
+												// 		? isError
+												// 			? errors[index].IE_PAYEE
+												// 			: null
+												// 		: null
+												// }
+												// error={
+												// 	isTouched && typeof touched[index].IE_PAYEE !== "undefined"
+												// 		? isError
+												// 			? Boolean(errors[index].IE_PAYEE)
+												// 			: null
+												// 		: null
+												// }
+												component={renderTextField}
+												fullWidth
+												label="Payee"
+											/>
+										</Grid>
+									</Grid>
+									<Grid container spacing={3} className={classes.grid}>
+										<Grid item xs={12}>											
+											<Field
+												name={`payments.${index}.IE_PAYMENT_DESC`}
+												type="text"
+												// helperText={
+												// 	isTouched && typeof touched[index].IE_PAYMENT_DESC !== "undefined"
+												// 		? isError
+												// 			? errors[index].IE_PAYMENT_DESC
+												// 			: null
+												// 		: null
+												// }
+												// error={
+												// 	isTouched && typeof touched[index].IE_PAYMENT_DESC !== "undefined"
+												// 		? isError
+												// 			? Boolean(errors[index].IE_PAYMENT_DESC)
+												// 			: null
+												// 		: null
+												// }
+												component={renderTextField}
+												fullWidth
+												label="Payee Services: (All services provided by payee for reported amount)"
+											/>
+										</Grid>
 									</Grid>
 
-									<Grid item xs={12} sm={3}>
-										<Field
-											name={`payments.${index}.IE_PAYMENT_AMT`}
-											type="text"
-											//helperText={isTouched && typeof touched[index].IE_PAYMENT_AMT !== "undefined" ? isError ? errors[index].IE_PAYMENT_AMT : null : null}
-											//error={isTouched && typeof touched[index].IE_PAYMENT_AMT !== "undefined" ? isError ? Boolean(errors[index].IE_PAYMENT_AMT) : null : null}
-											component={renderTextField}
-											fullWidth
-											label="Enter Amount"
-										/>
+									<Grid container spacing={3} className={classes.grid}>
+										<Grid item xs={12}>
+											<Typography variant="body2">
+												Payee Vendors: (name and address of each vendor used by payee for reported amount)
+											</Typography>
+											<FieldArray name={`payments.${index}.IE_PAYEE_VENDORS`} component={RenderVendors} />
+										</Grid>
 									</Grid>
-
-									<Grid item xs={12} sm={6}>
-										<Field
-											name={`payments.${index}.IE_PAYEE`}
-											type="text"
-											// helperText={
-											// 	isTouched && typeof touched[index].IE_PAYEE !== "undefined"
-											// 		? isError
-											// 			? errors[index].IE_PAYEE
-											// 			: null
-											// 		: null
-											// }
-											// error={
-											// 	isTouched && typeof touched[index].IE_PAYEE !== "undefined"
-											// 		? isError
-											// 			? Boolean(errors[index].IE_PAYEE)
-											// 			: null
-											// 		: null
-											// }
-											component={renderTextField}
-											fullWidth
-											label="Enter Payee"
-										/>
-									</Grid>
-								</Grid>
-								<Grid container spacing={3} className={classes.grid}>
-									<Grid item xs={12}>
-										<Typography variant="body2">Payee Services: (All services provided by payee for reported amount)</Typography>
-										<Field
-											name={`payments.${index}.IE_PAYMENT_DESC`}
-											type="text"
-											// helperText={
-											// 	isTouched && typeof touched[index].IE_PAYMENT_DESC !== "undefined"
-											// 		? isError
-											// 			? errors[index].IE_PAYMENT_DESC
-											// 			: null
-											// 		: null
-											// }
-											// error={
-											// 	isTouched && typeof touched[index].IE_PAYMENT_DESC !== "undefined"
-											// 		? isError
-											// 			? Boolean(errors[index].IE_PAYMENT_DESC)
-											// 			: null
-											// 		: null
-											// }
-											component={renderTextField}
-											fullWidth
-											label="Enter Payee Services"
-										/>
-									</Grid>
-								</Grid>
-
-								<Grid container spacing={3} className={classes.grid}>
-									<Grid item xs={12}>
-										<Typography variant="body2">
-											Payee Vendors: (name and address of each vendor used by payee for reported amount)
-										</Typography>
-										<FieldArray name={`payments.${index}.IE_PAYEE_VENDORS`} component={RenderVendors} />
-									</Grid>
-								</Grid>
-							</Paper>
-						</OnChangeHandler>
+								</Collapse>
+							</OnChangeHandler>
+						</Paper>
 					)
 				})}
 		</div>

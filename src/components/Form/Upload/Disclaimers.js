@@ -2,6 +2,7 @@ import React, { Fragment } from "react"
 import { commTypes, disclaimers } from "views/ie/Wizard"
 import Grid from "@material-ui/core/Grid"
 import Checkbox from "components/Form/Inputs/Checkbox"
+import { useFormikContext } from 'formik';
 
 
 
@@ -11,6 +12,7 @@ const Disclaimers = props => {
 
     const {index} = props
 
+    const {setFieldValue} = useFormikContext()
     
     let isRequiredUploaded = true
     
@@ -21,6 +23,8 @@ const Disclaimers = props => {
         }
     }
 
+    isRequiredUploaded && props.DISCLAIMERS.required && setFieldValue(`comms.${index}.DISCLAIMERS.required`, false)
+   
 
     //check if a file has been uploaded
     let fileAdded = false
@@ -42,8 +46,7 @@ const Disclaimers = props => {
 
 	return (		
 			<Grid item xs={12}>
-				{renderDisclaimers}
-                {/* <br />{isRequired ? "I am true" : "I am false"} */}
+				{renderDisclaimers}            
 			</Grid>
 		
 	)

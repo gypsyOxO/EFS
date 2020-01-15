@@ -23,7 +23,11 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
-import { renderRadioGroup, renderTextField } from "components/Form/Inputs/renderInputs"
+import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
+import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
+import Collapse from "@material-ui/core/Collapse"
+import { convertISODateToJsDate } from "utils/dateUtil"
+
 import * as pageValidations from "validation/ie/indexpSchema"
 
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
@@ -72,14 +76,20 @@ const useStyles = makeStyles(theme => ({
 
 const RenderContributions = props => {
 	const classes = useStyles()
-	const { arrayHelpers} = props
+	const { arrayHelpers } = props
 	const { CONTRIBUTIONS_MADE } = arrayHelpers.form.values
-	const initValues = { candidateOrCommitteeName: "", dateContributed: "", amountContributed: "", officeSought: "", REPT_CONT_MADE: "" }
+    const initValues = { candidateOrCommitteeName: "", dateContributed: "", amountContributed: "", officeSought: ""}
+    
+	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_MADE)
+
 	return (
 		<div>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => arrayHelpers.push(initValues)}
+					onClick={() => {
+						arrayHelpers.unshift(initValues)
+						addItem(CONTRIBUTIONS_MADE)
+					}}
 					variant="extended"
 					size="medium"
 					color="secondary"
@@ -93,63 +103,94 @@ const RenderContributions = props => {
 
 			{CONTRIBUTIONS_MADE &&
 				CONTRIBUTIONS_MADE.map((contribution, index) => (
-					
-						<Paper key={index} className={classes.paper}>
-							<Grid container alignItems="center">
-								<Grid item xs={12} sm={11}>
-									<Typography variant="body1">
-										<b>{`Contribution Made #${index + 1}`}</b>
-									</Typography>
-								</Grid>
-								<Grid item xs={12} sm={1}>
-									<IconButton onClick={() => arrayHelpers.remove(index)} aria-label="delete">
-										<DeleteIcon />
-									</IconButton>
-								</Grid>
+					<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
+						<Grid container alignItems="center">
+                        {expanded[index] ? (
+										<Grid item xs={12} sm={10}>
+											<Typography variant="body1" gutterBottom>
+												<b>Enter Contributions Made:</b>
+											</Typography>
+										</Grid>
+									) : (
+										<Fragment>
+											<Grid item xs={12} sm={5}>
+												<Typography variant="body1" gutterBottom>
+													<b>Name:&nbsp;</b>
+                                                    
+													{contribution.candidateOrCommitteeName}
+												</Typography>
+											</Grid>
+											<Grid item xs={12} sm={3}>
+												<Typography variant="body1" gutterBottom>
+													<b>Date:&nbsp;</b>													
+                                                    {contribution.dateContributed ? convertISODateToJsDate(contribution.dateContributed) : "N/A"}
+												</Typography>
+											</Grid>
+											<Grid item xs={12} sm={2}>
+												<Typography variant="body1" gutterBottom>
+													<b>Amount:&nbsp;</b>
+													{contribution.amountContributed}
+												</Typography>
+											</Grid>
+										</Fragment>
+									)}
+							<Grid item xs={12} sm={1}>
+								<IconButton
+									onClick={() => {
+										arrayHelpers.remove(index)
+										deleteItem(CONTRIBUTIONS_MADE)
+									}}
+									aria-label="delete">
+									<DeleteIcon />
+								</IconButton>
 							</Grid>
-
-							<Grid container spacing={3} className={classes.grid}>
-								<Grid item xs={12} sm={6}>
-									<Field
-										name={`CONTRIBUTIONS_MADE.${index}.candidateOrCommitteeName`}
-										type="text"
-										component={renderTextField}
-										fullWidth
-										label="Candidate or Committee Name"
-									/>
-								</Grid>
-								<Grid item xs={12} sm={3}>
-									<Field
-										name={`CONTRIBUTIONS_MADE.${index}.dateContributed`}
-										type="text"
-										component={renderTextField}
-										fullWidth
-										label="Date Contributed"
-									/>
-								</Grid>
-								<Grid item xs={12} sm={3}>
-									<Field
-										name={`CONTRIBUTIONS_MADE.${index}.amountContributed`}
-										type="text"
-										component={renderTextField}
-										fullWidth
-										label="Amount Contributed"
-									/>
-								</Grid>
+							<Grid item xs={12} sm={1}>
+								<ExpandButton index={index} />
 							</Grid>
-							<Grid container spacing={3} className={classes.grid}>
-								<Grid item xs={12} sm={12}>
-									<Field
-										name={`CONTRIBUTIONS_MADE.${index}.officeSought`}
-										type="text"
-										component={renderTextField}
-										fullWidth
-										label="For candidates, identify office sought (including district number)"
-									/>
-								</Grid>
+						</Grid>
+                        <Collapse in={expanded[index]} unmountOnExit>
+						<Grid container spacing={3} className={classes.grid}>
+							<Grid item xs={12} sm={6}>
+								<Field
+									name={`CONTRIBUTIONS_MADE.${index}.candidateOrCommitteeName`}
+									type="text"
+									component={renderTextField}
+									fullWidth
+									label="Candidate or Committee Name"
+								/>
 							</Grid>
-						</Paper>
-				
+							<Grid item xs={12} sm={3}>
+								<Field
+									name={`CONTRIBUTIONS_MADE.${index}.dateContributed`}
+									type="text"
+									component={renderDatePicker}                                    
+									fullWidth
+									label="Date"
+								/>
+							</Grid>
+							<Grid item xs={12} sm={3}>
+								<Field
+									name={`CONTRIBUTIONS_MADE.${index}.amountContributed`}
+									type="number"
+									component={renderTextField}
+									fullWidth
+									label="Amount"
+								/>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3} className={classes.grid}>
+							<Grid item xs={12} sm={12}>
+								<Field
+									name={`CONTRIBUTIONS_MADE.${index}.officeSought`}
+									type="text"
+									component={renderTextField}
+									fullWidth
+									label="For candidates, identify office sought (including district number)"
+								/>
+							</Grid>
+						</Grid>
+                        </Collapse>
+					</Paper>
 				))}
 		</div>
 	)
@@ -162,7 +203,7 @@ const Page4 = props => {
 	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
 
 	const upsertIEData = () => {
-        const filteredResult = graphqlFilter(filteredIEUpsert, values)         
+		const filteredResult = graphqlFilter(filteredIEUpsert, values)
 		upsertIndExp({ variables: { ie: filteredResult } })
 	}
 
@@ -172,38 +213,30 @@ const Page4 = props => {
 				Add Contribution(s) Made
 			</Typography>
 			<ContentBox>{contributions_made_box}</ContentBox>
-            <OnChangeHandler handleChange={() => upsertIEData()}>
-			<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
-				<Grid item>
-					<FormControl component="fieldset">
-						<Field name="REP_CONT_MADE" component={renderRadioGroup}>
-							<FormControlLabel
-								value="N"
-								control={<Radio color="primary" />}
-								label="I did not make any reportable contributions"
-								labelPlacement="end"
-							/>
-							<FormControlLabel
-								value="Y"
-								control={<Radio color="primary" />}
-								label="I made the following reportable contributions"
-								labelPlacement="end"
-							/>
-						</Field>
-					</FormControl>
+			<OnChangeHandler handleChange={() => upsertIEData()}>
+				<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
+					<Grid item>
+						<FormControl component="fieldset">
+							<Field name="REP_CONT_MADE" component={renderRadioGroup}>
+								<FormControlLabel
+									value="N"
+									control={<Radio color="primary" />}
+									label="I did not make any reportable contributions"
+									labelPlacement="end"
+								/>
+								<FormControlLabel
+									value="Y"
+									control={<Radio color="primary" />}
+									label="I made the following reportable contributions"
+									labelPlacement="end"
+								/>
+							</Field>
+						</FormControl>
+					</Grid>
 				</Grid>
-			</Grid>
-            
 
-			<FieldArray
-				name="CONTRIBUTIONS_MADE"
-				render={arrayHelpers => (
-					<RenderContributions
-						arrayHelpers={arrayHelpers}						
-					/>
-				)}
-			/>
-            </OnChangeHandler>
+				<FieldArray name="CONTRIBUTIONS_MADE" render={arrayHelpers => <RenderContributions arrayHelpers={arrayHelpers} />} />
+			</OnChangeHandler>
 
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />

@@ -23,7 +23,10 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
-import { renderRadioGroup, renderTextField } from "components/Form/Inputs/renderInputs"
+import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
+import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
+import Collapse from "@material-ui/core/Collapse"
+import { convertISODateToJsDate } from "utils/dateUtil"
 import * as pageValidations from "validation/ie/indexpSchema"
 
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
@@ -80,15 +83,17 @@ const RenderContributions = props => {
 		dateReceived: "",
 		amountReceived: "",
 		contributorAddress: "",
-        contributorEmployerOccupation: "",
-        REPT_CONT_RECEIVED: ""
+        contributorEmployerOccupation: ""
     }
+
+    const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_RECEIVED)
     
 	return (
 		<div>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => arrayHelpers.push(initValues)}
+                    onClick={() => {arrayHelpers.unshift(initValues)
+                        addItem(CONTRIBUTIONS_RECEIVED)}}
 					variant="extended"
 					size="medium"
 					color="secondary"
@@ -103,20 +108,48 @@ const RenderContributions = props => {
 			{CONTRIBUTIONS_RECEIVED &&
 				CONTRIBUTIONS_RECEIVED.map((contribution, index) => (
 					
-						<Paper key={index} className={classes.paper}>
+						<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
 							<Grid container alignItems="center">
-								<Grid item xs={12} sm={11}>
-									<Typography variant="body1">
-										<b>{`Contribution Received #${index + 1}`}</b>
-									</Typography>
-								</Grid>
+                            {expanded[index] ? (
+										<Grid item xs={12} sm={10}>
+											<Typography variant="body1" gutterBottom>
+												<b>Enter Contributions Received:</b>
+											</Typography>
+										</Grid>
+									) : (
+										<Fragment>
+											<Grid item xs={12} sm={5}>
+												<Typography variant="body1" gutterBottom>
+													<b>Name:&nbsp;</b>
+                                                    
+													{contribution.contributorFullName}
+												</Typography>
+											</Grid>
+											<Grid item xs={12} sm={3}>
+												<Typography variant="body1" gutterBottom>
+													<b>Date:&nbsp;</b>													
+                                                    {contribution.dateReceived ? convertISODateToJsDate(contribution.dateReceived) : "N/A"}
+												</Typography>
+											</Grid>
+											<Grid item xs={12} sm={2}>
+												<Typography variant="body1" gutterBottom>
+													<b>Amount:&nbsp;</b>
+													{contribution.amountReceived}
+												</Typography>
+											</Grid>
+										</Fragment>
+									)}
 								<Grid item xs={12} sm={1}>
-									<IconButton onClick={() => arrayHelpers.remove(index)} aria-label="delete">
+                                    <IconButton onClick={() => {arrayHelpers.remove(index)
+                                    deleteItem(CONTRIBUTIONS_RECEIVED)}} aria-label="delete">
 										<DeleteIcon />
 									</IconButton>
 								</Grid>
+                                <Grid item xs={12} sm={1}>
+								<ExpandButton index={index} />
 							</Grid>
-
+							</Grid>
+                            <Collapse in={expanded[index]} unmountOnExit>
 							<Grid container spacing={3} className={classes.grid}>
 								<Grid item xs={12} sm={6}>
 									<Field
@@ -124,25 +157,25 @@ const RenderContributions = props => {
 										type="text"
 										component={renderTextField}
 										fullWidth
-										label="Contributor's Full Name"
+										label="Full Name"
 									/>
 								</Grid>
 								<Grid item xs={12} sm={3}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.dateReceived`}
 										type="text"
-										component={renderTextField}
+										component={renderDatePicker}
 										fullWidth
-										label="Date Received"
+										label="Date"
 									/>
 								</Grid>
 								<Grid item xs={12} sm={3}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.amountReceived`}
-										type="text"
+										type="number"
 										component={renderTextField}
 										fullWidth
-										label="Amount Received"
+										label="Amount"
 									/>
 								</Grid>
 							</Grid>
@@ -153,7 +186,7 @@ const RenderContributions = props => {
 										type="text"
 										component={renderTextField}
 										fullWidth
-										label="Contributor's Address"
+										label="Address"
 									/>
 								</Grid>
 							</Grid>
@@ -164,10 +197,11 @@ const RenderContributions = props => {
 										type="text"
 										component={renderTextField}
 										fullWidth
-										label="Contributor's Employer/Occupation"
+										label="Employer/Occupation"
 									/>
 								</Grid>
 							</Grid>
+                            </Collapse>
 						</Paper>
 					
 				))}
