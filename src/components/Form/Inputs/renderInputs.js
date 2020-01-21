@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 
 import TextField from "@material-ui/core/TextField"
+import FormHelperText from '@material-ui/core/FormHelperText';
 //import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Checkbox from "@material-ui/core/Checkbox"
 import { Select } from "@material-ui/core"
@@ -9,8 +10,6 @@ import RadioGroup from "@material-ui/core/RadioGroup"
 import ReactSelect from "react-select"
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers"
 import DateFnsUtils from "@date-io/date-fns"
-
-
 
 export class renderReactSelectField extends Component {
 	constructor(props) {
@@ -36,41 +35,48 @@ export class renderReactSelectField extends Component {
 	}
 
 	render() {
-		const { options, field, form, placeholder, disabled } = this.props
+		const { options, field: {name,value}, form: {touched,errors, setFieldValue},  placeholder, disabled } = this.props
 		const { selectedOptions } = this.state
 
-      
-
-		let finalOptions = null
-
-		if (field.value && options && options.length && "options" in options[0]) {
-			finalOptions = options.reduce((acc, currentValue) => acc.concat(currentValue.options), [])
-		} else if (field.value && options && options.length) {
-			finalOptions = [...options]
-        }
+        let finalOptions = null
         
-     
+        //changes border to red if there is an error
+        const errorStyle = {
+            control: (base) => (
+                {
+                    ...base,
+                    borderColor: "#ca0909"
+                }
+            )
+        }
+
+		if (value && options && options.length && "options" in options[0]) {
+			finalOptions = options.reduce((acc, currentValue) => acc.concat(currentValue.options), [])
+		} else if (value && options && options.length) {
+			finalOptions = [...options]
+		}
 
 		return (
 			<div>
-				<ReactSelect					
-                    options={options}
-                    isDisabled={disabled}
-					name={field.name}
+				<ReactSelect                    
+                    options={options}  
+					isDisabled={disabled}
+                    name={name}
+                    styles={touched[name] && errors[name] && errorStyle}
 					placeholder={placeholder}
-					value={finalOptions && finalOptions.length ? finalOptions.find(option => option.value === field.value) : ""}
+					value={finalOptions && finalOptions.length ? finalOptions.find(option => option.value === value) : ""}
 					onChange={option => {
-						this.props.SelectHandler && this.props.SelectHandler(field.name, option.value)
+						this.props.SelectHandler && this.props.SelectHandler(name, option.value)
 						this.handleChange()
-
-						return form.setFieldValue(field.name, option.value)
+						return setFieldValue(name, option.value)
 					}}
 					className="basic-select"
 				/>
+    {touched[name] && errors[name] && <FormHelperText><div style={{color: "#ca0909"}}>{errors[name]}</div></FormHelperText>}
 
 				<select
 					ref={this.hiddenSelect}
-					name={field.name}
+					name={name}
 					value={selectedOptions && selectedOptions.length ? selectedOptions.map(option => option.value) : ""}
 					readOnly
 					style={{ display: "none" }}>
@@ -87,7 +93,6 @@ export class renderReactSelectField extends Component {
 		)
 	}
 }
-
 
 export class renderDatePicker extends Component {
 	constructor(props) {
@@ -112,8 +117,9 @@ export class renderDatePicker extends Component {
 
 	render() {
 		const {
+            required,
 			field: { name, value },
-			form: { setFieldValue },
+			form: { setFieldValue, setFieldTouched, errors, touched },
 			label
 		} = this.props
 		const { selectedDate } = this.state
@@ -121,22 +127,34 @@ export class renderDatePicker extends Component {
 		return (
 			<div>
 				<MuiPickersUtilsProvider utils={DateFnsUtils}>
-					<KeyboardDatePicker						
+					<KeyboardDatePicker
 						name={name}
 						clearable
 						allowKeyboardControl
-						autoOk
+                        autoOk
+                        required={required}
 						inputVariant="outlined"
 						label={label}
 						format="MM/dd/yyyy"
 						disableFuture
-						onAccept={date => this.handleChange(date)}
+						helperText={touched[name] && errors[name]}
+						error={touched[name] && Boolean(errors[name])}
+                        onAccept={date => this.handleChange(date)}
+
 						onChange={(rawDate, selectedValue) => {
-							rawDate
-								? rawDate.toJSON()
-									? setFieldValue(name, rawDate.toJSON().slice(0, 10))
-									: setFieldValue(name, selectedValue)
-								: setFieldValue(name, null)
+							if (rawDate) {                                
+								if (rawDate.toJSON()) {
+                                    !touched.name && setFieldTouched(name, true)
+									setFieldValue(name, rawDate.toJSON().slice(0, 10))                                    
+                                    
+								} else {
+                                    !touched.name && setFieldTouched(name, true)
+									setFieldValue(name, selectedValue)									
+								}
+							} else {
+                                !touched.name && setFieldTouched(name, true)
+								setFieldValue(name, null)								
+							}
 						}}
 						value={value ? value + "PST" : null} //converts to pacific standard time
 					/>
@@ -147,25 +165,28 @@ export class renderDatePicker extends Component {
 	}
 }
 
-export const renderTextField = ({ field, ...props }) => (
-    
-	<TextField
-		{...field}
-		{...props}
-		// hintText={label}
-		variant="outlined"
-		// floatingLabelText={label}
-		// errorText={touched && error}
-		// label={label}
-		// {...input}
-		// {...custom}
-	/>
-)
+export const renderTextField = ({ field,field: {name}, form:{touched,errors}, ...props }) => {
+	return (
+		<TextField
+			{...field}
+            {...props}
+            helperText={touched[name] && errors[name]}
+            error={touched[name] && Boolean(errors[name])}
 
-export const renderCheckbox = ({ field }) => {    
-    return <Checkbox checked={field.value } {...field} />
+			// hintText={label}
+			variant="outlined"
+			// floatingLabelText={label}
+			// errorText={touched && error}
+			// label={label}
+			// {...input}
+			// {...custom}
+		/>
+	)
 }
-    
+
+export const renderCheckbox = ({ field }) => {
+	return <Checkbox checked={field.value} {...field} />
+}
 
 export const renderRadioGroup = ({ field, ...props }) => {
 	return <RadioGroup {...field} {...props} />

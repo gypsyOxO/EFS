@@ -36,14 +36,14 @@ const useStyles = makeStyles(theme => ({
 
 const Page1 = props => {
 	const classes = useStyles()
-	const { errors, touched, values, setFieldValue } = props
+	const { errors, status, touched, values, setFieldValue } = props
 
-	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
+    const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
     
 	const upsertIEData = async () => {
 		if (values.DATE_DISTRIBUTED && (values.ELEC_SEAT_CAND_ID || values.BM_ID)) {
             let filteredResult = graphqlFilter(filteredIEUpsert, values)                        
-            const { data } = await upsertIndExp({ variables: { ie: filteredResult } })
+            const { data } = await upsertIndExp({ variables: { ie: {...filteredResult} } })
             if (!values.IE_ID) {
                 setFieldValue("IE_ID", data.upsertIndExp.IE_ID)
                 setFieldValue("ORIG_IE_ID", data.upsertIndExp.IE_ID)
@@ -66,10 +66,7 @@ const Page1 = props => {
 							<Field name="SUPPORT_OPPOSE_FLG" component={renderRadioGroup} row>
 								<FormControlLabel value="S" control={<Radio color="primary" />} label="Support" labelPlacement="end" />
 								<FormControlLabel value="O" control={<Radio color="primary" />} label="Oppose" labelPlacement="end" />
-							</Field>
-							{touched.SUPPORT_OPPOSE_FLG && Boolean(errors.SUPPORT_OPPOSE_FLG) ? (
-								<FormHelperText error>{errors.SUPPORT_OPPOSE_FLG}</FormHelperText>
-							) : null}
+							</Field>							
 						</FormControl>
 					</Grid>
 
@@ -84,8 +81,7 @@ const Page1 = props => {
 							<Field name="MC_FLG" component={renderRadioGroup} row>
 								<FormControlLabel value="0" control={<Radio color="primary" />} label="Independent Expenditure" labelPlacement="end" />
 								<FormControlLabel value="1" control={<Radio color="primary" />} label="Membership Communication" labelPlacement="end" />
-							</Field>
-							{touched.MC_FLG && Boolean(errors.MC_FLG) ? <FormHelperText error>{errors.MC_FLG}</FormHelperText> : null}
+							</Field>							
 						</FormControl>
 					</Grid>
 				</Grid>
@@ -98,15 +94,18 @@ const Page1 = props => {
 					<Grid item xs={12} sm={4}>
 						<Field
 							name="DATE_DISTRIBUTED"
-							label="Date First Distributed"
+                            label="Date First Distributed"       
+                            required
 							component={renderDatePicker}
-							//helperText={touched.DATE_DISTRIBUTED && errors.DATE_DISTRIBUTED}
-							//error={touched.DATE_DISTRIBUTED && Boolean(errors.DATE_DISTRIBUTED)}
+							
 						/>
 					</Grid>
 
 					<Grid item xs={12} sm={8}>
-						<Field type="number" name="NUM_DISTRIBUTED" value={values.NUM_DISTRIBUTED || ""} component={renderTextField} fullWidth label="Number of Pieces" />
+						<Field type="number" name="NUM_DISTRIBUTED" component={renderTextField} fullWidth label="Number of Pieces" 
+                        // helperText={touched.NUM_DISTRIBUTED && errors.NUM_DISTRIBUTED}
+                        // error={touched.NUM_DISTRIBUTED && Boolean(errors.NUM_DISTRIBUTED)}
+                        />
 					</Grid>
 				</Grid>
 			</OnChangeHandler>

@@ -63,8 +63,8 @@ const useStyles = makeStyles(theme => ({
 export default function Wizard(props) {
 	const classes = useStyles()
 
-	const steps = ["Purpose", "Communications", "Payments", "Contributions Made", "Contributions Received", "Review"]
-
+    const steps = ["Purpose", "Communications", "Payments", "Contributions Made", "Contributions Received", "Review"]
+        
 	const handleSubmit = async document_id => {
 
 		window.location.href = process.env.REACT_APP_DOMAIN + process.env.REACT_APP_JUMPLINK_PATH + "?id=" + document_id
@@ -79,17 +79,17 @@ export default function Wizard(props) {
 							return (
 								<div>
 									<Formik
-										validateOnChange
+                                        
 										enableReinitialize
 										initialValues={props.initValues}
 										validationSchema={indexpSchema}
-										onSubmit={(values, { resetForm }) => {
+										onSubmit={(values) => {
 											handleSubmit(values.IE_ID)
 										}}>
 										{props => {
 											const { handleSubmit, values } = props
 
-											const result = graphqlFilter(filteredSubmit, values)
+											const result = graphqlFilter(filteredSubmit, {...values})
 
 											return (
 												<form onSubmit={handleSubmit}>
