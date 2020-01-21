@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "eth1x_c0mm",
+    "password": "Eth1x_c0mm",
     "database": "la_efs",
     "host": "10.17.1.215",
     "dialect": "mysql",    
@@ -11,7 +11,7 @@
   },
   "test": {
     "username": "root",
-    "password": "eth1x_c0mm",
+    "password": "Eth1x_c0mm",
     "database": "la_efs",
     "host": "10.17.1.215",
     "dialect": "mysql"

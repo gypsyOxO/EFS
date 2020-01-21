@@ -96,51 +96,7 @@ module.exports = function(sequelize, DataTypes) {
 				type: DataTypes.INTEGER(5),
 				allowNull: true,
 				defaultValue: "0"
-			},
-			PER_FILER_OTHER: {
-				type: DataTypes.STRING(255),
-				allowNull: true
-			},
-			PER_FILER_ADDR_STR: {
-				type: DataTypes.STRING(200),
-				allowNull: true
-			},
-			PER_FILER_ADDR_STR2: {
-				type: DataTypes.STRING(200),
-				allowNull: true
-			},
-			PER_FILER_ADDR_CTY: {
-				type: DataTypes.STRING(100),
-				allowNull: true
-			},
-			PER_FILER_ADDR_ST: {
-				type: DataTypes.CHAR(2),
-				allowNull: true
-			},
-			PER_FILER_ADDR_ZIP_5: {
-				type: DataTypes.STRING(5),
-				allowNull: true
-			},
-			PER_FILER_ADDR_ZIP_4: {
-				type: DataTypes.STRING(4),
-				allowNull: true
-			},
-			IE_DATE: {
-				type: DataTypes.DATEONLY,
-				allowNull: true
-			},
-			IE_DESC: {
-				type: DataTypes.STRING(255),
-				allowNull: true
-			},
-			IE_PAYEE: {
-				type: DataTypes.STRING(255),
-				allowNull: true
-			},
-			ELEC_SEAT_CMT_ID: {
-				type: DataTypes.INTEGER(10),
-				allowNull: true
-			},
+			},			
 			DATE_DISTRIBUTED: {
 				type: DataTypes.DATEONLY,
 				allowNull: true
