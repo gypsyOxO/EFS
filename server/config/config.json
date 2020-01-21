@@ -2,8 +2,8 @@
   "development": {
     "username": "root",
     "password": "eth1x_c0mm",
-    "database": "la_efs_staging",
-    "host": "10.17.1.203",
+    "database": "la_efs",
+    "host": "10.17.1.215",
     "dialect": "mysql",    
     "define": {
         "timestamps": false
@@ -12,8 +12,8 @@
   "test": {
     "username": "root",
     "password": "eth1x_c0mm",
-    "database": "la_efs_staging",
-    "host": "localhost",
+    "database": "la_efs",
+    "host": "10.17.1.215",
     "dialect": "mysql"
   },
   "production": {
