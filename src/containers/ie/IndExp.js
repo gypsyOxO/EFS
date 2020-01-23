@@ -26,8 +26,8 @@ class IndExp extends Component {
 
 			//TODO: Handle amend = true
 
-            const data = { IE_ID: 6589}
-            // const data = { IE_ID: 0}
+            const data = { IE_ID: 0}
+            // const data = { IE_ID: 6590}
 
 			if (data.IE_ID > 0) {
                 initValues = await this.GetInitValuesFromDB(data)
@@ -45,7 +45,7 @@ class IndExp extends Component {
 	GetInitValuesFromDB = async ({ IE_ID,amend }) => {
         const { client } = this.props
         
-        //reinitialize state 
+        //reinitialize apollo and react init state for formik context
         await client.clearStore()
         this.setState({initValues: {}})
         
@@ -55,6 +55,9 @@ class IndExp extends Component {
 			variables: { IE_ID: IE_ID }
 		})
 
+        //Initalizes old bad data
+        getIndExp.CONTRIBUTIONS_MADE = getIndExp.CONTRIBUTIONS_MADE ? getIndExp.CONTRIBUTIONS_MADE : []
+        getIndExp.CONTRIBUTIONS_RECEIVED = getIndExp.CONTRIBUTIONS_RECEIVED ? getIndExp.CONTRIBUTIONS_RECEIVED : []
         
         if (amend) {
             delete getIndExp.IE_ID

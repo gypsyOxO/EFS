@@ -1,4 +1,5 @@
 import gql from "graphql-tag"
+import { commTypes } from 'views/ie/Wizard';
 
 export const GET_BLANK_FORM = gql`
 	query GetDefaultData {
@@ -8,6 +9,10 @@ export const GET_BLANK_FORM = gql`
         NUM_DISTRIBUTED
         DATE_DISTRIBUTED
         PRIMARY_GENERAL_FLG
+        comms
+        payments
+        CONTRIBUTIONS_MADE
+        CONTRIBUTIONS_RECEIVED
 	}
 `
 

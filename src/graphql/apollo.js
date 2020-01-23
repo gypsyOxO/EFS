@@ -27,8 +27,11 @@ const initData = () => {
             ELEC_SEAT_ID: "",
             ELEC_SEAT_CAND_ID: "",
             BM_ID: "",
-            PRIMARY_GENERAL_FLG: "P"
-
+            PRIMARY_GENERAL_FLG: "P",
+            comms: [],
+            payments: [],
+            CONTRIBUTIONS_MADE: [],
+            CONTRIBUTIONS_RECEIVED: []
 		}
 	})
 }

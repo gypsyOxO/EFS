@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
 
 const RenderContributions = props => {
 	const classes = useStyles()
-	const { arrayHelpers } = props
+	const { arrayHelpers,arrayHelpers: { unshift, remove } } = props
 	const { CONTRIBUTIONS_MADE } = arrayHelpers.form.values
     const initValues = { candidateOrCommitteeName: "", dateContributed: "", amountContributed: "", officeSought: ""}
     
@@ -87,7 +87,7 @@ const RenderContributions = props => {
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
 					onClick={() => {
-						arrayHelpers.unshift(initValues)
+						unshift(initValues)
 						addItem(CONTRIBUTIONS_MADE)
 					}}
 					variant="extended"
@@ -137,7 +137,7 @@ const RenderContributions = props => {
 							<Grid item xs={12} sm={1}>
 								<IconButton
 									onClick={() => {
-										arrayHelpers.remove(index)
+										remove(index)
 										deleteItem(CONTRIBUTIONS_MADE)
 									}}
 									aria-label="delete">

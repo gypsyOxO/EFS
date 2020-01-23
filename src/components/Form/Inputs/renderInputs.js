@@ -35,7 +35,7 @@ export class renderReactSelectField extends Component {
 	}
 
 	render() {
-		const { options, field: {name,value}, form: {touched,errors, setFieldValue},  placeholder, disabled } = this.props
+		const { options, field: {name,value}, form: {touched,errors, setFieldValue, setFieldTouched},  placeholder, disabled } = this.props
 		const { selectedOptions } = this.state
 
         let finalOptions = null
@@ -67,7 +67,8 @@ export class renderReactSelectField extends Component {
 					value={finalOptions && finalOptions.length ? finalOptions.find(option => option.value === value) : ""}
 					onChange={option => {
 						this.props.SelectHandler && this.props.SelectHandler(name, option.value)
-						this.handleChange()
+                        this.handleChange()
+                        setFieldTouched(name,true)
 						return setFieldValue(name, option.value)
 					}}
 					className="basic-select"
