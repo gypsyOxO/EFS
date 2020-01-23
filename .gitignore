@@ -6,7 +6,7 @@ node_modules/
 server_loopback/
 build/
 dist/
-
+launch.json
 # dotenv environment variables file
 .env
 .env.test

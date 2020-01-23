@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 
 const Page1 = props => {
 	const classes = useStyles()
-	const { errors, status, touched, values, setFieldValue } = props
+	const { errors, touched, values, setFieldValue } = props
 
     const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
     
@@ -102,9 +102,7 @@ const Page1 = props => {
 					</Grid>
 
 					<Grid item xs={12} sm={8}>
-						<Field type="number" name="NUM_DISTRIBUTED" component={renderTextField} fullWidth label="Number of Pieces" 
-                        // helperText={touched.NUM_DISTRIBUTED && errors.NUM_DISTRIBUTED}
-                        // error={touched.NUM_DISTRIBUTED && Boolean(errors.NUM_DISTRIBUTED)}
+						<Field type="number" name="NUM_DISTRIBUTED" component={renderTextField} fullWidth label="Number of Pieces"                         
                         />
 					</Grid>
 				</Grid>

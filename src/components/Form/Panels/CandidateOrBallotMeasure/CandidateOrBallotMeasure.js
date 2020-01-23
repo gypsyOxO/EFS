@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, Fragment } from 'react'
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import FormLabel from "@material-ui/core/FormLabel"
 import Radio from "@material-ui/core/Radio"
@@ -37,9 +37,9 @@ const CandidateOrBallotMeasure = props => {
     let showControl = null
 
     if (SUBJECT === 'C') {
-        showControl = <div><Candidate {...props} /></div>
+        showControl = <Fragment><Candidate {...props} /></Fragment>
     } else if (SUBJECT === 'B') {
-        showControl = <div><BallotMeasure {...props} /></div>
+        showControl = <Fragment><BallotMeasure {...props} /></Fragment>
     }
 
     return (			

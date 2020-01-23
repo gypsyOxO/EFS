@@ -10,7 +10,15 @@ export const indexpSchema = Yup.object().shape({
 	ELEC_SEAT_CAND_ID: Yup.number().nullable().when("SUBJECT", { is: "C", then: Yup.number().required(required) }),
 	BM_ID: Yup.number().nullable().when("SUBJECT", { is: "B", then: Yup.number().required(required) }),
     SUBJECT: Yup.string()
+    // ,
+    
+    //  comms: Yup.array().of(
+    //             Yup.object().shape({
+    //                 COMM_TYPE: Yup.string()
+    //             })
+    
 
+    //)
 	// payments: Yup.array().of(
 	//     Yup.object().shape({
 	//         IE_PAYMENT_DATE: Yup.string().required("Required"),

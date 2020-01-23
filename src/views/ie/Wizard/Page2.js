@@ -1,4 +1,6 @@
-import React, { Fragment} from "react"
+import React, { Fragment } from "react"
+
+import isEmpty from "lodash/isEmpty"
 
 import { FieldArray } from "formik"
 import { useMutation } from "@apollo/react-hooks"
@@ -19,7 +21,7 @@ import WizardBackButton from "components/Wizard/WizardBackButton"
 
 import ContentBox from "components/UI/Content/ContentBox"
 
-import { communications_box} from "views/ie/Wizard"
+import { communications_box } from "views/ie/Wizard"
 
 import { makeStyles } from "@material-ui/core/styles"
 import SelectCommType from "components/Form/Inputs/SelectCommType"
@@ -78,27 +80,28 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-//const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
+const initValues = {
+    IE_COMM_ID: "",
+    COMM_TYPE: "",
+    DOC_FILE_NAME: "",
+    AUDIO_FILE_NAME: "",
+    VIDEO_FILE_NAME: "",
+    DISCLAIMERS: { required: false, color_original: false, language: false, funding_names: false }
+}
+
+
 
 const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove }, upsertCommData, deleteCommData }) => {
-	const { errors, touched, setFieldValue } = arrayHelpers.form
+	const { errors, touched, setFieldValue, setFieldError, setFieldTouched, validateForm } = arrayHelpers.form
 	const classes = useStyles()
 
 	//const comms = getIn(arrayHelpers.form.values, arrayHelpers.name)
-
 
 	const { comms } = arrayHelpers.form.values
 
 	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(comms)
 
-	const initValues = {
-		IE_COMM_ID: "",
-		COMM_TYPE: "",
-		DOC_FILE_NAME: "",
-		AUDIO_FILE_NAME: "",
-		VIDEO_FILE_NAME: "",
-		DISCLAIMERS: { required: false, color_original: false, language: false, funding_names: false }
-	}
+
 
 	return (
 		<div>
@@ -109,12 +112,15 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
 					onClick={() => {
-						unshift(initValues)
-						addItem(comms)
+						// if (isEmpty(errors) || (errors.comms && isEmpty(errors.comms))) {
+							unshift(initValues)
+							addItem(comms)
+						// }
 					}}
 					variant="extended"
 					size="medium"
-					color="secondary"
+                    color= "secondary"
+                    //{isEmpty(errors) ? "secondary" : isEmpty(errors.comms) ? "secondary" : null}
 					className={classes.button}>
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Communication
@@ -146,7 +152,9 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 											onClick={() => {
 												comm.IE_COMM_ID && deleteCommData(comm)
 												remove(index)
-												deleteItem(comms)
+                                                deleteItem(comms)
+                                                
+												//validateForm()
 											}}
 											aria-label="delete">
 											<DeleteIcon />

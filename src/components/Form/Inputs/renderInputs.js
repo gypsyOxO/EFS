@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 
 import TextField from "@material-ui/core/TextField"
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -57,7 +57,7 @@ export class renderReactSelectField extends Component {
 		}
 
 		return (
-			<div>
+			<Fragment>
 				<ReactSelect                    
                     options={options}  
 					isDisabled={disabled}
@@ -72,7 +72,7 @@ export class renderReactSelectField extends Component {
 					}}
 					className="basic-select"
 				/>
-    {touched[name] && errors[name] && <FormHelperText><div style={{color: "#ca0909"}}>{errors[name]}</div></FormHelperText>}
+    {touched[name] && errors[name] && <FormHelperText style={{color: "#ca0909"}}>{errors[name]}</FormHelperText>}
 
 				<select
 					ref={this.hiddenSelect}
@@ -89,7 +89,7 @@ export class renderReactSelectField extends Component {
 						  ))
 						: ""}
 				</select>
-			</div>
+			</Fragment>
 		)
 	}
 }
@@ -125,7 +125,7 @@ export class renderDatePicker extends Component {
 		const { selectedDate } = this.state
 
 		return (
-			<div>
+			<Fragment>
 				<MuiPickersUtilsProvider utils={DateFnsUtils}>
 					<KeyboardDatePicker
 						name={name}
@@ -160,16 +160,20 @@ export class renderDatePicker extends Component {
 					/>
 				</MuiPickersUtilsProvider>
 				<input readOnly type="text" ref={this.hiddenInput} name={name} value={selectedDate} style={{ display: "none" }}></input>
-			</div>
+			</Fragment>
 		)
 	}
 }
 
-export const renderTextField = ({ field,field: {name}, form:{touched,errors}, ...props }) => {
+export const renderTextField = ({ field,field: {name,value}, form:{touched,errors}, ...props }) => {
+
+    
 	return (
 		<TextField
 			{...field}
             {...props}
+            name={name}
+            value={value ? value : ""}
             helperText={touched[name] && errors[name]}
             error={touched[name] && Boolean(errors[name])}
 

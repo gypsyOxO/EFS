@@ -23,8 +23,8 @@ const WizardNextButton = props => {
 	const isValid =
 		(isEmpty(validationGroup.filter(field => Object.keys(errors).includes(field))) &&
 			isEmpty(validationGroup.filter(field => !Object.keys(touched).includes(field)))) ||
-		isEmpty(validationGroup.filter(field => values[field] === ""))
-
+		isEmpty(validationGroup.filter(field => !values[field]))
+        
 	return (
 		<div className={classes.buttons}>
 			<Button

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react"
+import React from "react"
 
 import { Formik } from "formik"
 import { useMutation } from "@apollo/react-hooks"
@@ -71,13 +71,13 @@ export default function Wizard(props) {
 	}
    
 	return (
-		<Fragment>
+		<>
 			<CssBaseline>
 				<main className={classes.layout}>
 					<Wiz pages={[Page1, Page2, Page3, Page4, Page5, Review]}>
 						{wizProps => {
 							return (
-								<div>
+								<>
 									<Formik
                                         
 										enableReinitialize
@@ -87,8 +87,7 @@ export default function Wizard(props) {
 											handleSubmit(values.IE_ID)
 										}}>
 										{props => {
-											const { handleSubmit, values } = props
-
+											const { handleSubmit, values, dirty, errors } = props
 											const result = graphqlFilter(filteredSubmit, {...values})
 
 											return (
@@ -96,7 +95,7 @@ export default function Wizard(props) {
 													{process.env.REACT_APP_IS_LOCAL_DEV === "true" && JSON.stringify(props.errors)}
 													<Stepper
 														alternativeLabel
-														nonLinear={isEmpty(props.errors)}
+														nonLinear={isEmpty(errors) && (dirty || !!values.IE_ID)}
 														activeStep={wizProps.pageIndex}
 														className={classes.stepper}>
 														{steps.map((label, index) => (
@@ -114,12 +113,12 @@ export default function Wizard(props) {
 											)
 										}}
 									</Formik>
-								</div>
+								</>
 							)
 						}}
 					</Wiz>
 				</main>
 			</CssBaseline>
-		</Fragment>
+		</>
 	)
 }
