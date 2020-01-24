@@ -20,8 +20,9 @@ import EditIcon from "@material-ui/icons/Edit"
 import ContentBox from "components/UI/Content/ContentBox"
 
 import { review_box } from "views/ie/Wizard"
-
 import { convertISODateToJsDate } from "utils/dateUtil"
+import { jumpLink } from 'components/Wizard/jumpLink';
+
 
 const useStyles = makeStyles(theme => ({
 	listItem: {
@@ -43,7 +44,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	buttons: {
 		display: "flex",
-		justifyContent: "flex-end"
+		justifyContent: "space-between"
 	},
 	button: {
 		marginTop: theme.spacing(4),
@@ -73,17 +74,17 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
+
 const Review = props => {
 	const classes = useStyles()
 	const {
 		navigateToPage,
 		values,
-		values: { comms, payments, CONTRIBUTIONS_MADE, CONTRIBUTIONS_RECEIVED, BM_ID, ELEC_SEAT_CAND_ID, SUBJECT }
+		values: { comms, payments, CONTRIBUTIONS_MADE, CONTRIBUTIONS_RECEIVED, BM_ID, ELEC_SEAT_CAND_ID, SUBJECT, IE_ID }
 	} = props
 
-    const [name, setName] = useState("")
-    const [type, setType] = useState("")
-    
+	const [name, setName] = useState("")
+	const [type, setType] = useState("")
 
 	//gets info about candidate or ballot measure from the cache
 	const {
@@ -91,8 +92,8 @@ const Review = props => {
 	} = useQuery(GET_CANDIDATE_OR_BALLOTMEASURE_NAME, { variables: { id: BM_ID ? BM_ID : ELEC_SEAT_CAND_ID, type: SUBJECT } })
 
 	useEffect(() => {
-        candidateOrBallotMeasureName && setName(candidateOrBallotMeasureName.name)
-        candidateOrBallotMeasureName && setType(candidateOrBallotMeasureName.type)
+		candidateOrBallotMeasureName && setName(candidateOrBallotMeasureName.name)
+		candidateOrBallotMeasureName && setType(candidateOrBallotMeasureName.type)
 	}, [candidateOrBallotMeasureName])
 
 	return (
@@ -127,7 +128,9 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid item xs={12} sm={5}>
-					<Typography variant="body2"><b>{type}:</b>&nbsp;{name}</Typography>
+					<Typography variant="body2">
+						<b>{type}:</b>&nbsp;{name}
+					</Typography>
 				</Grid>
 			</Grid>
 
@@ -149,7 +152,9 @@ const Review = props => {
 					</Typography>
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Typography variant="body2"><b>Number of Pieces:</b> {values.NUM_DISTRIBUTED}</Typography>
+					<Typography variant="body2">
+						<b>Number of Pieces:</b> {values.NUM_DISTRIBUTED}
+					</Typography>
 				</Grid>
 			</Grid>
 			<Paper className={classes.paper}>
@@ -296,9 +301,9 @@ const Review = props => {
 			</Grid>
 			<Paper className={classes.paper}>
 				<Table className={classes.table}>
-					<TableHead>                        
+					<TableHead>
 						<TableRow>
-                            <TableCell align="left">Date Recived</TableCell>
+							<TableCell align="left">Date Recived</TableCell>
 							<TableCell align="left">Contributor's Full Name</TableCell>
 							<TableCell align="left">Amount Contributed</TableCell>
 						</TableRow>
@@ -306,9 +311,9 @@ const Review = props => {
 					<TableBody>
 						{CONTRIBUTIONS_RECEIVED &&
 							CONTRIBUTIONS_RECEIVED.map((contribution, index) => (
-								<TableRow key={index}>                                    
-									<TableCell align="left">{contribution.dateReceived ? convertISODateToJsDate(contribution.dateReceived) : "N/A"}</TableCell>	
-                                    <TableCell align="left">{contribution.contributorFullName}</TableCell>
+								<TableRow key={index}>
+									<TableCell align="left">{contribution.dateReceived ? convertISODateToJsDate(contribution.dateReceived) : "N/A"}</TableCell>
+									<TableCell align="left">{contribution.contributorFullName}</TableCell>
 									<TableCell align="left">
 										{contribution.amountReceived ? "$" + Number.parseFloat(contribution.amountReceived).toFixed(2) : "N/A"}
 									</TableCell>
@@ -319,11 +324,18 @@ const Review = props => {
 			</Paper>
 
 			<div className={classes.buttons}>
-				<WizardBackButton {...props} />
+				<span>
+					<Button className={classes.button} variant="contained" color="default" onClick={() => jumpLink(IE_ID,0)}>
+						Do not E-sign
+					</Button>
+				</span>
+				<span>
+					<WizardBackButton {...props} />
 
-				<Button className={classes.button} variant="contained" color="secondary" type="submit">
-					Continue to E-sign
-				</Button>
+					<Button variant="contained" className={classes.button} color="secondary" type="submit">
+						Continue to E-sign
+					</Button>
+				</span>
 			</div>
 		</Fragment>
 	)

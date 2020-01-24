@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
 		marginBottom: theme.spacing(3)
 	},
 	grid: {
-		marginBottom: theme.spacing(3)
+		marginBottom: theme.spacing(1)
 	},
 	expand: {
 		display: "flex",
@@ -72,13 +72,14 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-//const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
+const initValues = { candidateOrCommitteeName: "", dateContributed: "", amountContributed: "", officeSought: ""}
+
 
 const RenderContributions = props => {
 	const classes = useStyles()
 	const { arrayHelpers,arrayHelpers: { unshift, remove } } = props
 	const { CONTRIBUTIONS_MADE } = arrayHelpers.form.values
-    const initValues = { candidateOrCommitteeName: "", dateContributed: "", amountContributed: "", officeSought: ""}
+    
     
 	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_MADE)
 

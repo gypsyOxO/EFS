@@ -22,6 +22,8 @@ import { filteredSubmit } from "graphql/ie/FilterQueries"
 
 import { indexpSchema } from "validation/ie/indexpSchema"
 import isEmpty from "lodash/isEmpty"
+import { jumpLink } from './jumpLink';
+
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -65,11 +67,6 @@ export default function Wizard(props) {
 
     const steps = ["Purpose", "Communications", "Payments", "Contributions Made", "Contributions Received", "Review"]
         
-	const handleSubmit = async document_id => {
-
-		window.location.href = process.env.REACT_APP_DOMAIN + process.env.REACT_APP_JUMPLINK_PATH + "?id=" + document_id
-	}
-   
 	return (
 		<>
 			<CssBaseline>
@@ -83,8 +80,8 @@ export default function Wizard(props) {
 										enableReinitialize
 										initialValues={props.initValues}
 										validationSchema={indexpSchema}
-										onSubmit={(values) => {
-											handleSubmit(values.IE_ID)
+										onSubmit={(values) => {                                            
+											jumpLink(values.IE_ID, 1)
 										}}>
 										{props => {
 											const { handleSubmit, values, dirty, errors } = props

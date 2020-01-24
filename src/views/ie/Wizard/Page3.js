@@ -18,7 +18,6 @@ import WizardBackButton from "components/Wizard/WizardBackButton"
 
 import ContentBox from "components/UI/Content/ContentBox"
 
-
 import { payment_box } from "views/ie/Wizard"
 
 import { makeStyles } from "@material-ui/core/styles"
@@ -114,17 +113,18 @@ const RenderVendors = arrayHelpers => {
 
 //const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
+const initValues = {
+	IE_PAYEE: "",
+	IE_PAYMENT_ID: "",
+	IE_PAYMENT_DESC: "",
+	IE_PAYMENT_AMT: ""
+}
+
 const RenderPayments = props => {
 	const { arrayHelpers, upsertPaymentData, deletePaymentData } = props
 
 	const classes = useStyles()
 
-	const initValues = {
-		IE_PAYEE: "",
-		IE_PAYMENT_ID: "",
-        IE_PAYMENT_DESC: "",
-        IE_PAYMENT_AMT: ""
-	}
 	const payments = getIn(arrayHelpers.form.values, arrayHelpers.name)
 	const errors = getIn(arrayHelpers.form.errors, arrayHelpers.name)
 	const touched = getIn(arrayHelpers.form.touched, arrayHelpers.name)
@@ -169,8 +169,8 @@ const RenderPayments = props => {
 										<Fragment>
 											<Grid item xs={12} sm={3}>
 												<Typography variant="body1" gutterBottom>
-													<b>Date:&nbsp;</b>													
-                                                    {payment.IE_PAYMENT_DATE ? convertISODateToJsDate(payment.IE_PAYMENT_DATE) : "N/A"}
+													<b>Date:&nbsp;</b>
+													{payment.IE_PAYMENT_DATE ? convertISODateToJsDate(payment.IE_PAYMENT_DATE) : "N/A"}
 												</Typography>
 											</Grid>
 											<Grid item xs={12} sm={2}>
@@ -182,7 +182,7 @@ const RenderPayments = props => {
 											<Grid item xs={12} sm={5}>
 												<Typography variant="body1" gutterBottom>
 													<b>Payee:&nbsp;</b>
-                                                    
+
 													{payment.IE_PAYEE}
 												</Typography>
 											</Grid>
@@ -263,7 +263,7 @@ const RenderPayments = props => {
 										</Grid>
 									</Grid>
 									<Grid container spacing={3} className={classes.grid}>
-										<Grid item xs={12}>											
+										<Grid item xs={12}>
 											<Field
 												name={`payments.${index}.IE_PAYMENT_DESC`}
 												type="text"

@@ -26,8 +26,9 @@ class IndExp extends Component {
 
 			//TODO: Handle amend = true
 
-            const data = { IE_ID: 0}
-            // const data = { IE_ID: 6590}
+            let data = {}
+            data = { IE_ID: 0}
+            data = { IE_ID: 6590}
 
 			if (data.IE_ID > 0) {
                 initValues = await this.GetInitValuesFromDB(data)
