@@ -19,6 +19,7 @@ export default gql`
 		getCommtypes: [IndExpCommtype!]!		
 		getBallotmeasure(BM_ID: Int!): BallotMeasure!
         getIndExpPayment(IE_PAYMENT_ID: Int!): IndExpPayment
+		getCommittees: [Committee!]!
 	}
 
 	type Mutation {
@@ -170,5 +171,11 @@ export default gql`
 		ELEC_SEAT_LABEL: String!
 		JURIS_ID: Int
 	}
-
+	
+	type Committee {
+		CMT_PER_ID: Int!
+		CMT_STATE_ID: String
+		officeSought: String
+		candidateorCommitteeName: String
+	}
 `

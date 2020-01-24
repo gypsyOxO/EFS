@@ -97,6 +97,16 @@ export const GET_BALLOTMEASURES = gql`
 		}
 	}
 `
+export const GET_COMMITTEES = gql`
+	query {
+		getCommittees {
+			CMT_STATE_ID
+			CMT_PER_ID
+			officeSought
+			candidateorCommitteeName
+		}
+	}
+`
 
 export const GET_COMM_TYPES = gql`
 	query {

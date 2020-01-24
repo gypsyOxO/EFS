@@ -108,7 +108,8 @@ export default {
 		getCandidates: (parent, args, { db }) => db.candidate.findAll(),
 		getBallotmeasures: (parent, args, { db }) => db.ballotmeasures.findAll(),
 		getCommtypes: (parent, args, { db }) => db.comm_type.findAll({ where: { ACTIVE_FLG: 1 } }),
-		getIndExp: (parent, { IE_ID }, { db }) => db.ind_exp.findByPk(IE_ID)
+		getIndExp: (parent, { IE_ID }, { db }) => db.ind_exp.findByPk(IE_ID),
+		getCommittees: (parent, args, { db }) => db.committee.findAll()
 	}
 }
 
