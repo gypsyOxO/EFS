@@ -79,6 +79,7 @@ const initValues = {
 	contributorEmployer: "",
 	contributorOccupation: "",
 	contributorAddressStreet: "",
+	contributorAddressStreet2: "",
 	contributorAddressCity: "",
     contributorAddressState: "",
     contributorAddressZip4: "",
@@ -206,9 +207,19 @@ const RenderContributions = props => {
 										type="text"
 										component={renderTextField}
 										fullWidth
-										label="Address"
+										label="Street Address"
 									/>
-								</Grid>                                
+								</Grid>  
+								<Grid item xs={12} sm={12}>
+									<Field
+										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressStreet2`}
+										type="text"
+										component={renderTextField}
+										fullWidth
+										label="Street Address, Line 2"
+										
+									/>
+								</Grid>                                                              
 							</Grid>
                             <Grid container spacing={3} className={classes.grid}>
 								<Grid item xs={12} sm={6}>
