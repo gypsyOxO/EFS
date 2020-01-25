@@ -326,7 +326,7 @@ const Review = props => {
 			<div className={classes.buttons}>
 				<span>
 					<Button className={classes.button} variant="contained" color="default" onClick={() => jumpLink(IE_ID,0)}>
-						Do not E-sign
+						Print, Sign and Send
 					</Button>
 				</span>
 				<span>
