@@ -146,6 +146,14 @@ export default gql`
 		IE_ID: Int!
         IE_PAYMENT_ID: Int
 		IE_PAYEE: String
+		IE_PAYEE_LNAME: String
+		IE_PAYEE_FNAME: String
+		IE_PAYEE_ADDR_STR: String
+		IE_PAYEE_ADDR_STR2: String
+		IE_PAYEE_ADDR_CITY: String
+		IE_PAYEE_ADDR_ST: String
+		IE_PAYEE_ADDR_ZIP_5: String
+		IE_PAYEE_ADDR_ZIP_4: String
 		IE_PAYMENT_DESC: String
 		IE_PAYMENT_DATE: String
 		IE_PAYMENT_AMT: Float
