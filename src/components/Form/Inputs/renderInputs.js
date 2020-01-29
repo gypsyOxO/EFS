@@ -193,7 +193,7 @@ export const renderTextField = ({ readOnly = false,field, field: { name, value }
 class renderAutoComplete extends Component {
 	constructor(props) {
 		super(props)
-		this.hiddenInput = React.createRef()
+        this.hiddenInput = React.createRef()
 	}
 
 	state = {
@@ -234,8 +234,9 @@ class renderAutoComplete extends Component {
         //inputs: 
         //  option_key ;dropdown key
         //  option_label ;dropdown label        
-        //  dependent_field_name ;when dropdown value is selected, updates and touches dependent field        
-        //  dependent_option_key ; dependent field code needed for dependent update and touch. 
+        //  dependent_fields ;when dropdown value is selected, updates and touches dependent field        
+        //      in the format: [{name: "", key: ""}]
+        //      e.g. dependent_fields = [{name: "CONTRIBUTIONS_MADE.${index}.officeSought", key: "officeSought"},{name: "CONTRIBUTIONS_MADE.${index}.candidateorCommitteeName", key: "candidateorCommitteeName"}]
 		/*************************************************************************************************/
 
 		const {
@@ -243,12 +244,13 @@ class renderAutoComplete extends Component {
 			field: { name, value},
 			option_key,
             option_label,
-            dependent_field_name,
-            dependent_option_key,            
+            dependent_fields = [],            
 			label,
 			width
         } = this.props
         const { selectedValue, open, options, loading } = this.state
+
+
 
 
 		return (
@@ -263,20 +265,27 @@ class renderAutoComplete extends Component {
 					}}
 					onClose={() => {
 						this.setState({open: false})
-					}}
+                    }}
+                    
+                    //handles onChange for multiple dependent fields in an array
 					onChange={(_, value) => {
                         if(value) {
                             setFieldValue(name, value[option_key]) 
-                            dependent_field_name && setFieldValue(dependent_field_name, value[dependent_option_key]) 
-                            setFieldTouched(name, true)
-                            dependent_field_name && setFieldTouched(dependent_field_name, true)
+                            dependent_fields.length && dependent_fields.forEach(field => {
+                                setFieldValue(field.name, value[field.key] )
+                                setFieldTouched(field.name, true)
+                            })  
+                            setFieldTouched(name, true)                            
                         } else {
                             setFieldValue(name, "")
-                            dependent_field_name && setFieldValue(dependent_field_name, "")
+                            setFieldTouched(name, true)  
+                            dependent_fields.length && dependent_fields.forEach(field => {
+                                setFieldValue(field.name, "" )
+                                setFieldTouched(field.name, true)
+                            })  
                         }
                         this.handleChange(value ? value[option_key] : "")
                     }}
-					//onBlur={() => setTouched({ [name]: true })}
                     
 					getOptionLabel={option => option[option_label]}
 					options={options}
