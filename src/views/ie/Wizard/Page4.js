@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const initValues = { CMT_PER_ID: "", dateContributed: "", amountContributed: "", officeSought: "", candidateorCommitteeName: "" }
+const initValues = { CMT_PER_ID: "", dateContributed: "", amountContributed: "", officeSought: "", candidateOrCommitteeName: "" }
 
 const RenderContributions = props => {
 	const classes = useStyles()
@@ -107,7 +107,7 @@ const RenderContributions = props => {
 				CONTRIBUTIONS_MADE.map((contribution, index) => {
 					const autocompleteDependentFields = [
 						{ name: `CONTRIBUTIONS_MADE.${index}.officeSought`, key: "officeSought" },
-						{ name: `CONTRIBUTIONS_MADE.${index}.candidateorCommitteeName`, key: "candidateorCommitteeName" }
+						{ name: `CONTRIBUTIONS_MADE.${index}.candidateorCommitteeName`, key: "candidateOrCommitteeName" }
                     ]
                     
 					return (
