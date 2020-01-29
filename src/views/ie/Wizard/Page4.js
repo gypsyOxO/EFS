@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const initValues = { CMT_PER_ID: "", dateContributed: "", amountContributed: "", officeSought: "", candidateorCommitteName: "" }
+const initValues = { CMT_PER_ID: "", dateContributed: "", amountContributed: "", officeSought: "", candidateorCommitteeName: "" }
 
 const RenderContributions = props => {
 	const classes = useStyles()
