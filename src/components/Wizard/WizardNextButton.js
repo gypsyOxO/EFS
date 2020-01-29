@@ -32,7 +32,7 @@ const WizardNextButton = props => {
 				className={classes.button}
 				variant="contained"
 				color={
-					isEmpty(validationGroup.filter(fields => Object.keys(errors).includes(fields))) ? "primary" : null
+					isEmpty(validationGroup.filter(fields => Object.keys(errors).includes(fields))) ? "primary" : "default"
 				}>
 				Next
 			</Button>

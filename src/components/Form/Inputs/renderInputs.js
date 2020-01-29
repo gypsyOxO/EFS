@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from "react"
+import React, { Component, Fragment} from "react"
+
 
 import TextField from "@material-ui/core/TextField"
-import FormHelperText from '@material-ui/core/FormHelperText';
+import FormHelperText from "@material-ui/core/FormHelperText"
 //import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Checkbox from "@material-ui/core/Checkbox"
 import { Select } from "@material-ui/core"
@@ -10,6 +11,11 @@ import RadioGroup from "@material-ui/core/RadioGroup"
 import ReactSelect from "react-select"
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers"
 import DateFnsUtils from "@date-io/date-fns"
+
+import Autocomplete from "@material-ui/lab/Autocomplete"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { GET_COMMITTEES } from "graphql/ie/Queries"
+import { withApollo } from "react-apollo"
 
 export class renderReactSelectField extends Component {
 	constructor(props) {
@@ -27,7 +33,7 @@ export class renderReactSelectField extends Component {
 		this.setState(
 			() => ({ selectedOptions }),
 			() => {
-				// ! this is a bit hacky.. use at your own risk ;) ! W.E. note. Use it or lose it.
+				// ! sends custom event bubble for onchangehandler
 				const event = new Event("change", { bubbles: true })
 				this.hiddenSelect.current.dispatchEvent(event)
 			}
@@ -35,20 +41,24 @@ export class renderReactSelectField extends Component {
 	}
 
 	render() {
-		const { options, field: {name,value}, form: {touched,errors, setFieldValue, setFieldTouched},  placeholder, disabled } = this.props
+		const {
+			options,
+			field: { name, value },
+			form: { touched, errors, setFieldValue, setFieldTouched },
+			placeholder,
+			disabled
+		} = this.props
 		const { selectedOptions } = this.state
 
-        let finalOptions = null
-        
-        //changes border to red if there is an error
-        const errorStyle = {
-            control: (base) => (
-                {
-                    ...base,
-                    borderColor: "#ca0909"
-                }
-            )
-        }
+		let finalOptions = null
+
+		//changes border to red if there is an error
+		const errorStyle = {
+			control: (base) => ({
+				...base,
+				borderColor: "#ca0909"
+			})
+		}
 
 		if (value && options && options.length && "options" in options[0]) {
 			finalOptions = options.reduce((acc, currentValue) => acc.concat(currentValue.options), [])
@@ -58,22 +68,22 @@ export class renderReactSelectField extends Component {
 
 		return (
 			<Fragment>
-				<ReactSelect                    
-                    options={options}  
+				<ReactSelect
+					options={options}
 					isDisabled={disabled}
-                    name={name}
-                    styles={touched[name] && errors[name] && errorStyle}
+					name={name}
+					styles={touched[name] && errors[name] && errorStyle}
 					placeholder={placeholder}
 					value={finalOptions && finalOptions.length ? finalOptions.find(option => option.value === value) : ""}
 					onChange={option => {
 						this.props.SelectHandler && this.props.SelectHandler(name, option.value)
-                        this.handleChange()
-                        setFieldTouched(name,true)
+						this.handleChange()
+						setFieldTouched(name,true)
 						return setFieldValue(name, option.value)
 					}}
 					className="basic-select"
 				/>
-    {touched[name] && errors[name] && <FormHelperText style={{color: "#ca0909"}}>{errors[name]}</FormHelperText>}
+				{touched[name] && errors[name] && <FormHelperText style={{ color: "#ca0909" }}>{errors[name]}</FormHelperText>}
 
 				<select
 					ref={this.hiddenSelect}
@@ -109,7 +119,7 @@ export class renderDatePicker extends Component {
 		this.setState(
 			() => ({ selectedDate }),
 			() => {
-				// ! this is a bit hacky.. use at your own risk ;) ! W.E. note. Use it or lose it.
+				// sends custom event bubble for onchangehandler
 				const event = new Event("change", { bubbles: true })
 				this.hiddenInput.current.dispatchEvent(event)
 			}
@@ -118,7 +128,7 @@ export class renderDatePicker extends Component {
 
 	render() {
 		const {
-            required,
+			required,
 			field: { name, value },
 			form: { setFieldValue, setFieldTouched, errors, touched },
 			label
@@ -132,29 +142,27 @@ export class renderDatePicker extends Component {
 						name={name}
 						clearable
 						allowKeyboardControl
-                        autoOk
-                        required={required}
+						autoOk
+						required={required}
 						inputVariant="outlined"
 						label={label}
 						format="MM/dd/yyyy"
 						disableFuture
 						helperText={touched[name] && errors[name]}
 						error={touched[name] && Boolean(errors[name])}
-                        onAccept={date => this.handleChange(date)}
-
+						onAccept={date => this.handleChange(date)}
 						onChange={(rawDate, selectedValue) => {
-							if (rawDate) {                                
+							if (rawDate) {
 								if (rawDate.toJSON()) {
-                                    !touched.name && setFieldTouched(name, true)
-									setFieldValue(name, rawDate.toJSON().slice(0, 10))                                    
-                                    
+									!touched.name && setFieldTouched(name, true)
+									setFieldValue(name, rawDate.toJSON().slice(0, 10))
 								} else {
-                                    !touched.name && setFieldTouched(name, true)
-									setFieldValue(name, selectedValue)									
+									!touched.name && setFieldTouched(name, true)
+									setFieldValue(name, selectedValue)
 								}
 							} else {
-                                !touched.name && setFieldTouched(name, true)
-								setFieldValue(name, null)								
+								!touched.name && setFieldTouched(name, true)
+								setFieldValue(name, null)
 							}
 						}}
 						value={value ? value + "PST" : null} //converts to pacific standard time
@@ -166,28 +174,140 @@ export class renderDatePicker extends Component {
 	}
 }
 
-export const renderTextField = ({ field,field: {name,value}, form:{touched,errors}, ...props }) => {
-
-    
+export const renderTextField = ({ readOnly = false,field, field: { name, value }, form: { touched, errors }, ...props }) => {
 	return (
 		<TextField
 			{...field}
-            {...props}
-            name={name}
-            value={value ? value : ""}
-            helperText={touched[name] && errors[name]}
-            error={touched[name] && Boolean(errors[name])}
+			{...props}
+			name={name}
+			value={value ? value : ""}
+			helperText={touched[name] && errors[name]}
+			error={touched[name] && Boolean(errors[name])}
+            variant="outlined"
+            InputProps={{readOnly: !!readOnly}}
 
-			// hintText={label}
-			variant="outlined"
-			// floatingLabelText={label}
-			// errorText={touched && error}
-			// label={label}
-			// {...input}
-			// {...custom}
 		/>
 	)
 }
+
+class renderAutoComplete extends Component {
+	constructor(props) {
+		super(props)
+		this.hiddenInput = React.createRef()
+	}
+
+	state = {
+        selectedValue: this.props.field.value.CMT_PER_ID || "",
+        options: [],
+        open: false,
+        loading: true
+	}
+
+    componentDidMount = async () => {
+		
+
+		const { client } = this.props
+		const {loading,
+			data: { getCommittees }
+		} = await client.query({ query: GET_COMMITTEES })
+        
+
+        
+		this.setState({ options: getCommittees , loading: loading })
+	}
+
+
+	handleChange = selectedValue => {
+		this.setState(
+			() => ({ selectedValue }),
+			() => {
+				// sends custom event bubble for onchangehandler
+				const event = new Event("change", { bubbles: true })
+				this.hiddenInput.current.dispatchEvent(event)
+			}
+		)
+	}
+
+	render() {
+
+		/*************************************************************************************************/
+        //inputs: 
+        //  option_key ;dropdown key
+        //  option_label ;dropdown label        
+        //  dependent_field_name ;when dropdown value is selected, updates and touches dependent field        
+        //  dependent_option_key ; dependent field code needed for dependent update and touch. 
+		/*************************************************************************************************/
+
+		const {
+			form: { setFieldTouched, setFieldValue },
+			field: { name, value},
+			option_key,
+            option_label,
+            dependent_field_name,
+            dependent_option_key,            
+			label,
+			width
+        } = this.props
+        const { selectedValue, open, options, loading } = this.state
+
+
+		return (
+			<Fragment>
+				<Autocomplete
+					style={{ width: width }}
+					name={name}
+					open={open}
+					value={options.length ? options.find(option => option[option_key] === value) : ""}
+					onOpen={() => {
+                        this.setState({open: true})						
+					}}
+					onClose={() => {
+						this.setState({open: false})
+					}}
+					onChange={(_, value) => {
+                        if(value) {
+                            setFieldValue(name, value[option_key]) 
+                            dependent_field_name && setFieldValue(dependent_field_name, value[dependent_option_key]) 
+                            setFieldTouched(name, true)
+                            dependent_field_name && setFieldTouched(dependent_field_name, true)
+                        } else {
+                            setFieldValue(name, "")
+                            dependent_field_name && setFieldValue(dependent_field_name, "")
+                        }
+                        this.handleChange(value ? value[option_key] : "")
+                    }}
+					//onBlur={() => setTouched({ [name]: true })}
+                    
+					getOptionLabel={option => option[option_label]}
+					options={options}
+					loading={loading}
+					autoHighlight
+					renderInput={params => (
+						<TextField
+							{...params}
+							label={label}
+							fullWidth
+							variant="outlined"
+							InputProps={{
+								...params.InputProps,
+								endAdornment: (
+									<Fragment>
+										{loading ? <CircularProgress color="inherit" size={20} /> : null}
+										{params.InputProps.endAdornment}
+									</Fragment>
+								)
+							}}
+						/>
+					)}
+				/>
+				<input readOnly type="text" ref={this.hiddenInput} name={name} value={selectedValue} style={{ display: "none" }}></input>
+			</Fragment>
+		)
+	}
+}
+
+export default withApollo(renderAutoComplete)
+
 
 export const renderCheckbox = ({ field }) => {
 	return <Checkbox checked={field.value} {...field} />

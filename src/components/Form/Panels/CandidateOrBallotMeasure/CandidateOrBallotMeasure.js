@@ -17,6 +17,8 @@ const CandidateOrBallotMeasure = props => {
     const {setFieldValue, values: {SUBJECT}} = props
     const [prevSubject, setPrevSubject] = useState(null)
 
+    //REVIEW: this useEffect is missing dependencies
+
     useEffect(() => {
 
         if (prevSubject === "C" && SUBJECT === "B") {

@@ -23,12 +23,11 @@ class IndExp extends Component {
 		if (process.env.NODE_ENV === "development") {
             let initValues = {}
             const { client } = this.props
-
-			//TODO: Handle amend = true
+		
 
             let data = {}
             data = { IE_ID: 0}
-            data = { IE_ID: 6590}
+            // data = { IE_ID: 6590}
 
 			if (data.IE_ID > 0) {
                 initValues = await this.GetInitValuesFromDB(data)

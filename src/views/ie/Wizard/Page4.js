@@ -23,7 +23,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Radio from "@material-ui/core/Radio"
 import FormControl from "@material-ui/core/FormControl"
-import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
+import renderAutoComplete, { renderRadioGroup, renderTextField, renderDatePicker} from "components/Form/Inputs/renderInputs"
 import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
 import Collapse from "@material-ui/core/Collapse"
 import { convertISODateToJsDate } from "utils/dateUtil"
@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const initValues = { candidateOrCommitteeName: "", dateContributed: "", amountContributed: "", officeSought: ""}
+const initValues = { CMT_PER_ID: "", dateContributed: "", amountContributed: "", officeSought: ""}
 
 
 const RenderContributions = props => {
@@ -153,10 +153,15 @@ const RenderContributions = props => {
 						<Grid container spacing={3} className={classes.grid}>
 							<Grid item xs={12} sm={6}>
 								<Field
-									name={`CONTRIBUTIONS_MADE.${index}.candidateOrCommitteeName`}
+									name={`CONTRIBUTIONS_MADE.${index}.CMT_PER_ID`}
 									type="text"
-									component={renderTextField}
-									fullWidth
+									component={renderAutoComplete}
+                                    fullWidth
+                                    width="380"
+                                    option_key="CMT_PER_ID"
+                                    dependent_field_name={`CONTRIBUTIONS_MADE.${index}.officeSought`}
+                                    dependent_option_key="officeSought"                                    
+                                    option_label="candidateorCommitteeName"
 									label="Candidate or Committee Name"
 								/>
 							</Grid>
@@ -183,7 +188,8 @@ const RenderContributions = props => {
 							<Grid item xs={12} sm={12}>
 								<Field
 									name={`CONTRIBUTIONS_MADE.${index}.officeSought`}
-									type="text"
+                                    type="text"
+                                    readOnly="true"
 									component={renderTextField}
 									fullWidth
 									label="For candidates, identify office sought (including district number)"
@@ -202,8 +208,8 @@ const Page4 = props => {
 	const classes = useStyles()
 
 	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
-
-	const upsertIEData = () => {
+    
+	const upsertIEData = () => {                
 		const filteredResult = graphqlFilter(filteredIEUpsert, values)
 		upsertIndExp({ variables: { ie: filteredResult } })
 	}
