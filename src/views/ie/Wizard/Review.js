@@ -98,9 +98,6 @@ const Review = props => {
 
 	return (
 		<Fragment>
-			<Typography variant="h6" gutterBottom className={classes.header}>
-				Review
-			</Typography>
 			<ContentBox>{review_box}</ContentBox>
 			<br />
 			<br />
