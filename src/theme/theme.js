@@ -12,7 +12,18 @@ const theme = createMuiTheme({
         label: {
             fontSize: '0.875rem',
         }
+    },
+    MuiInputBase: {
+        input: {
+        height: "0.925rem"
+        }
+    },
+    MuiAutocomplete: {
+        paper: {
+            fontSize: "0.8rem"
+        }
     }
+
   },
 
 

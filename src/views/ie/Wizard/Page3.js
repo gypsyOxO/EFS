@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 		marginBottom: theme.spacing(3)
 	},
 	grid: {
-		marginBottom: theme.spacing(3)
+		marginBottom: theme.spacing(2)
 	},
 	added: {
 		marginLeft: theme.spacing(2)
@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => ({
 const RenderVendors = arrayHelpers => {
 	const classes = useStyles()
 
-	const initValues = {         
+	const initValues = {
 		vendorLastName: "",
 		vendorFirstName: "",
 		vendorAddressStreet: "",
@@ -78,7 +78,7 @@ const RenderVendors = arrayHelpers => {
 		vendorAddressCity: "",
 		vendorAddressState: "",
 		vendorAddressZip5: "",
-		vendorAddressZip4: "" 
+		vendorAddressZip4: ""
 	}
 	const vendors = getIn(arrayHelpers.form.values, arrayHelpers.name)
 
@@ -100,12 +100,20 @@ const RenderVendors = arrayHelpers => {
 			</Grid>
 			{vendors &&
 				vendors.map((vendor, index) => (
-					<Grid container spacing={1} key={index} alignItems="flex-end" className={classes.added}>
+					<Fragment>
+						{index ? (
+							<Grid item xs={12}>
+								<hr />
+							</Grid>
+						) : null}
+
 						<Grid item>
 							<DeleteForeverIcon className={classes.cancel} onClick={() => arrayHelpers.remove(index)} />
 						</Grid>
 						<Grid item xs={11}>
-						<Typography variant="body1" gutterBottom>Vendor #{index + 1}:</Typography>
+							<Typography variant="body1" gutterBottom>
+								Vendor #{index + 1}:
+							</Typography>
 						</Grid>
 						<Grid item xs={6} sm={6}>
 							<Field
@@ -142,16 +150,10 @@ const RenderVendors = arrayHelpers => {
 								label={`Street Address (Line 2)`}
 								fullWidth
 							/>
-						</Grid>	
+						</Grid>
 						<Grid item xs={5} sm={5}>
-							<Field
-								name={`${arrayHelpers.name}.${index}.vendorAddressCity`}
-								component={renderTextField}
-								type="text"
-								label={`City`}
-								fullWidth
-							/>
-						</Grid>	
+							<Field name={`${arrayHelpers.name}.${index}.vendorAddressCity`} component={renderTextField} type="text" label={`City`} fullWidth />
+						</Grid>
 						<Grid item xs={2} sm={2}>
 							<Field
 								name={`${arrayHelpers.name}.${index}.vendorAddressState`}
@@ -160,7 +162,7 @@ const RenderVendors = arrayHelpers => {
 								label={`State`}
 								fullWidth
 							/>
-						</Grid>		
+						</Grid>
 						<Grid item xs={3} sm={3}>
 							<Field
 								name={`${arrayHelpers.name}.${index}.vendorAddressZip5`}
@@ -169,7 +171,7 @@ const RenderVendors = arrayHelpers => {
 								label={`Zip Code`}
 								fullWidth
 							/>
-						</Grid>			
+						</Grid>
 						<Grid item xs={2} sm={2}>
 							<Field
 								name={`${arrayHelpers.name}.${index}.vendorAddressZip4`}
@@ -178,11 +180,8 @@ const RenderVendors = arrayHelpers => {
 								label={`4 Digit Ext.`}
 								fullWidth
 							/>
-						</Grid>					
-						<Grid item xs={12}>
-							<hr />
 						</Grid>
-					</Grid>
+					</Fragment>
 				))}
 			{/* {error && <li className="error">{error}</li>} */}
 		</Grid>
@@ -247,36 +246,29 @@ const RenderPayments = props => {
 								<Grid container>
 									{expanded[index] ? (
 										<Grid item xs={12} sm={10}>
-											<Typography variant="body1" gutterBottom>
+											<Typography variant="body1">
 												<b>Enter Payment Information:</b>
 											</Typography>
 										</Grid>
 									) : (
 										<Fragment>
-											<Grid item xs={12} sm={6}>
-												<Typography variant="body1" gutterBottom>
+											<Grid item xs={12} sm={3}>
+												<Typography variant="body1">
 													<b>Date:&nbsp;</b>
 													{payment.IE_PAYMENT_DATE ? convertISODateToJsDate(payment.IE_PAYMENT_DATE) : "N/A"}
 												</Typography>
 											</Grid>
-											<Grid item xs={12} sm={6}>
-												<Typography variant="body1" gutterBottom>
+											<Grid item xs={12} sm={3}>
+												<Typography variant="body1">
 													<b>Amount:&nbsp;</b>
 													{payment.IE_PAYMENT_AMT}
 												</Typography>
 											</Grid>
-											<Grid item xs={12} sm={6}>
-												<Typography variant="body1" gutterBottom>
-													<b>Payee Last/Business Name:&nbsp;</b>
+											<Grid item xs={12} sm={4}>
+												<Typography variant="body1">
+													<b>Payee:&nbsp;</b>
 
-													{payment.IE_PAYEE_LNAME}
-												</Typography>
-											</Grid>
-											<Grid item xs={12} sm={6}>
-												<Typography variant="body1" gutterBottom>
-													<b>Payee First Name (if individual):&nbsp;</b>
-
-													{payment.IE_PAYEE_FNAME}
+													{payment.IE_PAYEE_FNAME ? payment.IE_PAYEE_FNAME + " " + payment.IE_PAYEE_LNAME : payment.IE_PAYEE_LNAME}
 												</Typography>
 											</Grid>
 										</Fragment>
@@ -399,7 +391,7 @@ const RenderPayments = props => {
 												label={`Payee Street Address (Line 2)`}
 												fullWidth
 											/>
-										</Grid>	
+										</Grid>
 										<Grid item xs={5} sm={5}>
 											<Field
 												name={`payments.${index}.IE_PAYEE_ADDR_CITY`}
@@ -408,7 +400,7 @@ const RenderPayments = props => {
 												label={`City`}
 												fullWidth
 											/>
-										</Grid>	
+										</Grid>
 										<Grid item xs={2} sm={2}>
 											<Field
 												name={`payments.${index}.IE_PAYEE_ADDR_ST`}
@@ -417,7 +409,7 @@ const RenderPayments = props => {
 												label={`State`}
 												fullWidth
 											/>
-										</Grid>		
+										</Grid>
 										<Grid item xs={3} sm={3}>
 											<Field
 												name={`payments.${index}.IE_PAYEE_ADDR_ZIP_5`}
@@ -426,7 +418,7 @@ const RenderPayments = props => {
 												label={`Zip Code`}
 												fullWidth
 											/>
-										</Grid>			
+										</Grid>
 										<Grid item xs={2} sm={2}>
 											<Field
 												name={`payments.${index}.IE_PAYEE_ADDR_ZIP_4`}

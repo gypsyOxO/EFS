@@ -116,7 +116,7 @@ class IndExp extends Component {
 		//****only show wizard if data is loaded****
 		const showWiz = Object.getOwnPropertyNames(initValues).length ? <Wizard initValues={initValues} /> : null
 
-		return <Fragment>{showWiz || (process.env.REACT_APP_IS_LOCAL_DEV && <button onClick={() => this.testBlankForm()}>Add new</button>)}</Fragment>
+		return <Fragment>{showWiz || (process.env.REACT_APP_IS_LOCAL_DEV.toLowerCase() === "true" && <button onClick={() => this.testBlankForm()}>Add new</button>)}</Fragment>
 	}
 }
 

@@ -47,13 +47,12 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: "flex-end"
 	},
 	button: {
-		marginTop: theme.spacing(3),
-		marginBottom: theme.spacing(3),
-		marginLeft: theme.spacing(1)
+		marginTop: theme.spacing(1),
+		marginBottom: theme.spacing(3)
 	},
 	paper: {
 		padding: 10,
-		marginBottom: theme.spacing(3)
+		marginBottom: theme.spacing(2)
 	},
 	grid: {
 		marginBottom: theme.spacing(1)
@@ -112,7 +111,7 @@ const RenderContributions = props => {
                     
 					return (
 						<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
-							<Grid container alignItems="center">
+							<Grid container alignItems="center" className={classes.grid}>
 								{expanded[index] ? (
 									<Grid item xs={12} sm={10}>
 										<Typography variant="body1" gutterBottom>
