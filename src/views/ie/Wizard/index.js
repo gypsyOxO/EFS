@@ -31,9 +31,11 @@ export const disclaimers = [
 //Instructional content on pages
 /**********************************/
 
-export const communications_box = "A separate form is required for each communication. If the communication supports or opposes more than one candidate, separate forms must also be filed for each candidate, and the spending amounts, reported in the payments section must be apportioned among them. A copy of the communication must also be attached to this form. Los Angeles Charter &sect; 803(s)(2) specifies the types of copies that must be filed. If the communication is not available when this form must be filed, the form must be amended to include the communication within one business day after the communication becomes available."
+export const purpose_box = "A separate notification must be filed for each communication. If the communication supports or opposes more than one candidate or ballot measure, separate notifications must be filed for each candidate or ballot measure, and the spending amounts, reported in the Spending Information section must be apportioned among them."
 
-export const payment_box = "Identify the amount of spending per payee that was made or incurred for the candidate identified in the first step labeled purpose."
+export const communications_box = "A copy of the communication must also be attached to this form. Los Angeles Charter &sect; 803(s)(2) specifies the types of copies that must be filed. If the communication is not available when this form must be filed, the form must be amended to include the communication within one business day after the communication becomes available."
+
+export const spendinginfo_box = "Identify the amount of spending per payee that was made or incurred for the candidate identified in the first step labeled purpose."
 
 export const contributions_made_box = "Persons making independent expenditure communications to support or oppose an LAUSD candidate are required to disclose all contributions of $100 or more that they made to any LAUSD candidate in the current calendar year."
 

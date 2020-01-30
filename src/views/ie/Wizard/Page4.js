@@ -168,7 +168,7 @@ const RenderContributions = props => {
 											option_key="CMT_PER_ID"
 											dependent_fields={autocompleteDependentFields}
 											option_label="candidateorCommitteeName"
-											label="Candidate or Committee Name"
+											label="Select Committee"
 										/>
 									</Grid>
 									<Grid item xs={12} sm={3}>
@@ -223,9 +223,6 @@ const Page4 = props => {
 
 	return (
 		<Fragment>
-			<Typography variant="h6" gutterBottom className={classes.header}>
-				Add Contribution(s) Made
-			</Typography>
 			<ContentBox>{contributions_made_box}</ContentBox>
 			<OnChangeHandler handleChange={() => upsertIEData()}>
 				<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>

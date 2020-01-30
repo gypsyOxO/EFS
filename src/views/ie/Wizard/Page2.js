@@ -105,9 +105,6 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 
 	return (
 		<div>
-			<Typography variant="h6" gutterBottom className={classes.header}>
-				Add Communication(s)
-			</Typography>
 			<ContentBox>{communications_box}</ContentBox>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab

@@ -18,7 +18,7 @@ import WizardBackButton from "components/Wizard/WizardBackButton"
 
 import ContentBox from "components/UI/Content/ContentBox"
 
-import { payment_box } from "views/ie/Wizard"
+import { spendinginfo_box } from "views/ie/Wizard"
 
 import { makeStyles } from "@material-ui/core/styles"
 import * as pageValidations from "validation/ie/indexpSchema"
@@ -512,10 +512,7 @@ const Page3 = props => {
 
 	return (
 		<Fragment>
-			<Typography variant="h6" gutterBottom className={classes.header}>
-				Add Payment(s)
-			</Typography>
-			<ContentBox>{payment_box}</ContentBox>
+			<ContentBox>{spendinginfo_box}</ContentBox>
 
 			<FieldArray
 				name="payments"

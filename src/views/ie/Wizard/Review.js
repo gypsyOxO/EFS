@@ -194,7 +194,7 @@ const Review = props => {
 			<Grid container spacing={1} className={classes.grid}>
 				<Grid item xs={11}>
 					<Typography variant="body1" gutterBottom>
-						<b>Payment(s):</b>
+						<b>Spending Information:</b>
 					</Typography>
 				</Grid>
 				<Grid />
@@ -267,7 +267,7 @@ const Review = props => {
 					<TableHead>
 						<TableRow>
 							<TableCell align="left">Date Contributed</TableCell>
-							<TableCell align="left">Candidate or Committee Name</TableCell>
+							<TableCell align="left">Committee</TableCell>
 							<TableCell align="left">Amount Contributed</TableCell>
 						</TableRow>
 					</TableHead>

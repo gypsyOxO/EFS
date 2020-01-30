@@ -11,6 +11,10 @@ import FormControl from "@material-ui/core/FormControl"
 import FormHelperText from "@material-ui/core/FormHelperText"
 import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
 
+import ContentBox from "components/UI/Content/ContentBox"
+
+import { purpose_box } from "views/ie/Wizard"
+
 import WizardNextButton from "components/Wizard/WizardNextButton"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 
@@ -55,9 +59,7 @@ const Page1 = props => {
 
 	return (
 		<Fragment>
-			<Typography variant="h6" gutterBottom className={classes.header}>
-				Purpose
-			</Typography>
+			<ContentBox>{purpose_box}</ContentBox>
 			<OnChangeHandler handleChange={upsertIEData}>
 				<Grid container spacing={3} style={{ marginTop: 10 }}>
 					<Grid item xs={12} sm={2}>

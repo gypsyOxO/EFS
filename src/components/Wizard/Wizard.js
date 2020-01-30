@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 export default function Wizard(props) {
 	const classes = useStyles()
 
-    const steps = ["Purpose", "Communications", "Payments", "Contributions Made", "Contributions Received", "Review"]
+    const steps = ["Purpose", "Communications", "Spending Information", "Contributions Made", "Contributions Received", "Review"]
         
 	return (
 		<>

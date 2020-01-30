@@ -302,9 +302,6 @@ const Page5 = props => {
 
 	return (
 		<Fragment>
-			<Typography variant="h6" gutterBottom className={classes.header}>
-				Add Contribution(s) Received
-			</Typography>
 			<ContentBox>{contributions_received_box}</ContentBox>
 			<OnChangeHandler handleChange={() => upsertIEData()}>
 				<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
