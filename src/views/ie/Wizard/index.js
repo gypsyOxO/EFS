@@ -17,10 +17,10 @@ export const numeric_fields = ["NUM_DISTRIBUTED","ELECTION_ID","ELEC_SEAT_ID", "
 export const commTypes = ["DOC", "VIDEO", "AUDIO"]
 
 export const disclaimers = [
-    {name: "required", description: "I am aware that required communication file(s) (audio/video/pdf)  have not been uploaded.", value: false, isRequired: true},
-    {name: "color_original", description: " I affirm that communication file(s) (audio/video/pdf) are color originals.", value: false, isRequired: false},
-    {name: "language", description: "I affirm that communication  file(s) (audio/video/pdf)  include all mandatory disclaimer language is included.", value: false, isRequired: false},
-    {name: "funding_names", description: "I affirm that communication  file(s) (audio/video/pdf)  include all major funding names.", value: false, isRequired: false},
+    {name: "required", description: "I am aware that required communication file(s)  have not been uploaded.", value: false, isRequired: true},
+    {name: "color_original", description: " I affirm that communication file(s) are color originals.", value: false, isRequired: false},
+    {name: "language", description: "I affirm that communication  file(s) include all mandatory disclaimer language.", value: false, isRequired: false},
+    {name: "funding_names", description: "I affirm that communication  file(s) include all major funding names.", value: false, isRequired: false},
         
 ]
     
