@@ -236,7 +236,7 @@ class renderAutoComplete extends Component {
         //  option_label ;dropdown label        
         //  dependent_fields ;when dropdown value is selected, updates and touches dependent field        
         //      in the format: [{name: "", key: ""}]
-        //      e.g. dependent_fields = [{name: "CONTRIBUTIONS_MADE.${index}.officeSought", key: "officeSought"},{name: "CONTRIBUTIONS_MADE.${index}.candidateorCommitteeName", key: "candidateorCommitteeName"}]
+        //      e.g. dependent_fields = [{name: "CONTRIBUTIONS_MADE.${index}.officeSought", key: "officeSought"},{name: "CONTRIBUTIONS_MADE.${index}.candidateOrCommitteeName", key: "candidateOrCommitteeName"}]
 		/*************************************************************************************************/
 
 		const {

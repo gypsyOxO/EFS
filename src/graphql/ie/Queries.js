@@ -111,7 +111,7 @@ export const GET_COMMITTEES = gql`
 			CMT_STATE_ID
 			CMT_PER_ID
 			officeSought
-			candidateorCommitteeName
+			candidateOrCommitteeName
 		}
 	}
 `

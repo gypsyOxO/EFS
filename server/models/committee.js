@@ -18,7 +18,7 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: true
       },
 
-    candidateorCommitteeName: {
+    candidateOrCommitteeName: {
         type: DataTypes.STRING(100),
         allowNull: true
       }

@@ -107,7 +107,7 @@ const RenderContributions = props => {
 				CONTRIBUTIONS_MADE.map((contribution, index) => {
 					const autocompleteDependentFields = [
 						{ name: `CONTRIBUTIONS_MADE.${index}.officeSought`, key: "officeSought" },
-						{ name: `CONTRIBUTIONS_MADE.${index}.candidateorCommitteeName`, key: "candidateOrCommitteeName" }
+						{ name: `CONTRIBUTIONS_MADE.${index}.candidateOrCommitteeName`, key: "candidateOrCommitteeName" }
                     ]
                     
 					return (

@@ -12,8 +12,14 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!--hacks zindex on react select-->
     <style>
+        /* solves z-index of material ui dropdowns */
         div[class*="-menu"] {
             z-index: 1000;
+        }
+
+        /* overrides bootstrap */    
+        legend {
+            width: auto;
         }
     </style>    
     <!--
