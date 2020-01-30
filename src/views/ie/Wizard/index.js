@@ -31,16 +31,14 @@ export const disclaimers = [
 //Instructional content on pages
 /**********************************/
 
-export const purpose_box = "A separate notification must be filed for each communication. If the communication supports or opposes more than one candidate or ballot measure, separate notifications must be filed for each candidate or ballot measure, and the spending amounts, reported in the Spending Information section must be apportioned among them."
+export const purpose_box = "A separate notification must be filed for each communication. If the communication supports or opposes more than one candidate or ballot measure, then separate notifications must be filed for each candidate or ballot measure, and the spending amounts, reported in the Spending Information section must be apportioned among them."
 
-export const communications_box = "A copy of the communication must also be attached to this form. Los Angeles Charter &sect; 803(s)(2) specifies the types of copies that must be filed. If the communication is not available when this form must be filed, the form must be amended to include the communication within one business day after the communication becomes available."
+export const communications_box = "A digital copy of the communication must be filed with this notification. Los Angeles Charter \u00A7 803(s)(2) specifies the types of copies that must be filed. If the communication file is not available when this notification must be filed, the notification must be amended to include the communication within one business day after the communication becomes available."
 
-export const spendinginfo_box = "Identify the amount of spending per payee that was made or incurred for the candidate identified in the first step labeled purpose."
+export const spendinginfo_box = "Identify the amount of spending per payee that was made or incurred for [the candidate or ballot measure you are supporting or opposing]. If the communication supports or opposes more than one candidate or ballot measure, then apportion an equal amount in each separate notification filed."
 
-export const contributions_made_box = "Persons making independent expenditure communications to support or oppose an LAUSD candidate are required to disclose all contributions of $100 or more that they made to any LAUSD candidate in the current calendar year."
+export const contributions_made_box = "Persons making independent expenditure communications to support or oppose a candidate or ballot measure are required to disclose all contributions of $100 or more that they made to any candidate in the current calendar year."
 
-export const contributions_received_box = "Committees must report information about contributions of $100 or more that they recieved since their most recent campaign statement or the first day of the calendar year, whichever is later. THis does not apply to contributions earmarked for non-LAUSD purposes."
+export const contributions_received_box = "Committees must report information about contributions of $100 or more that they recieved since their most recent campaign statement or the first day of the calendar year, whichever is later. This does not apply to contributions earmarked for non-[LAUSD/City] purposes."
 
-
-
-export const review_box = "This communication has been submitted for your approval. If any incorrect selections exist simply click on the red icon for what you want fixed.  YOU WILL NOT BE PENALIZED!!!."
+export const review_box = "Please review the information you have entered. If you need to make changes, click the red pencil icon to edit. Once you have made any necessary changes, click the CONTINUE TO E-SIGN button."

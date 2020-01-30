@@ -226,7 +226,7 @@ const Review = props => {
 										<TableRow key={vindex}>
 											<TableCell colSpan={1} />
 											<TableCell align="left">
-												Payee Vendor#{vindex + 1}: &nbsp;{vendor.IE_PAYMENT_VENDOR_LNAME}
+												#{vindex + 1}: &nbsp;{vendor.vendorFirstName} {vendor.vendorLastName}
 											</TableCell>
 											<TableCell colSpan={2} />
 										</TableRow>
@@ -237,7 +237,7 @@ const Review = props => {
 											<TableCell align="left" style={{ width: "10px" }}>
 												{payment.IE_PAYMENT_DATE ? convertISODateToJsDate(payment.IE_PAYMENT_DATE) : "N/A"}
 											</TableCell>
-											<TableCell align="center">{payment.IE_PAYEE}</TableCell>
+											<TableCell align="center">{payment.IE_PAYEE_FNAME} {payment.IE_PAYEE_LNAME}</TableCell>
 											<TableCell align="center">{payment.IE_PAYMENT_DESC}</TableCell>
 											<TableCell align="center" style={{ width: "10px" }}>
 												{payment.IE_PAYMENT_AMT ? "$" + Number.parseFloat(payment.IE_PAYMENT_AMT).toFixed(2) : "N/A"}
@@ -254,7 +254,7 @@ const Review = props => {
 			<Grid container spacing={1} className={classes.grid}>
 				<Grid item xs={11}>
 					<Typography variant="body1" gutterBottom>
-						<b>Contribution(s) Made:</b>
+						<b>Contributions Made:</b>
 					</Typography>
 				</Grid>
 				<Grid />
@@ -291,7 +291,7 @@ const Review = props => {
 			<Grid container spacing={1} className={classes.grid}>
 				<Grid item xs={11}>
 					<Typography variant="body1" gutterBottom>
-						<b>Contribution(s) Received:</b>
+						<b>Contributions Received:</b>
 					</Typography>
 				</Grid>
 				<Grid />
@@ -304,7 +304,7 @@ const Review = props => {
 					<TableHead>
 						<TableRow>
 							<TableCell align="left">Date Recived</TableCell>
-							<TableCell align="left">Contributor's Full Name</TableCell>
+							<TableCell align="left">Contributor</TableCell>
 							<TableCell align="left">Amount Contributed</TableCell>
 						</TableRow>
 					</TableHead>
@@ -313,7 +313,7 @@ const Review = props => {
 							CONTRIBUTIONS_RECEIVED.map((contribution, index) => (
 								<TableRow key={index}>
 									<TableCell align="left">{contribution.dateReceived ? convertISODateToJsDate(contribution.dateReceived) : "N/A"}</TableCell>
-									<TableCell align="left">{contribution.contributorFullName}</TableCell>
+									<TableCell align="left">{contribution.contributorFirstName} {contribution.contributorLastName}</TableCell>
 									<TableCell align="left">
 										{contribution.amountReceived ? "$" + Number.parseFloat(contribution.amountReceived).toFixed(2) : "N/A"}
 									</TableCell>
