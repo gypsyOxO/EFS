@@ -107,7 +107,7 @@ const RenderContributions = props => {
 				CONTRIBUTIONS_MADE.map((contribution, index) => {
 					const autocompleteDependentFields = [
 						{ name: `CONTRIBUTIONS_MADE.${index}.officeSought`, key: "officeSought" },
-						{ name: `CONTRIBUTIONS_MADE.${index}.candidateorCommitteeName`, key: "candidateOrCommitteeName" }
+						{ name: `CONTRIBUTIONS_MADE.${index}.candidateOrCommitteeName`, key: "candidateOrCommitteeName" }
                     ]
                     
 					return (
@@ -167,7 +167,7 @@ const RenderContributions = props => {
 											width="380"
 											option_key="CMT_PER_ID"
 											dependent_fields={autocompleteDependentFields}
-											option_label="candidateorCommitteeName"
+											option_label="candidateOrCommitteeName"
 											label="Candidate or Committee Name"
 										/>
 									</Grid>

@@ -192,6 +192,6 @@ export default gql`
 		CMT_PER_ID: Int!
 		CMT_STATE_ID: String
 		officeSought: String
-		candidateorCommitteeName: String
+		candidateOrCommitteeName: String
 	}
 `
