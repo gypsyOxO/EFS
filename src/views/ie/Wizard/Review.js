@@ -263,9 +263,9 @@ const Review = props => {
 				<Table className={classes.table}>
 					<TableHead>
 						<TableRow>
-							<TableCell align="left">Date Contributed</TableCell>
+							<TableCell align="left">Date</TableCell>
 							<TableCell align="left">Committee</TableCell>
-							<TableCell align="left">Amount Contributed</TableCell>
+							<TableCell align="left">Amount</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -300,9 +300,9 @@ const Review = props => {
 				<Table className={classes.table}>
 					<TableHead>
 						<TableRow>
-							<TableCell align="left">Date Recived</TableCell>
+							<TableCell align="left">Date</TableCell>
 							<TableCell align="left">Contributor</TableCell>
-							<TableCell align="left">Amount Contributed</TableCell>
+							<TableCell align="left">Amount</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
