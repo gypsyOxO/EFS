@@ -167,7 +167,7 @@ const RenderContributions = props => {
 											width="380"
 											option_key="CMT_PER_ID"
 											dependent_fields={autocompleteDependentFields}
-											option_label="candidateorCommitteeName"
+											option_label="candidateOrCommitteeName"
 											label="Select Committee"
 										/>
 									</Grid>
