@@ -1,5 +1,5 @@
 export function convertISODateToJsDate(inputDate) {
-	var date = new Date(inputDate)
+	var date = new Date(inputDate + "PST")
 	if (!isNaN(date.getTime())) {
 		var day = date.getDate().toString()
 		var month = (date.getMonth() + 1).toString()
