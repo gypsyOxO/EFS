@@ -100,7 +100,7 @@ const RenderVendors = arrayHelpers => {
 			</Grid>
 			{vendors &&
 				vendors.map((vendor, index) => (
-					<Fragment>
+					<Fragment key={index}>
 						{index ? (
 							<Grid item xs={12}>
 								<hr />

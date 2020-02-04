@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 
 import isEmpty from "lodash/isEmpty"
 
-import { FieldArray } from "formik"
+import { FieldArray} from "formik"
 import { useMutation } from "@apollo/react-hooks"
 
 import Paper from "@material-ui/core/Paper"
@@ -27,12 +27,16 @@ import { makeStyles } from "@material-ui/core/styles"
 import SelectCommType from "components/Form/Inputs/SelectCommType"
 
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
-import { UPSERT_IND_EXP_COMM, DELETE_IND_EXP_COMM } from "graphql/ie/Mutations"
+import { UPSERT_IND_EXP_COMM, DELETE_IND_EXP_COMM, UPSERT_IND_EXP } from "graphql/ie/Mutations"
 import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
 
 import { graphqlFilter } from "utils/graphqlUtil"
+import { filteredIEUpsert } from "graphql/ie/FilterQueries"
 
 import * as pageValidations from "validation/ie/indexpSchema"
+import { disclaimer_comm } from "views/ie/Wizard"
+import FormControl from "@material-ui/core/FormControl"
+import Checkbox from "components/Form/Inputs/Checkbox"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -81,17 +85,15 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const initValues = {
-    IE_COMM_ID: "",
-    COMM_TYPE: "",
-    DOC_FILE_NAME: "",
-    AUDIO_FILE_NAME: "",
-    VIDEO_FILE_NAME: "",
-    DISCLAIMERS: { required: false, color_original: false, language: false, funding_names: false }
+	IE_COMM_ID: "",
+	COMM_TYPE: "",
+	DOC_FILE_NAME: "",
+	AUDIO_FILE_NAME: "",
+	VIDEO_FILE_NAME: "",
+	DISCLAIMERS: { required: false, color_original: false, language: false, funding_names: false }
 }
 
-
-
-const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove }, upsertCommData, deleteCommData }) => {
+const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove }, upsertCommData, deleteCommData, upsertIEData }) => {
 	const { errors, touched, setFieldValue, setFieldError, setFieldTouched, validateForm } = arrayHelpers.form
 	const classes = useStyles()
 
@@ -101,23 +103,30 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 
 	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(comms)
 
-
-
 	return (
 		<div>
 			<ContentBox>{communications_box}</ContentBox>
+			<OnChangeHandler handleChange={() => upsertIEData()}>
+				<Grid container spacing={3} style={{ paddingTop: 20, marginLeft: 10, paddingRight: 50 }}>
+					<Grid item>
+						<FormControl component="fieldset">
+							<Checkbox name="REP_COMM" label={disclaimer_comm} />
+						</FormControl>
+					</Grid>
+				</Grid>
+			</OnChangeHandler>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
 					onClick={() => {
 						// if (isEmpty(errors) || (errors.comms && isEmpty(errors.comms))) {
-							unshift(initValues)
-							addItem(comms)
+						unshift(initValues)
+						addItem(comms)
 						// }
 					}}
 					variant="extended"
 					size="medium"
-                    color= "secondary"
-                    //{isEmpty(errors) ? "secondary" : isEmpty(errors.comms) ? "secondary" : null}
+					color="secondary"
+					//{isEmpty(errors) ? "secondary" : isEmpty(errors.comms) ? "secondary" : null}
 					className={classes.button}>
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Communication
@@ -149,8 +158,8 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 											onClick={() => {
 												comm.IE_COMM_ID && deleteCommData(comm)
 												remove(index)
-                                                deleteItem(comms)
-                                                
+												deleteItem(comms)
+
 												//validateForm()
 											}}
 											aria-label="delete">
@@ -187,7 +196,7 @@ const Page2 = props => {
 			...communication,
 			IE_ID
 		}
-		
+
 		if (commPayload.IE_COMM_ID === "") {
 			delete commPayload.IE_COMM_ID
 		}
@@ -206,6 +215,13 @@ const Page2 = props => {
 		deleteIndExpComm({ variables: { IE_COMM_ID: communication.IE_COMM_ID } })
 	}
 
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
+
+	const upsertIEData = () => {
+		const filteredResult = graphqlFilter(filteredIEUpsert, values)
+		upsertIndExp({ variables: { ie: filteredResult } })
+	}
+
 	return (
 		<Fragment>
 			<FieldArray
@@ -214,7 +230,8 @@ const Page2 = props => {
 					<RenderCommunications
 						arrayHelpers={arrayHelpers}
 						upsertCommData={(index, comm) => upsertCommData(index, comm)}
-						deleteCommData={comm => deleteCommData(comm)}
+                        deleteCommData={comm => deleteCommData(comm)}
+                        upsertIEData={() => upsertIEData()}
 					/>
 				)}
 			/>

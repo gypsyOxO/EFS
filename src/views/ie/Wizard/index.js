@@ -16,6 +16,9 @@ export const numeric_fields = ["NUM_DISTRIBUTED","ELECTION_ID","ELEC_SEAT_ID", "
 
 export const commTypes = ["DOC", "VIDEO", "AUDIO"]
 
+/************ disclaimers *********/
+
+
 export const disclaimers = [
     {name: "required", description: "I am aware that required communication file(s)  have not been uploaded.", value: false, isRequired: true},
     {name: "color_original", description: " I affirm that communication file(s) are color originals.", value: false, isRequired: false},
@@ -23,7 +26,10 @@ export const disclaimers = [
     {name: "funding_names", description: "I affirm that communication  file(s) include all major funding names.", value: false, isRequired: false},
         
 ]
-    
+ 
+export const disclaimer_comm = "I am not uploading required communication files at this time and am aware I must amend in one business day to add them."
+export const disclaimer_cont_made = "I did not make any contributions of $100 or more since my last report."
+export const disclaimer_cont_rec = "I did not receive any contributions of $100 or more since my last report."
 
 
 

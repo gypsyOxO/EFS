@@ -5,17 +5,15 @@ import { FormControlLabel } from "@material-ui/core"
 import { renderCheckbox } from "components/Form/Inputs/renderInputs"
 
 
-const Checkbox = ({name,label, value}) => {
+const Checkbox = ({name,label}) => {
 
     const { setFieldValue,values } = useFormikContext()
     
     return (
         <FormControlLabel 
             checked={values.name} 
-            onChange={() => setFieldValue(name, !values.name)}
-            control={<Field name={name} component={renderCheckbox} />}
+            control={<Field name={name} component={renderCheckbox} />}            
             label={label} />
-
 
     )
 }
