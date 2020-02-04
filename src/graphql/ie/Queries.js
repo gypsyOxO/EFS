@@ -9,10 +9,13 @@ export const GET_BLANK_FORM = gql`
         NUM_DISTRIBUTED
         DATE_DISTRIBUTED
         PRIMARY_GENERAL_FLG
+        REP_CONT_MADE
+        REP_CONT_RECEIVED
+        REP_COMM
         comms
         payments
         CONTRIBUTIONS_MADE
-        CONTRIBUTIONS_RECEIVED
+        CONTRIBUTIONS_RECEIVED        
 	}
 `
 
@@ -36,6 +39,7 @@ export const GET_IND_EXP = gql`
 			DATE_DISTRIBUTED
 			REP_CONT_MADE
 			REP_CONT_RECEIVED
+            REP_COMM
             PRIMARY_GENERAL_FLG
 			payments {
 				IE_PAYMENT_ID

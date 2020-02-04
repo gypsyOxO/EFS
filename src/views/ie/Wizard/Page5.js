@@ -17,11 +17,11 @@ import ContentBox from "components/UI/Content/ContentBox"
 
 import { contributions_received_box } from "views/ie/Wizard"
 
-import FormControlLabel from "@material-ui/core/FormControlLabel"
+
 
 import { makeStyles } from "@material-ui/core/styles"
 
-import Radio from "@material-ui/core/Radio"
+
 import FormControl from "@material-ui/core/FormControl"
 import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
 import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
@@ -34,6 +34,9 @@ import { graphqlFilter } from "utils/graphqlUtil"
 import { filteredIEUpsert } from "graphql/ie/FilterQueries"
 import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
 import { useMutation } from "@apollo/react-hooks"
+import { disclaimer_cont_rec} from "views/ie/Wizard"
+import Checkbox from "components/Form/Inputs/Checkbox"
+
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -305,23 +308,10 @@ const Page5 = props => {
 			<ContentBox>{contributions_received_box}</ContentBox>
 			<OnChangeHandler handleChange={() => upsertIEData()}>
 				<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
-					<Grid item>
+					<Grid item>						
 						<FormControl component="fieldset">
-							<Field name="REP_CONT_RECEIVED" component={renderRadioGroup}>
-								<FormControlLabel
-									value="N"
-									control={<Radio color="primary" />}
-									label="I did not receive any reportable contributions"
-									labelPlacement="end"
-								/>
-								<FormControlLabel
-									value="Y"
-									control={<Radio color="primary" />}
-									label="I received the following reportable contributions"
-									labelPlacement="end"
-								/>
-							</Field>
-						</FormControl>
+							<Checkbox name="REP_CONT_RECEIVED" label={disclaimer_cont_rec} />
+						</FormControl>						
 					</Grid>
 				</Grid>
 

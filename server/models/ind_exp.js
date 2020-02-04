@@ -114,11 +114,15 @@ module.exports = function(sequelize, DataTypes) {
 				allowNull: true
             },
             REP_CONT_MADE: {
-                type: DataTypes.CHAR(1),
+                type: DataTypes.BOOLEAN,
                 allowNull: true
             },
             REP_CONT_RECEIVED: {
-                type: DataTypes.CHAR(1),
+                type: DataTypes.BOOLEAN,
+                allowNull: true
+            },
+            REP_COMM: {
+                type: DataTypes.BOOLEAN,
                 allowNull: true
             },
             SUBJECT: {

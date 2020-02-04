@@ -17,11 +17,10 @@ import ContentBox from "components/UI/Content/ContentBox"
 
 import { contributions_made_box } from "views/ie/Wizard"
 
-import FormControlLabel from "@material-ui/core/FormControlLabel"
 
 import { makeStyles } from "@material-ui/core/styles"
 
-import Radio from "@material-ui/core/Radio"
+
 import FormControl from "@material-ui/core/FormControl"
 import renderAutoComplete, { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
 import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
@@ -35,6 +34,9 @@ import { graphqlFilter } from "utils/graphqlUtil"
 import { filteredIEUpsert } from "graphql/ie/FilterQueries"
 import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
 import { useMutation } from "@apollo/react-hooks"
+
+import { disclaimer_cont_made } from "views/ie/Wizard"
+import Checkbox from "components/Form/Inputs/Checkbox"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -107,8 +109,8 @@ const RenderContributions = props => {
 					const autocompleteDependentFields = [
 						{ name: `CONTRIBUTIONS_MADE.${index}.officeSought`, key: "officeSought" },
 						{ name: `CONTRIBUTIONS_MADE.${index}.candidateOrCommitteeName`, key: "candidateOrCommitteeName" }
-                    ]
-                    
+					]
+
 					return (
 						<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
 							<Grid container alignItems="center" className={classes.grid}>
@@ -214,8 +216,8 @@ const Page4 = props => {
 	const classes = useStyles()
 
 	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
-    
-	const upsertIEData = () => {                
+
+	const upsertIEData = () => {
 		const filteredResult = graphqlFilter(filteredIEUpsert, values)
 		upsertIndExp({ variables: { ie: filteredResult } })
 	}
@@ -227,20 +229,7 @@ const Page4 = props => {
 				<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
 					<Grid item>
 						<FormControl component="fieldset">
-							<Field name="REP_CONT_MADE" component={renderRadioGroup}>
-								<FormControlLabel
-									value="N"
-									control={<Radio color="primary" />}
-									label="I did not make any reportable contributions"
-									labelPlacement="end"
-								/>
-								<FormControlLabel
-									value="Y"
-									control={<Radio color="primary" />}
-									label="I made the following reportable contributions"
-									labelPlacement="end"
-								/>
-							</Field>
+							<Checkbox name="REP_CONT_MADE" label={disclaimer_cont_made} />
 						</FormControl>
 					</Grid>
 				</Grid>

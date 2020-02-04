@@ -59,8 +59,9 @@ export default gql`
         ORIG_IE_ID: Int
 		MC_FLG: String
 		CMT_PER_ID: Int
-        REP_CONT_MADE: String
-        REP_CONT_RECEIVED: String    
+        REP_CONT_MADE: Boolean
+        REP_CONT_RECEIVED: Boolean  
+        REP_COMM: Boolean  
         DATE_DISTRIBUTED: String    
         NUM_DISTRIBUTED: Int
 		SUPPORT_OPPOSE_FLG: String
@@ -85,8 +86,9 @@ export default gql`
 		BM_ID: Int
         DATE_DISTRIBUTED: String
         NUM_DISTRIBUTED: Int
-        REP_CONT_MADE: String
-        REP_CONT_RECEIVED: String
+        REP_CONT_MADE: Boolean
+        REP_CONT_RECEIVED: Boolean
+        REP_COMM: Boolean
         CONTRIBUTIONS_MADE: JSON		
         CONTRIBUTIONS_RECEIVED: JSON	
         PRIMARY_GENERAL_FLG: String	

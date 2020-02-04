@@ -25,6 +25,7 @@ export const filteredIEUpsert = gql`
 		BM_ID
         REP_CONT_MADE
         REP_CONT_RECEIVED
+        REP_COMM
         CONTRIBUTIONS_MADE
         CONTRIBUTIONS_RECEIVED
         DATE_DISTRIBUTED
