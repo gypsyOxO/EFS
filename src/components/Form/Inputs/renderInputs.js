@@ -146,7 +146,7 @@ export class renderDatePicker extends Component {
 						required={required}
 						inputVariant="outlined"
 						label={label}
-						format="MM/dd/yyyy"
+						format="M/dd/yyyy"
 						disableFuture
 						helperText={touched[name] && errors[name]}
 						error={touched[name] && Boolean(errors[name])}
