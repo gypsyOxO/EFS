@@ -322,15 +322,18 @@ const Review = props => {
 
 			<div className={classes.buttons}>
 				<span>
-					<Button className={classes.button} variant="contained" color="default" onClick={() => jumpLink(IE_ID,0)}>
+					{/* <Button className={classes.button} variant="contained" color="default" onClick={() => jumpLink(IE_ID,0)}>
 						Print, Sign and Send
-					</Button>
+					</Button> */}
 				</span>
 				<span>
 					<WizardBackButton {...props} />
 
-					<Button variant="contained" className={classes.button} color="secondary" type="submit">
+					{/* <Button variant="contained" className={classes.button} color="secondary" type="submit">
 						Continue to E-sign
+					</Button> */}
+					<Button className={classes.button} variant="contained" color="secondary" onClick={() => jumpLink(IE_ID,0)}>
+						Print, Sign and Send
 					</Button>
 				</span>
 			</div>

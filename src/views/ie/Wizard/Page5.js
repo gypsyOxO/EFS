@@ -178,7 +178,7 @@ const RenderContributions = props => {
 										type="text"
 										component={renderTextField}
 										fullWidth
-										label="Last Name"
+										label="Last/Business Name"
 									/>
 								</Grid>                                
 								<Grid item xs={12} sm={3}>
