@@ -237,8 +237,8 @@ const RenderPayments = props => {
 
 			{payments &&
 				payments.map((payment, index) => {
-					const isError = Array.isArray(errors) && errors.length
-					const isTouched = Array.isArray(touched) && typeof touched[index] !== "undefined"
+					// const isError = Array.isArray(errors) && errors.length
+					// const isTouched = Array.isArray(touched) && typeof touched[index] !== "undefined"
 
 					return (
 						<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>

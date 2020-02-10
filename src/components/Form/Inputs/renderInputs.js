@@ -1,5 +1,5 @@
 import React, { Component, Fragment} from "react"
-
+import {getIn} from "formik"
 
 import TextField from "@material-ui/core/TextField"
 import FormHelperText from "@material-ui/core/FormHelperText"
@@ -16,6 +16,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { GET_COMMITTEES } from "graphql/ie/Queries"
 import { withApollo } from "react-apollo"
+import { getIn } from 'formik';
 
 export class renderReactSelectField extends Component {
 	constructor(props) {
@@ -83,8 +84,8 @@ export class renderReactSelectField extends Component {
 					}}
 					className="basic-select"
 				/>
-				{touched[name] && errors[name] && <FormHelperText style={{ color: "#ca0909" }}>{errors[name]}</FormHelperText>}
-
+				{/* {touched[name] && errors[name] && <FormHelperText style={{ color: "#ca0909" }}>{errors[name]}</FormHelperText>} */}
+				{errors[name] && <FormHelperText style={{ color: "#ca0909" }}>{errors[name]}</FormHelperText>}
 				<select
 					ref={this.hiddenSelect}
 					name={name}
@@ -148,8 +149,8 @@ export class renderDatePicker extends Component {
 						label={label}
 						format="M/dd/yyyy"
 						disableFuture
-						helperText={touched[name] && errors[name]}
-						error={touched[name] && Boolean(errors[name])}
+                        helperText={getIn(touched, name) && getIn(errors, name)}
+                        error={getIn(touched, name) && Boolean(getIn(errors,name))}
 						onAccept={date => this.handleChange(date)}
 						onChange={(rawDate, selectedValue) => {
 							if (rawDate) {
@@ -174,18 +175,18 @@ export class renderDatePicker extends Component {
 	}
 }
 
-export const renderTextField = ({ readOnly = false,field, field: { name, value }, form: { touched, errors }, ...props }) => {
+export const renderTextField = ({ readOnly = false, field, field: { name, value }, form: { touched, errors }, ...props }) => {
+    
 	return (
 		<TextField
 			{...field}
 			{...props}
 			name={name}
 			value={value ? value : ""}
-			helperText={touched[name] && errors[name]}
-			error={touched[name] && Boolean(errors[name])}
-            variant="outlined"
-            InputProps={{readOnly: !!readOnly}}
-
+			helperText={getIn(touched, name) && getIn(errors, name)}
+			error={getIn(touched, name) && Boolean(getIn(errors,name))}
+			variant="outlined"
+			InputProps={{ readOnly: !!readOnly }}
 		/>
 	)
 }
@@ -248,9 +249,7 @@ class renderAutoComplete extends Component {
 			label,
 			width
         } = this.props
-        const { selectedValue, open, options, loading } = this.state
-
-
+        const { selectedValue, open, options = [], loading } = this.state
 
 
 		return (

@@ -81,7 +81,8 @@ export default function Wizard(props) {
 										initialValues={props.initValues}
 										validationSchema={indexpSchema}
 										onSubmit={(values) => {                                            
-											jumpLink(values.IE_ID, 1)
+                                            //jumpLink(values.IE_ID, 1)
+                                         
 										}}>
 										{props => {
 											const { handleSubmit, values, dirty, errors } = props
