@@ -16,7 +16,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { GET_COMMITTEES } from "graphql/ie/Queries"
 import { withApollo } from "react-apollo"
-import { getIn } from 'formik';
 
 export class renderReactSelectField extends Component {
 	constructor(props) {
@@ -147,7 +146,7 @@ export class renderDatePicker extends Component {
 						required={required}
 						inputVariant="outlined"
 						label={label}
-						format="M/dd/yyyy"
+						format="MM/dd/yyyy"
 						disableFuture
                         helperText={getIn(touched, name) && getIn(errors, name)}
                         error={getIn(touched, name) && Boolean(getIn(errors,name))}

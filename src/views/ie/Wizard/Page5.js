@@ -19,7 +19,7 @@ import { contributions_received_box } from "views/ie/Wizard"
 
 
 
-import { makeStyles } from "@material-ui/core/styles"
+import {withStyles,  makeStyles } from "@material-ui/core/styles"
 
 
 import FormControl from "@material-ui/core/FormControl"
@@ -74,7 +74,12 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-
+const AllCapsTextField = withStyles({
+	root: {},
+	label: {
+		textTransform: 'uppercase'
+	}
+})(Field)
 
 const initValues = {
 	contributorFirstName: "",
@@ -235,18 +240,19 @@ const RenderContributions = props => {
 									/>
 								</Grid>                                
 								<Grid item xs={12} sm={2}>
-									<Field
+									<AllCapsTextField
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressState`}
 										type="text"
 										component={renderTextField}
 										fullWidth
 										label="State"
+										inputProps={{ maxLength: 2 }}
 									/>
 								</Grid>                                
 								<Grid item xs={12} sm={2}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressZip5`}
-										type="text"
+										type="number"
 										component={renderTextField}
 										fullWidth
 										label="Zip"
@@ -256,7 +262,7 @@ const RenderContributions = props => {
 								<Grid item xs={12} sm={2}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressZip4`}
-										type="text"
+										type="number"
 										component={renderTextField}
 										fullWidth
 										label="Ext"

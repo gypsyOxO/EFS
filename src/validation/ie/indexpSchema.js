@@ -2,10 +2,11 @@ import * as yup from "yup"
 
 const required = "* Required"
 const invalidDate="* Invalid date"
+const invalidNumber="* Must be numeric"
 
 export const indexpSchema = yup.object().shape({
     DATE_DISTRIBUTED: yup.date().required(required).typeError(invalidDate),
-    NUM_DISTRIBUTED: yup.number().nullable().required(required),
+    NUM_DISTRIBUTED: yup.number().nullable().typeError(invalidNumber),
 	ELECTION_ID: yup.number().nullable().required(required),
 	ELEC_SEAT_ID: yup.number().nullable().when("SUBJECT", { is: "C", then: yup.number().required(required) }),
 	ELEC_SEAT_CAND_ID: yup.number().nullable().when("SUBJECT", { is: "C", then: yup.number().required(required) }),
@@ -18,6 +19,25 @@ export const indexpSchema = yup.object().shape({
                   //  CMT_PER_ID: yup.number().nullable().required(required),
                     amountContributed: yup.number().required(required),
                     dateContributed: yup.date().required(required).typeError(invalidDate)
+                })
+            )
+        }
+    }),
+    CONTRIBUTIONS_RECEIVED: yup.lazy(value => {
+        if (value.length) {
+            return yup.array().of(
+                yup.object().shape({
+					contributorLastName: yup.string().required(required),
+					dateReceived: yup.date().required(required).typeError(invalidDate),
+					amountReceived: yup.number().required(required).typeError(invalidNumber),
+					contributorAddressStreet: yup.string().required(required),
+					contributorAddressStreet2: yup.string().nullable(),
+					contributorAddressCity: yup.string().required(required),
+					contributorAddressState: yup.string().required(required),
+					contributorAddressZip5: yup.number().required(required).typeError(invalidNumber),
+					contributorAddressZip4: yup.number().nullable().typeError(invalidNumber),
+					contributorEmployer: yup.string().required(required),
+					contributorOccupation :yup.string().required(required)
                 })
             )
         }
