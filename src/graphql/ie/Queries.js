@@ -8,6 +8,10 @@ export const GET_BLANK_FORM = gql`
         SUBJECT    
         NUM_DISTRIBUTED
         DATE_DISTRIBUTED
+        ELECTION_ID
+        ELEC_SEAT_ID
+        ELEC_SEAT_CAND_ID
+        BM_ID
         PRIMARY_GENERAL_FLG
         REP_CONT_MADE
         REP_CONT_RECEIVED

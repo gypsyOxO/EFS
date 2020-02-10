@@ -1,15 +1,40 @@
-import * as Yup from "yup"
+import * as yup from "yup"
 
 const required = "* Required"
 const invalidDate="* Invalid date"
 
-export const indexpSchema = Yup.object().shape({
-	DATE_DISTRIBUTED: Yup.date().required(required).typeError(invalidDate),
-	ELECTION_ID: Yup.number().nullable().required(required),
-	ELEC_SEAT_ID: Yup.number().nullable().when("SUBJECT", { is: "C", then: Yup.number().required(required) }),
-	ELEC_SEAT_CAND_ID: Yup.number().nullable().when("SUBJECT", { is: "C", then: Yup.number().required(required) }),
-	BM_ID: Yup.number().nullable().when("SUBJECT", { is: "B", then: Yup.number().required(required) }),
-    SUBJECT: Yup.string()
+export const indexpSchema = yup.object().shape({
+    DATE_DISTRIBUTED: yup.date().required(required).typeError(invalidDate),
+    NUM_DISTRIBUTED: yup.number().nullable().required(required),
+	ELECTION_ID: yup.number().nullable().required(required),
+	ELEC_SEAT_ID: yup.number().nullable().when("SUBJECT", { is: "C", then: yup.number().required(required) }),
+	ELEC_SEAT_CAND_ID: yup.number().nullable().when("SUBJECT", { is: "C", then: yup.number().required(required) }),
+	BM_ID: yup.number().nullable().when("SUBJECT", { is: "B", then: yup.number().required(required) }),
+    SUBJECT: yup.string(),
+    CONTRIBUTIONS_MADE: yup.lazy(value => {
+        if (value.length) {
+            return yup.array().of(
+                yup.object().shape({
+                  //  CMT_PER_ID: yup.number().nullable().required(required),
+                    amountContributed: yup.number().required(required),
+                    dateContributed: yup.date().required(required).typeError(invalidDate)
+                })
+            )
+        }
+    })
+    // comms: yup.lazy(value => {
+    //     if (value.length) {
+    //         return yup.array().of(
+    //             yup.object().shape({
+    //                 COMM_TYPE: yup.string().required(required)
+    //             })
+    //         )
+    //     }
+    // })
+
+
+
+
     // ,
     
     //  comms: Yup.array().of(

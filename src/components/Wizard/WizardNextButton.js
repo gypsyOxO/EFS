@@ -16,24 +16,36 @@ const useStyles = makeStyles(theme => ({
 
 const WizardNextButton = props => {
 	const classes = useStyles()
-	const { navigateNext, errors, setFieldTouched, validationGroup, touched, values } = props
+	const { navigateNext, errors, setFieldTouched, validationGroup, touched, values, validateForm, isValid } = props
 
 	//isValid: check intersection on validation group and errors and differences on validationgroup and touched for validity.
 
-	const isValid =
-		(isEmpty(validationGroup.filter(field => Object.keys(errors).includes(field))) &&
-			isEmpty(validationGroup.filter(field => !Object.keys(touched).includes(field)))) ||
-		isEmpty(validationGroup.filter(field => !values[field]))
-        
+	// const isValid =
+	// 	(isEmpty(validationGroup.filter(field => Object.keys(errors).includes(field))) &&
+	// 		isEmpty(validationGroup.filter(field => !Object.keys(touched).includes(field)))) ||
+    // 	isEmpty(validationGroup.filter(field => !values[field]))
+    
+    const handleClick = () => {
+        validateForm().then(res => {
+            if (!isEmpty(res)) {
+                return Promise.reject() 
+            }                    
+        }).then(navigateNext).catch(res => res)
+    }
+    
 	return (
 		<div className={classes.buttons}>
 			<Button
-				onClick={isValid ? navigateNext : () => validationGroup.map(field => setFieldTouched(field))}
+				//onClick={isValid ? navigateNext : () => validationGroup.map(field => setFieldTouched(field))}
+				onClick={ () => handleClick()}
 				className={classes.button}
+				type="submit"
 				variant="contained"
-				color={
-					isEmpty(validationGroup.filter(fields => Object.keys(errors).includes(fields))) ? "primary" : "default"
-				}>
+				color={isValid ? "primary" : "default"}
+				// {
+				// 	isEmpty(validationGroup.filter(fields => Object.keys(errors).includes(fields))) ? "primary" : "default"
+				// }
+			>
 				Next
 			</Button>
 		</div>

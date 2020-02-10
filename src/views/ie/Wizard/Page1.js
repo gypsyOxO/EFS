@@ -73,8 +73,7 @@ const Page1 = props => {
 					</Grid>
 
 					<Grid item xs={12} sm={6}>
-						<CandidateOrBallotMeasure {...props} />
-						{touched.SUBJECT && Boolean(errors.SUBJECT) ? <FormHelperText error>{errors.SUBJECT}</FormHelperText> : null}
+						<CandidateOrBallotMeasure {...props} />						
 					</Grid>
 
 					<Grid item xs={12} sm={4}>
@@ -97,7 +96,7 @@ const Page1 = props => {
 						<Field
 							name="DATE_DISTRIBUTED"
                             label="Date First Distributed"       
-                            required
+                            
 							component={renderDatePicker}
 							
 						/>
