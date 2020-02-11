@@ -1,42 +1,40 @@
-import React, { Fragment } from "react"
-import { Field, FieldArray } from "formik"
+import React, { Fragment } from "react";
+import { Field, FieldArray } from "formik";
 
-import Paper from "@material-ui/core/Paper"
-import AddIcon from "@material-ui/icons/Add"
+import Paper from "@material-ui/core/Paper";
+import AddIcon from "@material-ui/icons/Add";
 
-import DeleteIcon from "@material-ui/icons/Delete"
+import DeleteIcon from "@material-ui/icons/Delete";
 
-import IconButton from "@material-ui/core/IconButton"
+import IconButton from "@material-ui/core/IconButton";
 
-import Fab from "@material-ui/core/Fab"
-import Typography from "@material-ui/core/Typography"
-import Grid from "@material-ui/core/Grid"
-import WizardNextButton from "components/Wizard/WizardNextButton"
-import WizardBackButton from "components/Wizard/WizardBackButton"
-import ContentBox from "components/UI/Content/ContentBox"
+import Fab from "@material-ui/core/Fab";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import WizardNextButton from "components/Wizard/WizardNextButton";
+import WizardBackButton from "components/Wizard/WizardBackButton";
+import ContentBox from "components/UI/Content/ContentBox";
 
-import { contributions_made_box } from "views/ie/Wizard"
+import { contributions_made_box } from "views/ie/Wizard";
 
+import { makeStyles } from "@material-ui/core/styles";
 
-import { makeStyles } from "@material-ui/core/styles"
+import FormControl from "@material-ui/core/FormControl";
+import renderAutoComplete, { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs";
+import useExpandClick from "components/UI/Paper/Hooks/useExpandClick";
+import Collapse from "@material-ui/core/Collapse";
+import { convertISODateToJsDate } from "utils/dateUtil";
 
+import * as pageValidations from "validation/ie/indexpSchema";
 
-import FormControl from "@material-ui/core/FormControl"
-import renderAutoComplete, { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
-import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
-import Collapse from "@material-ui/core/Collapse"
-import { convertISODateToJsDate } from "utils/dateUtil"
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler";
+import { graphqlFilter } from "utils/graphqlUtil";
+import { filteredIEUpsert } from "graphql/ie/FilterQueries";
+import { UPSERT_IND_EXP } from "graphql/ie/Mutations";
+import { useMutation } from "@apollo/react-hooks";
 
-import * as pageValidations from "validation/ie/indexpSchema"
-
-import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
-import { graphqlFilter } from "utils/graphqlUtil"
-import { filteredIEUpsert } from "graphql/ie/FilterQueries"
-import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
-import { useMutation } from "@apollo/react-hooks"
-
-import { disclaimer_cont_made } from "views/ie/Wizard"
-import Checkbox from "components/Form/Inputs/Checkbox"
+import { disclaimer_cont_made } from "views/ie/Wizard";
+import Checkbox from "components/Form/Inputs/Checkbox";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -71,27 +69,27 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: "center",
 		marginBottom: theme.spacing(4)
 	}
-}))
+}));
 
-const initValues = { CMT_PER_ID: "", dateContributed: "", amountContributed: "", officeSought: "", candidateOrCommitteeName: "" }
+const initValues = { CMT_PER_ID: "", dateContributed: "", amountContributed: "", officeSought: "", candidateOrCommitteeName: "" };
 
 const RenderContributions = props => {
-	const classes = useStyles()
+	const classes = useStyles();
 	const {
 		arrayHelpers,
 		arrayHelpers: { unshift, remove }
-	} = props
-	const { CONTRIBUTIONS_MADE } = arrayHelpers.form.values
+	} = props;
+	const { CONTRIBUTIONS_MADE } = arrayHelpers.form.values;
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_MADE)
+	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_MADE);
 
 	return (
 		<div>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
 					onClick={() => {
-						unshift(initValues)
-						addItem(CONTRIBUTIONS_MADE)
+						unshift(initValues);
+						addItem(CONTRIBUTIONS_MADE);
 					}}
 					variant="extended"
 					size="medium"
@@ -109,7 +107,7 @@ const RenderContributions = props => {
 					const autocompleteDependentFields = [
 						{ name: `CONTRIBUTIONS_MADE.${index}.officeSought`, key: "officeSought" },
 						{ name: `CONTRIBUTIONS_MADE.${index}.candidateOrCommitteeName`, key: "candidateOrCommitteeName" }
-					]
+					];
 
 					return (
 						<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
@@ -146,8 +144,8 @@ const RenderContributions = props => {
 								<Grid item xs={12} sm={1}>
 									<IconButton
 										onClick={() => {
-											remove(index)
-											deleteItem(CONTRIBUTIONS_MADE)
+											remove(index);
+											deleteItem(CONTRIBUTIONS_MADE);
 										}}
 										aria-label="delete">
 										<DeleteIcon />
@@ -205,36 +203,40 @@ const RenderContributions = props => {
 								</Grid>
 							</Collapse>
 						</Paper>
-					)
+					);
 				})}
 		</div>
-	)
-}
+	);
+};
 
 const Page4 = props => {
-	const { values } = props
-	const classes = useStyles()
+	const {
+		values,
+		values: { CONTRIBUTIONS_MADE = [] }
+	} = props;
+	const classes = useStyles();
 
-	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP);
 
 	const upsertIEData = () => {
-		const filteredResult = graphqlFilter(filteredIEUpsert, values)
-		upsertIndExp({ variables: { ie: filteredResult } })
-	}
+		const filteredResult = graphqlFilter(filteredIEUpsert, values);
+		upsertIndExp({ variables: { ie: filteredResult } });
+	};
 
 	return (
 		<Fragment>
 			<ContentBox>{contributions_made_box}</ContentBox>
 			<OnChangeHandler handleChange={() => upsertIEData()}>
-				<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
-					<Grid item>
-						<FormControl component="fieldset">
-							<Checkbox name="REP_CONT_MADE" label={disclaimer_cont_made} />
-						</FormControl>
-					</Grid>
-				</Grid>
-
 				<FieldArray name="CONTRIBUTIONS_MADE" render={arrayHelpers => <RenderContributions arrayHelpers={arrayHelpers} />} />
+				{!CONTRIBUTIONS_MADE.length && (
+					<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
+						<Grid item>
+							<FormControl component="fieldset">
+								<Checkbox name="REP_CONT_MADE" label={disclaimer_cont_made} />
+							</FormControl>
+						</Grid>
+					</Grid>
+				)}
 			</OnChangeHandler>
 
 			<div className={classes.buttons}>
@@ -242,7 +244,7 @@ const Page4 = props => {
 				<WizardNextButton {...props} validationGroup={pageValidations.Page4} />
 			</div>
 		</Fragment>
-	)
-}
+	);
+};
 
-export default Page4
+export default Page4;

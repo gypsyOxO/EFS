@@ -1,42 +1,38 @@
-import React, { Fragment } from "react"
-import { Field, FieldArray } from "formik"
+import React, { Fragment } from "react";
+import { Field, FieldArray } from "formik";
 
-import Paper from "@material-ui/core/Paper"
-import AddIcon from "@material-ui/icons/Add"
+import Paper from "@material-ui/core/Paper";
+import AddIcon from "@material-ui/icons/Add";
 
-import DeleteIcon from "@material-ui/icons/Delete"
+import DeleteIcon from "@material-ui/icons/Delete";
 
-import IconButton from "@material-ui/core/IconButton"
+import IconButton from "@material-ui/core/IconButton";
 
-import Fab from "@material-ui/core/Fab"
-import Typography from "@material-ui/core/Typography"
-import Grid from "@material-ui/core/Grid"
-import WizardNextButton from "components/Wizard/WizardNextButton"
-import WizardBackButton from "components/Wizard/WizardBackButton"
-import ContentBox from "components/UI/Content/ContentBox"
+import Fab from "@material-ui/core/Fab";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import WizardNextButton from "components/Wizard/WizardNextButton";
+import WizardBackButton from "components/Wizard/WizardBackButton";
+import ContentBox from "components/UI/Content/ContentBox";
 
-import { contributions_received_box } from "views/ie/Wizard"
+import { contributions_received_box } from "views/ie/Wizard";
 
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 
+import FormControl from "@material-ui/core/FormControl";
+import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs";
+import useExpandClick from "components/UI/Paper/Hooks/useExpandClick";
+import Collapse from "@material-ui/core/Collapse";
+import { convertISODateToJsDate } from "utils/dateUtil";
+import * as pageValidations from "validation/ie/indexpSchema";
 
-import {withStyles,  makeStyles } from "@material-ui/core/styles"
-
-
-import FormControl from "@material-ui/core/FormControl"
-import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
-import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
-import Collapse from "@material-ui/core/Collapse"
-import { convertISODateToJsDate } from "utils/dateUtil"
-import * as pageValidations from "validation/ie/indexpSchema"
-
-import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
-import { graphqlFilter } from "utils/graphqlUtil"
-import { filteredIEUpsert } from "graphql/ie/FilterQueries"
-import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
-import { useMutation } from "@apollo/react-hooks"
-import { disclaimer_cont_rec} from "views/ie/Wizard"
-import Checkbox from "components/Form/Inputs/Checkbox"
-
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler";
+import { graphqlFilter } from "utils/graphqlUtil";
+import { filteredIEUpsert } from "graphql/ie/FilterQueries";
+import { UPSERT_IND_EXP } from "graphql/ie/Mutations";
+import { useMutation } from "@apollo/react-hooks";
+import { disclaimer_cont_rec } from "views/ie/Wizard";
+import Checkbox from "components/Form/Inputs/Checkbox";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -72,14 +68,14 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: "center",
 		marginBottom: theme.spacing(4)
 	}
-}))
+}));
 
 const AllCapsTextField = withStyles({
 	root: {},
 	label: {
-		textTransform: 'uppercase'
+		textTransform: "uppercase"
 	}
-})(Field)
+})(Field);
 
 const initValues = {
 	contributorFirstName: "",
@@ -89,27 +85,27 @@ const initValues = {
 	contributorAddressStreet: "",
 	contributorAddressStreet2: "",
 	contributorAddressCity: "",
-    contributorAddressState: "",
-    contributorAddressZip4: "",
-	contributorAddressZip5: "",	
+	contributorAddressState: "",
+	contributorAddressZip4: "",
+	contributorAddressZip5: "",
 	dateReceived: "",
-	amountReceived: "",
-}
+	amountReceived: ""
+};
 
 const RenderContributions = props => {
-	const classes = useStyles()
-	const { arrayHelpers } = props
-	const { CONTRIBUTIONS_RECEIVED } = arrayHelpers.form.values
+	const classes = useStyles();
+	const { arrayHelpers } = props;
+	const { CONTRIBUTIONS_RECEIVED } = arrayHelpers.form.values;
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_RECEIVED)
+	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_RECEIVED);
 
 	return (
 		<div>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
 					onClick={() => {
-						arrayHelpers.unshift(initValues)
-						addItem(CONTRIBUTIONS_RECEIVED)
+						arrayHelpers.unshift(initValues);
+						addItem(CONTRIBUTIONS_RECEIVED);
 					}}
 					variant="extended"
 					size="medium"
@@ -137,7 +133,6 @@ const RenderContributions = props => {
 									<Grid item xs={12} sm={5}>
 										<Typography variant="body1" gutterBottom>
 											<b>Name:&nbsp;</b>
-
 											{contribution.contributorFirstName}&nbsp;{contribution.contributorLastName}
 										</Typography>
 									</Grid>
@@ -158,8 +153,8 @@ const RenderContributions = props => {
 							<Grid item xs={12} sm={1}>
 								<IconButton
 									onClick={() => {
-										arrayHelpers.remove(index)
-										deleteItem(CONTRIBUTIONS_RECEIVED)
+										arrayHelpers.remove(index);
+										deleteItem(CONTRIBUTIONS_RECEIVED);
 									}}
 									aria-label="delete">
 									<DeleteIcon />
@@ -188,7 +183,7 @@ const RenderContributions = props => {
 										fullWidth
 										label="Last/Business Name"
 									/>
-								</Grid>                                
+								</Grid>
 								<Grid item xs={12} sm={3}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.dateReceived`}
@@ -217,7 +212,7 @@ const RenderContributions = props => {
 										fullWidth
 										label="Street Address"
 									/>
-								</Grid>  
+								</Grid>
 								<Grid item xs={12} sm={12}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressStreet2`}
@@ -225,11 +220,10 @@ const RenderContributions = props => {
 										component={renderTextField}
 										fullWidth
 										label="Street Address, Line 2"
-										
 									/>
-								</Grid>                                                              
+								</Grid>
 							</Grid>
-                            <Grid container spacing={3} className={classes.grid}>
+							<Grid container spacing={3} className={classes.grid}>
 								<Grid item xs={12} sm={6}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressCity`}
@@ -238,7 +232,7 @@ const RenderContributions = props => {
 										fullWidth
 										label="City"
 									/>
-								</Grid>                                
+								</Grid>
 								<Grid item xs={12} sm={2}>
 									<AllCapsTextField
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressState`}
@@ -248,7 +242,7 @@ const RenderContributions = props => {
 										label="State"
 										inputProps={{ maxLength: 2 }}
 									/>
-								</Grid>                                
+								</Grid>
 								<Grid item xs={12} sm={2}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressZip5`}
@@ -257,8 +251,8 @@ const RenderContributions = props => {
 										fullWidth
 										label="Zip"
 									/>
-								</Grid> 
-                                               
+								</Grid>
+
 								<Grid item xs={12} sm={2}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorAddressZip4`}
@@ -267,11 +261,11 @@ const RenderContributions = props => {
 										fullWidth
 										label="Ext"
 									/>
-								</Grid>   
+								</Grid>
 							</Grid>
 
 							<Grid container spacing={3} className={classes.grid}>
-                            <Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={6}>
 									<Field
 										name={`CONTRIBUTIONS_RECEIVED.${index}.contributorEmployer`}
 										type="text"
@@ -295,40 +289,44 @@ const RenderContributions = props => {
 					</Paper>
 				))}
 		</div>
-	)
-}
+	);
+};
 
 const Page5 = props => {
-	const { values } = props
-	const classes = useStyles()
+	const {
+		values,
+		values: { CONTRIBUTIONS_RECEIVED }
+	} = props;
+	const classes = useStyles();
 
-	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP);
 
 	const upsertIEData = () => {
-		const filteredResult = graphqlFilter(filteredIEUpsert, values)
-		upsertIndExp({ variables: { ie: filteredResult } })
-	}
+		const filteredResult = graphqlFilter(filteredIEUpsert, values);
+		upsertIndExp({ variables: { ie: filteredResult } });
+	};
 
 	return (
 		<Fragment>
 			<ContentBox>{contributions_received_box}</ContentBox>
 			<OnChangeHandler handleChange={() => upsertIEData()}>
-				<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
-					<Grid item>						
-						<FormControl component="fieldset">
-							<Checkbox name="REP_CONT_RECEIVED" label={disclaimer_cont_rec} />
-						</FormControl>						
-					</Grid>
-				</Grid>
-
 				<FieldArray name="CONTRIBUTIONS_RECEIVED" render={arrayHelpers => <RenderContributions arrayHelpers={arrayHelpers} />} />
+				{!CONTRIBUTIONS_RECEIVED.length && (
+					<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
+						<Grid item>
+							<FormControl component="fieldset">
+								<Checkbox name="REP_CONT_RECEIVED" label={disclaimer_cont_rec} />
+							</FormControl>
+						</Grid>
+					</Grid>
+				)}
 			</OnChangeHandler>
 			<div className={classes.buttons}>
 				<WizardBackButton {...props} />
 				<WizardNextButton {...props} validationGroup={pageValidations.Page5} />
 			</div>
 		</Fragment>
-	)
-}
+	);
+};
 
-export default Page5
+export default Page5;

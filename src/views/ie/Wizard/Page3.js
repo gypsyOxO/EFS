@@ -1,32 +1,32 @@
-import React, { Fragment } from "react"
-import { Field, FieldArray, getIn } from "formik"
-import { renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
-import { useMutation } from "@apollo/react-hooks"
+import React, { Fragment } from "react";
+import { Field, FieldArray, getIn } from "formik";
+import { renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs";
+import { useMutation } from "@apollo/react-hooks";
 
-import Paper from "@material-ui/core/Paper"
-import AddIcon from "@material-ui/icons/Add"
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever"
-import DeleteIcon from "@material-ui/icons/Delete"
+import Paper from "@material-ui/core/Paper";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import DeleteIcon from "@material-ui/icons/Delete";
 
-import IconButton from "@material-ui/core/IconButton"
+import IconButton from "@material-ui/core/IconButton";
 
-import Fab from "@material-ui/core/Fab"
-import Typography from "@material-ui/core/Typography"
-import Grid from "@material-ui/core/Grid"
-import WizardNextButton from "components/Wizard/WizardNextButton"
-import WizardBackButton from "components/Wizard/WizardBackButton"
+import Fab from "@material-ui/core/Fab";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import WizardNextButton from "components/Wizard/WizardNextButton";
+import WizardBackButton from "components/Wizard/WizardBackButton";
 
-import ContentBox from "components/UI/Content/ContentBox"
+import ContentBox from "components/UI/Content/ContentBox";
 
-import { spendinginfo_box } from "views/ie/Wizard"
+import { spendinginfo_box } from "views/ie/Wizard";
 
-import { makeStyles } from "@material-ui/core/styles"
-import * as pageValidations from "validation/ie/indexpSchema"
-import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
-import { UPSERT_IND_EXP_PAYMENT, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
-import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
-import Collapse from "@material-ui/core/Collapse"
-import { convertISODateToJsDate } from "utils/dateUtil"
+import { makeStyles } from "@material-ui/core/styles";
+import * as pageValidations from "validation/ie/indexpSchema";
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler";
+import { UPSERT_IND_EXP_PAYMENT, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations";
+import useExpandClick from "components/UI/Paper/Hooks/useExpandClick";
+import Collapse from "@material-ui/core/Collapse";
+import { convertISODateToJsDate } from "utils/dateUtil";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -65,10 +65,10 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: "center",
 		marginBottom: theme.spacing(4)
 	}
-}))
+}));
 
 const RenderVendors = arrayHelpers => {
-	const classes = useStyles()
+	const classes = useStyles();
 
 	const initValues = {
 		vendorLastName: "",
@@ -79,8 +79,8 @@ const RenderVendors = arrayHelpers => {
 		vendorAddressState: "",
 		vendorAddressZip5: "",
 		vendorAddressZip4: ""
-	}
-	const vendors = getIn(arrayHelpers.form.values, arrayHelpers.name)
+	};
+	const vendors = getIn(arrayHelpers.form.values, arrayHelpers.name);
 
 	return (
 		<Grid container spacing={3} className={classes.grid}>
@@ -185,8 +185,8 @@ const RenderVendors = arrayHelpers => {
 				))}
 			{/* {error && <li className="error">{error}</li>} */}
 		</Grid>
-	)
-}
+	);
+};
 
 //const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
@@ -203,26 +203,26 @@ const initValues = {
 	IE_PAYEE_ADDR_ZIP_4: "",
 	IE_PAYMENT_DESC: "",
 	IE_PAYMENT_AMT: ""
-}
+};
 
 const RenderPayments = props => {
-	const { arrayHelpers, upsertPaymentData, deletePaymentData } = props
+	const { arrayHelpers, upsertPaymentData, deletePaymentData } = props;
 
-	const classes = useStyles()
+	const classes = useStyles();
 
-	const payments = getIn(arrayHelpers.form.values, arrayHelpers.name)
-	const errors = getIn(arrayHelpers.form.errors, arrayHelpers.name)
-	const touched = getIn(arrayHelpers.form.touched, arrayHelpers.name)
+	const payments = getIn(arrayHelpers.form.values, arrayHelpers.name);
+	const errors = getIn(arrayHelpers.form.errors, arrayHelpers.name);
+	const touched = getIn(arrayHelpers.form.touched, arrayHelpers.name);
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(payments)
+	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(payments);
 
 	return (
 		<div>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
 					onClick={() => {
-						arrayHelpers.unshift(initValues)
-						addItem(payments)
+						arrayHelpers.unshift(initValues);
+						addItem(payments);
 					}}
 					variant="extended"
 					size="medium"
@@ -276,9 +276,9 @@ const RenderPayments = props => {
 									<Grid item xs={12} sm={1}>
 										<IconButton
 											onClick={() => {
-												payment.IE_PAYMENT_ID && deletePaymentData(payment)
-												arrayHelpers.remove(index)
-												deleteItem(payments)
+												payment.IE_PAYMENT_ID && deletePaymentData(payment);
+												arrayHelpers.remove(index);
+												deleteItem(payments);
 											}}
 											aria-label="delete">
 											<DeleteIcon />
@@ -463,44 +463,44 @@ const RenderPayments = props => {
 								</Collapse>
 							</OnChangeHandler>
 						</Paper>
-					)
+					);
 				})}
 		</div>
-	)
-}
+	);
+};
 
 const Page3 = props => {
-	const { values, setFieldValue } = props
-	const classes = useStyles()
+	const { values, setFieldValue } = props;
+	const classes = useStyles();
 
-	const [upsertIndExpPayment] = useMutation(UPSERT_IND_EXP_PAYMENT)
+	const [upsertIndExpPayment] = useMutation(UPSERT_IND_EXP_PAYMENT);
 
 	const upsertPaymentData = async (index, payment) => {
-		const { IE_ID } = values
+		const { IE_ID } = values;
 
 		const paymentPayload = {
 			...payment,
 			IE_ID,
 			IE_PAYEE_VENDORS: payment.IE_PAYEE_VENDORS ? [...payment.IE_PAYEE_VENDORS] : null
-		}
+		};
 
 		//if IE_PAYMENT_ID = "" (which is default), strip it out, so it isn't sent in graphql to server which will cause error
 		if (paymentPayload.IE_PAYMENT_ID === "") {
-			delete paymentPayload.IE_PAYMENT_ID
+			delete paymentPayload.IE_PAYMENT_ID;
 		}
 
-		paymentPayload.__typename && delete paymentPayload.__typename
+		paymentPayload.__typename && delete paymentPayload.__typename;
 
-		const { data } = await upsertIndExpPayment({ variables: { payment: paymentPayload } })
-		setFieldValue(`payments.${index}.IE_PAYMENT_ID`, data.upsertIndExpPayment.IE_PAYMENT_ID)
-	}
+		const { data } = await upsertIndExpPayment({ variables: { payment: paymentPayload } });
+		setFieldValue(`payments.${index}.IE_PAYMENT_ID`, data.upsertIndExpPayment.IE_PAYMENT_ID);
+	};
 
 	//handle IE Payment deletes
-	const [deleteIndExpPayment] = useMutation(DELETE_IND_EXP_PAYMENT)
+	const [deleteIndExpPayment] = useMutation(DELETE_IND_EXP_PAYMENT);
 
 	const deletePaymentData = payment => {
-		deleteIndExpPayment({ variables: { IE_PAYMENT_ID: payment.IE_COMM_ID } })
-	}
+		deleteIndExpPayment({ variables: { IE_PAYMENT_ID: payment.IE_COMM_ID } });
+	};
 
 	return (
 		<Fragment>
@@ -522,7 +522,7 @@ const Page3 = props => {
 				<WizardNextButton {...props} validationGroup={pageValidations.Page3} />
 			</div>
 		</Fragment>
-	)
-}
+	);
+};
 
-export default Page3
+export default Page3;

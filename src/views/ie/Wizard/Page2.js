@@ -1,42 +1,42 @@
-import React, { Fragment } from "react"
+import React, { Fragment } from "react";
 
-import isEmpty from "lodash/isEmpty"
+import isEmpty from "lodash/isEmpty";
 
-import { FieldArray} from "formik"
-import { useMutation } from "@apollo/react-hooks"
+import { FieldArray } from "formik";
+import { useMutation } from "@apollo/react-hooks";
 
-import Paper from "@material-ui/core/Paper"
-import AddIcon from "@material-ui/icons/Add"
+import Paper from "@material-ui/core/Paper";
+import AddIcon from "@material-ui/icons/Add";
 
-import DeleteIcon from "@material-ui/icons/Delete"
+import DeleteIcon from "@material-ui/icons/Delete";
 
-import IconButton from "@material-ui/core/IconButton"
-import Collapse from "@material-ui/core/Collapse"
+import IconButton from "@material-ui/core/IconButton";
+import Collapse from "@material-ui/core/Collapse";
 
-import Fab from "@material-ui/core/Fab"
-import Typography from "@material-ui/core/Typography"
-import Grid from "@material-ui/core/Grid"
-import WizardNextButton from "components/Wizard/WizardNextButton"
-import WizardBackButton from "components/Wizard/WizardBackButton"
+import Fab from "@material-ui/core/Fab";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import WizardNextButton from "components/Wizard/WizardNextButton";
+import WizardBackButton from "components/Wizard/WizardBackButton";
 
-import ContentBox from "components/UI/Content/ContentBox"
+import ContentBox from "components/UI/Content/ContentBox";
 
-import { communications_box } from "views/ie/Wizard"
+import { communications_box } from "views/ie/Wizard";
 
-import { makeStyles } from "@material-ui/core/styles"
-import SelectCommType from "components/Form/Inputs/SelectCommType"
+import { makeStyles } from "@material-ui/core/styles";
+import SelectCommType from "components/Form/Inputs/SelectCommType";
 
-import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
-import { UPSERT_IND_EXP_COMM, DELETE_IND_EXP_COMM, UPSERT_IND_EXP } from "graphql/ie/Mutations"
-import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler";
+import { UPSERT_IND_EXP_COMM, DELETE_IND_EXP_COMM, UPSERT_IND_EXP } from "graphql/ie/Mutations";
+import useExpandClick from "components/UI/Paper/Hooks/useExpandClick";
 
-import { graphqlFilter } from "utils/graphqlUtil"
-import { filteredIEUpsert } from "graphql/ie/FilterQueries"
+import { graphqlFilter } from "utils/graphqlUtil";
+import { filteredIEUpsert } from "graphql/ie/FilterQueries";
 
-import * as pageValidations from "validation/ie/indexpSchema"
-import { disclaimer_comm } from "views/ie/Wizard"
-import FormControl from "@material-ui/core/FormControl"
-import Checkbox from "components/Form/Inputs/Checkbox"
+import * as pageValidations from "validation/ie/indexpSchema";
+import { disclaimer_comm } from "views/ie/Wizard";
+import FormControl from "@material-ui/core/FormControl";
+import Checkbox from "components/Form/Inputs/Checkbox";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
 	margins: {
 		margin: theme.spacing(2)
 	}
-}))
+}));
 
 const initValues = {
 	IE_COMM_ID: "",
@@ -91,36 +91,27 @@ const initValues = {
 	AUDIO_FILE_NAME: "",
 	VIDEO_FILE_NAME: "",
 	DISCLAIMERS: { required: false, color_original: false, language: false, funding_names: false }
-}
+};
 
 const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove }, upsertCommData, deleteCommData, upsertIEData }) => {
-	const { errors, touched, setFieldValue, setFieldError, setFieldTouched, validateForm } = arrayHelpers.form
-	const classes = useStyles()
+	const { errors, touched, setFieldValue, setFieldError, setFieldTouched, validateForm } = arrayHelpers.form;
+	const classes = useStyles();
 
 	//const comms = getIn(arrayHelpers.form.values, arrayHelpers.name)
 
-	const { comms } = arrayHelpers.form.values
+	const { comms = [] } = arrayHelpers.form.values;
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(comms)
+	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(comms);
 
 	return (
 		<div>
 			<ContentBox>{communications_box}</ContentBox>
-			<OnChangeHandler handleChange={() => upsertIEData()}>
-				<Grid container spacing={3} style={{ paddingTop: 20, marginLeft: 10, paddingRight: 50 }}>
-					<Grid item>
-						<FormControl component="fieldset">
-							<Checkbox name="REP_COMM" label={disclaimer_comm} />
-						</FormControl>
-					</Grid>
-				</Grid>
-			</OnChangeHandler>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
 					onClick={() => {
 						// if (isEmpty(errors) || (errors.comms && isEmpty(errors.comms))) {
-						unshift(initValues)
-						addItem(comms)
+						unshift(initValues);
+						addItem(comms);
 						// }
 					}}
 					variant="extended"
@@ -156,9 +147,9 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 									<Grid item xs={12} sm={1}>
 										<IconButton
 											onClick={() => {
-												comm.IE_COMM_ID && deleteCommData(comm)
-												remove(index)
-												deleteItem(comms)
+												comm.IE_COMM_ID && deleteCommData(comm);
+												remove(index);
+												deleteItem(comms);
 
 												//validateForm()
 											}}
@@ -179,48 +170,59 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 						</Paper>
 					))}
 			</div>
+			<OnChangeHandler handleChange={() => upsertIEData()}>
+				{!comms.length && (
+					<Grid container spacing={3} style={{ paddingTop: 20, marginLeft: 10, paddingRight: 50 }}>
+						<Grid item>
+							<FormControl component="fieldset">
+								<Checkbox name="REP_COMM" label={disclaimer_comm} />
+							</FormControl>
+						</Grid>
+					</Grid>
+				)}
+			</OnChangeHandler>
 		</div>
-	)
-}
+	);
+};
 
 const Page2 = props => {
-	const classes = useStyles()
-	const { setFieldValue, values } = props
+	const classes = useStyles();
+	const { setFieldValue, values } = props;
 
 	//handle IE Comm updates
-	const [upsertIndExpComm] = useMutation(UPSERT_IND_EXP_COMM)
+	const [upsertIndExpComm] = useMutation(UPSERT_IND_EXP_COMM);
 
 	const upsertCommData = async (index, communication) => {
-		const { IE_ID } = values
+		const { IE_ID } = values;
 		const commPayload = {
 			...communication,
 			IE_ID
-		}
+		};
 
 		if (commPayload.IE_COMM_ID === "") {
-			delete commPayload.IE_COMM_ID
+			delete commPayload.IE_COMM_ID;
 		}
 
-		commPayload.__typename && delete commPayload.__typename
+		commPayload.__typename && delete commPayload.__typename;
 
-		const { data } = await upsertIndExpComm({ variables: { comm: commPayload } })
+		const { data } = await upsertIndExpComm({ variables: { comm: commPayload } });
 
-		setFieldValue(`comms.${index}.IE_COMM_ID`, data.upsertIndExpComm.IE_COMM_ID)
-	}
+		setFieldValue(`comms.${index}.IE_COMM_ID`, data.upsertIndExpComm.IE_COMM_ID);
+	};
 
 	//handle IE Comm deletes
-	const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
+	const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM);
 
 	const deleteCommData = communication => {
-		deleteIndExpComm({ variables: { IE_COMM_ID: communication.IE_COMM_ID } })
-	}
+		deleteIndExpComm({ variables: { IE_COMM_ID: communication.IE_COMM_ID } });
+	};
 
-	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP);
 
 	const upsertIEData = () => {
-		const filteredResult = graphqlFilter(filteredIEUpsert, values)
-		upsertIndExp({ variables: { ie: filteredResult } })
-	}
+		const filteredResult = graphqlFilter(filteredIEUpsert, values);
+		upsertIndExp({ variables: { ie: filteredResult } });
+	};
 
 	return (
 		<Fragment>
@@ -230,8 +232,8 @@ const Page2 = props => {
 					<RenderCommunications
 						arrayHelpers={arrayHelpers}
 						upsertCommData={(index, comm) => upsertCommData(index, comm)}
-                        deleteCommData={comm => deleteCommData(comm)}
-                        upsertIEData={() => upsertIEData()}
+						deleteCommData={comm => deleteCommData(comm)}
+						upsertIEData={() => upsertIEData()}
 					/>
 				)}
 			/>
@@ -241,7 +243,7 @@ const Page2 = props => {
 				<WizardNextButton {...props} validationGroup={pageValidations.Page2} />
 			</div>
 		</Fragment>
-	)
-}
+	);
+};
 
-export default Page2
+export default Page2;

@@ -50,6 +50,8 @@ export const indexpSchema = yup.object().shape({
                     dateContributed: yup.date().required(required).typeError(invalidDate)
                 })
             )
+        } else {
+            /* must check REP_CONT_RECEIVED */
         }
     }),
     CONTRIBUTIONS_RECEIVED: yup.lazy(value => {
@@ -69,6 +71,8 @@ export const indexpSchema = yup.object().shape({
 					contributorOccupation :yup.string().required(required)
                 })
             )
+        } else {
+            /* must check REP_CONT_MADE */
         }
     }),
     comms: yup.lazy(value => {
@@ -78,6 +82,8 @@ export const indexpSchema = yup.object().shape({
                      COMM_TYPE: yup.string().required(required)
                  })
              )
+         } else {
+             /* must check REP_COMM */
          }
      })
 
