@@ -16,6 +16,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: '1'
     },
+    COMM_FILE_TYPE: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     DOC_FILE_TYPES: {
       type: DataTypes.STRING(255),
       allowNull: true

@@ -107,7 +107,8 @@ export default gql`
 
 	type IndExpCommtype {        
 		COMM_TYPE: String
-        COMM_TYPE_DESC: String        
+        COMM_TYPE_DESC: String           
+		COMM_FILE_TYPE: String    
 		DOC_FILE_TYPES: String
         AUDIO_FILE_TYPES: String
         VIDEO_FILE_TYPES: String

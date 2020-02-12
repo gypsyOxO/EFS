@@ -129,6 +129,7 @@ export const GET_COMM_TYPES = gql`
 		getCommtypes {
 			COMM_TYPE
 			COMM_TYPE_DESC
+			COMM_FILE_TYPE
 			DOC_FILE_TYPES
 			AUDIO_FILE_TYPES
 			VIDEO_FILE_TYPES
