@@ -39,6 +39,8 @@ export const indexpSchema = yup.object().shape({
                         }))
                 })
             )
+        } else {
+            return yup.mixed().notRequired();
         }
     }),
     CONTRIBUTIONS_MADE: yup.lazy(value => {
@@ -52,6 +54,7 @@ export const indexpSchema = yup.object().shape({
             )
         } else {
             /* must check REP_CONT_RECEIVED */
+            return yup.mixed().notRequired();
         }
     }),
     CONTRIBUTIONS_RECEIVED: yup.lazy(value => {
@@ -73,6 +76,7 @@ export const indexpSchema = yup.object().shape({
             )
         } else {
             /* must check REP_CONT_MADE */
+            return yup.mixed().notRequired();
         }
     }),
     comms: yup.lazy(value => {
@@ -84,6 +88,7 @@ export const indexpSchema = yup.object().shape({
              )
          } else {
              /* must check REP_COMM */
+             return yup.mixed().notRequired();
          }
      })
 
