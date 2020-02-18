@@ -329,7 +329,7 @@ const Review = props => {
 				<span>
 					<WizardBackButton {...props} />
                     
-					{/* <Button variant="contained" className={classes.button} color="secondary" onClick={() => {
+					{/* <Button className="pleasewait" variant="contained" className={classes.button} color="secondary" onClick={() => {
 						window.waitingDialog.show('Please wait...'); 
 						jumpLink(IE_ID,0)
 						}}>
@@ -339,7 +339,7 @@ const Review = props => {
 						window.waitingDialog.show('Please wait...'); /* This calls function from CF base page ¯\_(ツ)_/¯ TRG */
 						jumpLink(IE_ID,0)
 						}}>
-						Print, Sign and Send
+						Generate Non-Esign PDF
 					</Button>
 				</span>
 			</div>
