@@ -13,38 +13,43 @@ export const indexpSchema = yup.object().shape({
 	BM_ID: yup.number().nullable().when("SUBJECT", { is: "B", then: yup.number().required(required) }),
     SUBJECT: yup.string(),
     payments: yup.lazy(value => {
-        if (value.length) {
+        if (value && value.length) {
             return yup.array().of(
                 yup.object().shape({
                     IE_PAYMENT_DATE: yup.date().required(required).typeError(invalidDate),
                     IE_PAYEE_LNAME:  yup.string().required(required),
-                    IE_PAYEE_FNAME: yup.string().nullable(),
+                    /*IE_PAYEE_FNAME: yup.string().nullable(),
                     IE_PAYEE_ADDR_STR: yup.string().required(required),
                     IE_PAYEE_ADDR_STR2: yup.string().nullable(),
                     IE_PAYEE_ADDR_CITY: yup.string().required(required),
                     IE_PAYEE_ADDR_ST: yup.string().required(required),
                     IE_PAYEE_ADDR_ZIP_5: yup.number().required(required).typeError(invalidNumber),
                     IE_PAYEE_ADDR_ZIP_4: yup.number().nullable().typeError(invalidNumber),
-                    IE_PAYMENT_DESC: yup.string().required(required),
+                    IE_PAYMENT_DESC: yup.string().required(required),*/
                     IE_PAYMENT_AMT: yup.number().required(required).typeError(invalidNumber),
-                    IE_PAYEE_VENDORS:  yup.array().of(
-                        yup.object().shape({
-                            vendorLastName: yup.string().required(required),
-                            vendorAddressStreet: yup.string().required(required),
-                            vendorAddressStreet2: yup.string().nullable(),
-                            vendorAddressCity: yup.string().required(required),
-                            vendorAddressState: yup.string().required(required),
-                            vendorAddressZip5: yup.number().required(required).typeError(invalidNumber),
-                            vendorAddressZip4: yup.number().nullable().typeError(invalidNumber)
-                        }))
-                })
-            )
+                    IE_PAYEE_VENDORS:  yup.lazy(value => {
+                        if (value && value.length) {
+                            return yup.array().of(
+                                yup.object().shape({
+                                    vendorLastName: yup.string().required(required)/*,
+                                    vendorAddressStreet: yup.string().required(required),
+                                    vendorAddressStreet2: yup.string().nullable(),
+                                    vendorAddressCity: yup.string().required(required),
+                                    vendorAddressState: yup.string().required(required),
+                                    vendorAddressZip5: yup.number().required(required).typeError(invalidNumber),
+                                    vendorAddressZip4: yup.number().nullable().typeError(invalidNumber)*/
+                                    }))
+                        } else {
+                            return yup.mixed().notRequired();
+                        }
+                    })
+                }))
         } else {
             return yup.mixed().notRequired();
         }
     }),
     CONTRIBUTIONS_MADE: yup.lazy(value => {
-        if (value.length) {
+        if (value && value.length) {
             return yup.array().of(
                 yup.object().shape({
                   //  CMT_PER_ID: yup.number().nullable().required(required),
@@ -58,7 +63,7 @@ export const indexpSchema = yup.object().shape({
         }
     }),
     CONTRIBUTIONS_RECEIVED: yup.lazy(value => {
-        if (value.length) {
+        if (value && value.length) {
             return yup.array().of(
                 yup.object().shape({
 					contributorLastName: yup.string().required(required),
@@ -80,7 +85,7 @@ export const indexpSchema = yup.object().shape({
         }
     }),
     comms: yup.lazy(value => {
-        if (value.length) {
+        if (value && value.length) {
              return yup.array().of(
                  yup.object().shape({
                      COMM_TYPE: yup.string().required(required)
