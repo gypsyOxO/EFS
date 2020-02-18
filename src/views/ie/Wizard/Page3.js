@@ -20,13 +20,15 @@ import ContentBox from "components/UI/Content/ContentBox";
 
 import { spendinginfo_box } from "views/ie/Wizard";
 
-import { makeStyles } from "@material-ui/core/styles";
-import * as pageValidations from "validation/ie/indexpSchema";
-import OnChangeHandler from "components/UI/Utils/OnChangeHandler";
-import { UPSERT_IND_EXP_PAYMENT, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations";
-import useExpandClick from "components/UI/Paper/Hooks/useExpandClick";
-import Collapse from "@material-ui/core/Collapse";
-import { convertISODateToJsDate } from "utils/dateUtil";
+import { makeStyles } from "@material-ui/core/styles"
+import * as pageValidations from "validation/ie/indexpSchema"
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
+import { UPSERT_IND_EXP_PAYMENT, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
+import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
+import useUpsertPaymentData from "graphql/ie/hooks/useUpsertPaymentData"
+import Collapse from "@material-ui/core/Collapse"
+import { convertISODateToJsDate } from "utils/dateUtil"
+
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -470,30 +472,60 @@ const RenderPayments = props => {
 };
 
 const Page3 = props => {
-	const { values, setFieldValue } = props;
-	const classes = useStyles();
+	const { values } = props
+	const classes = useStyles()
 
-	const [upsertIndExpPayment] = useMutation(UPSERT_IND_EXP_PAYMENT);
+    //const [upsertIndExpPayment] = useMutation(UPSERT_IND_EXP_PAYMENT)
+    const [{upsertPayment}] = useUpsertPaymentData()
+
+    const { IE_ID } = values
+
 
 	const upsertPaymentData = async (index, payment) => {
-		const { IE_ID } = values;
+		
 
 		const paymentPayload = {
 			...payment,
 			IE_ID,
 			IE_PAYEE_VENDORS: payment.IE_PAYEE_VENDORS ? [...payment.IE_PAYEE_VENDORS] : null
-		};
+        }
+        
+
+        upsertPayment(index,paymentPayload)
+    
 
 		//if IE_PAYMENT_ID = "" (which is default), strip it out, so it isn't sent in graphql to server which will cause error
-		if (paymentPayload.IE_PAYMENT_ID === "") {
-			delete paymentPayload.IE_PAYMENT_ID;
-		}
+		// if (paymentPayload.IE_PAYMENT_ID === "") {
+		// 	delete paymentPayload.IE_PAYMENT_ID
+		// }
 
-		paymentPayload.__typename && delete paymentPayload.__typename;
+		// paymentPayload.__typename && delete paymentPayload.__typename
 
-		const { data } = await upsertIndExpPayment({ variables: { payment: paymentPayload } });
-		setFieldValue(`payments.${index}.IE_PAYMENT_ID`, data.upsertIndExpPayment.IE_PAYMENT_ID);
-	};
+		// const { data } = await upsertIndExpPayment({ variables: { payment: paymentPayload } })
+		// setFieldValue(`payments.${index}.IE_PAYMENT_ID`, data.upsertIndExpPayment.IE_PAYMENT_ID)
+	}
+
+
+
+	// const upsertPaymentData = async (index, payment) => {
+		
+
+	// 	const paymentPayload = {
+	// 		...payment,
+	// 		IE_ID,
+	// 		IE_PAYEE_VENDORS: payment.IE_PAYEE_VENDORS ? [...payment.IE_PAYEE_VENDORS] : null
+	// 	}
+
+	// 	//if IE_PAYMENT_ID = "" (which is default), strip it out, so it isn't sent in graphql to server which will cause error
+	// 	if (paymentPayload.IE_PAYMENT_ID === "") {
+	// 		delete paymentPayload.IE_PAYMENT_ID
+	// 	}
+
+	// 	paymentPayload.__typename && delete paymentPayload.__typename
+
+	// 	const { data } = await upsertIndExpPayment({ variables: { payment: paymentPayload } })
+	// 	setFieldValue(`payments.${index}.IE_PAYMENT_ID`, data.upsertIndExpPayment.IE_PAYMENT_ID)
+	// }
 
 	//handle IE Payment deletes
 	const [deleteIndExpPayment] = useMutation(DELETE_IND_EXP_PAYMENT);
