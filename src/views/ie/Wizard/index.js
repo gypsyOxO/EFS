@@ -19,6 +19,7 @@ export const commTypes = ["DOC", "VIDEO", "AUDIO"]
 /************ disclaimers *********/
 
 /* These disclaimers are used per communication type on communication tab */
+export const defaultDisclaimers = {"language": false, "required": false, "funding_names": false, "color_original": false}
 export const disclaimers = [
     {name: "required", description: "I am aware that required PDF file of communication has not been uploaded and this report must be amended to include the PDF within one business day after it becomes available.", value: false, isRequired: true, comm_file_type: ["DOC"]},
     {name: "required", description: "I am aware that required audio file (MP3,WAV) or script file (PDF) has not been uploaded and this report must be amended to include both files within one business day after they become available.", value: false, isRequired: true, comm_file_type: ["AUDIO"]},

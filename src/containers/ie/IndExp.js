@@ -24,10 +24,10 @@ class IndExp extends Component {
 			const { client } = this.props
 
 			let data = {}
-			data = { IE_ID: 0 }
+			data = { IE_ID: 0 } //test new ie
 			// data = { IE_ID: 6590, amend: true }
 			 data = { IE_ID: 6590}
-
+			//data = { IE_ID: 6308} //test ie with no document
 			if (data.IE_ID > 0) {
 				initValues = await this.GetInitValuesFromDB(data)
 			}
