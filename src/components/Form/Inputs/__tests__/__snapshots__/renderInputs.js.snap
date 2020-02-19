@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renderInputs renders renderCheckbox 1`] = `<renderCheckbox />`;
+
+exports[`renderInputs renders renderDatePicker 1`] = `<renderDatePicker />`;
+
+exports[`renderInputs renders renderRadioGroup 1`] = `<renderRadioGroup />`;
+
+exports[`renderInputs renders renderReactSelectField 1`] = `<renderReactSelectField />`;
+
+exports[`renderInputs renders renderTextField 1`] = `<renderTextField />`;

@@ -70,7 +70,7 @@ export class renderReactSelectField extends Component {
 			<Fragment>
 				<ReactSelect
 					options={options}
-					isDisabled={disabled}
+                    isDisabled={disabled}                    
 					name={name}
 					styles={touched[name] && errors[name] && errorStyle}
 					placeholder={placeholder}
@@ -86,7 +86,7 @@ export class renderReactSelectField extends Component {
 				{/* {touched[name] && errors[name] && <FormHelperText style={{ color: "#ca0909" }}>{errors[name]}</FormHelperText>} */}
 				{errors[name] && <FormHelperText style={{ color: "#ca0909" }}>{errors[name]}</FormHelperText>}
 				<select
-					ref={this.hiddenSelect}
+                    ref={this.hiddenSelect}
 					name={name}
 					value={selectedOptions && selectedOptions.length ? selectedOptions.map(option => option.value) : ""}
 					readOnly
