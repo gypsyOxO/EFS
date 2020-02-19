@@ -18,15 +18,20 @@ export const commTypes = ["DOC", "VIDEO", "AUDIO"]
 
 /************ disclaimers *********/
 
-
+/* These disclaimers are used per communication type on communication tab */
 export const disclaimers = [
-    {name: "required", description: "I am aware that required communication file(s)  have not been uploaded.", value: false, isRequired: true},
-    {name: "color_original", description: " I affirm that communication file(s) are color originals.", value: false, isRequired: false},
-    {name: "language", description: "I affirm that communication  file(s) include all mandatory disclaimer language.", value: false, isRequired: false},
-    {name: "funding_names", description: "I affirm that communication  file(s) include all major funding names.", value: false, isRequired: false},
-        
+    {name: "required", description: "I am aware that required PDF file of communication has not been uploaded and this report must be amended to include the PDF within one business day after it becomes available.", value: false, isRequired: true, comm_file_type: ["DOC"]},
+    {name: "required", description: "I am aware that required audio file (MP3,WAV) or script file (PDF) has not been uploaded and this report must be amended to include both files within one business day after they become available.", value: false, isRequired: true, comm_file_type: ["AUDIO"]},
+    {name: "required", description: "I am aware that required video file (MP4) or script file (PDF) has not been uploaded and this report must be amended to include both files within one business day after they become available.", value: false, isRequired: true, comm_file_type: ["VIDEO"]},
+
+    {name: "color_original", description: " I affirm that uploaded PDF file is a color original.", value: false, isRequired: false, comm_file_type: ["DOC"]},
+
+    {name: "language", description: "I affirm that communication includes all mandatory disclaimer language.", value: false, isRequired: false, comm_file_type: ["DOC","AUDIO","VIDEO"]},
+    
+    {name: "funding_names", description: "I affirm that communication includes all major funding names.", value: false, isRequired: false, comm_file_type: ["DOC","AUDIO","VIDEO"]}   
 ]
- 
+
+/* These discaimers are for each page */
 export const disclaimer_comm = "I am not uploading required communication files at this time and am aware I must amend in one business day to add them."
 export const disclaimer_cont_made = "I did not make any contributions of $100 or more since my last report."
 export const disclaimer_cont_rec = "I did not receive any contributions of $100 or more since my last report."
@@ -39,7 +44,7 @@ export const disclaimer_cont_rec = "I did not receive any contributions of $100 
 
 export const purpose_box = "A separate notification must be filed for each communication. If the communication supports or opposes more than one candidate or ballot measure, then separate notifications must be filed for each candidate or ballot measure, and the spending amounts, reported in the Spending Information section must be apportioned among them."
 
-export const communications_box = "A digital copy of the communication must be filed with this notification. Los Angeles Charter \u00A7 803(s)(2) specifies the types of copies that must be filed. If the communication file is not available when this notification must be filed, the notification must be amended to include the communication within one business day after the communication becomes available."
+export const communications_box = "A digital copy of the communication must be filed with this notification. Los Angeles Charter \u00A7 803(s)(2) specifies the types of copies that must be filed. If the communication file(s) are not available when this notification must be filed, this report must be amended to include the communication file(s)  within one business day after they become available."
 
 export const spendinginfo_box = "Identify the amount of spending per payee that was made or incurred for [the candidate or ballot measure you are supporting or opposing]. If the communication supports or opposes more than one candidate or ballot measure, then apportion an equal amount in each separate notification filed."
 
