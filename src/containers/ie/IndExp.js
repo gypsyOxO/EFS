@@ -5,7 +5,8 @@ import { GET_BLANK_FORM, GET_IND_EXP } from "graphql/ie/Queries"
 
 import { graphqlFilter } from "utils/graphqlUtil"
 import { filteredIEUpsert } from "graphql/ie/FilterQueries"
-import { UPSERT_IND_EXP, UPSERT_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
+import { UPSERT_IND_EXP, UPSERT_IND_EXP_PAYMENT, UPSERT_IND_EXP_COMM } from "graphql/ie/Mutations"
+import { defaultDisclaimers } from "views/ie/Wizard"
 
 class IndExp extends Component {
 	constructor() {
@@ -24,9 +25,9 @@ class IndExp extends Component {
 			const { client } = this.props
 
 			let data = {}
-			data = { IE_ID: 0 } //test new ie
-			// data = { IE_ID: 6590, amend: true }
-			 data = { IE_ID: 6590}
+			//data = { IE_ID: 0 } //test new ie
+			data = { IE_ID: 6590, amend: true } //test amendment
+			// data = { IE_ID: 6590}
 			//data = { IE_ID: 6308} //test ie with no document
 			if (data.IE_ID > 0) {
 				initValues = await this.GetInitValuesFromDB(data)
@@ -53,9 +54,19 @@ class IndExp extends Component {
 			variables: { IE_ID: IE_ID }
 		})
 
-		//Initalizes old bad data
+		//Initalizes JSON data elements from pre-e-filing (scanned, not scanned) IEs
 		getIndExp.CONTRIBUTIONS_MADE = getIndExp.CONTRIBUTIONS_MADE ? getIndExp.CONTRIBUTIONS_MADE : []
 		getIndExp.CONTRIBUTIONS_RECEIVED = getIndExp.CONTRIBUTIONS_RECEIVED ? getIndExp.CONTRIBUTIONS_RECEIVED : []
+		let index = 0
+		for (const payment of getIndExp.payments) {
+			getIndExp.payments[index].IE_PAYEE_VENDORS = getIndExp.payments[index].IE_PAYEE_VENDORS ? getIndExp.payments[index].IE_PAYEE_VENDORS : []
+			index++
+		}
+		index = 0
+		for (const comm of getIndExp.comms) {
+			getIndExp.comms[index].DISCLAIMERS = getIndExp.comms[index].DISCLAIMERS ? getIndExp.comms[index].DISCLAIMERS : defaultDisclaimers
+			index++
+		}
 
 		if (amend) {
 			delete getIndExp.IE_ID
@@ -67,9 +78,8 @@ class IndExp extends Component {
 			getIndExp.IE_ID = upsertIndExp.IE_ID
             //IE_ID is set, now handle payments and comms
             
+			index = 0
             
-			let index = 0
-
 			for (const payment of getIndExp.payments) {
 				const paymentPayload = {
 					...payment,
@@ -79,6 +89,19 @@ class IndExp extends Component {
 
 				const new_IE_PAYMENT_ID = await this.AmendPayments(paymentPayload)
 				getIndExp.payments[index].IE_PAYMENT_ID = new_IE_PAYMENT_ID
+
+				index++
+			} 
+
+			index = 0
+			for (const comm of getIndExp.comms) {
+				const commPayload = {
+					...comm,
+					IE_ID: getIndExp.IE_ID
+				}
+
+				const new_IE_COMM_ID = await this.AmendComms(commPayload)
+				getIndExp.comms[index].IE_COMM_ID = new_IE_COMM_ID
 
 				index++
 			}
@@ -95,6 +118,16 @@ class IndExp extends Component {
         const { data } = await client.mutate({ mutation: UPSERT_IND_EXP_PAYMENT, variables: { payment: paymentPayload } })
         
 		return data.upsertIndExpPayment.IE_PAYMENT_ID
+	}
+
+	AmendComms = async commPayload => {
+
+		const { client } = this.props
+		delete commPayload.IE_COMM_ID
+		commPayload.__typename && delete commPayload.__typename
+        const { data } = await client.mutate({ mutation: UPSERT_IND_EXP_COMM, variables: { comm: commPayload } })
+        
+		return data.upsertIndExpComm.IE_COMM_ID
 	}
 
 	GetBlankForm = async ({ CMT_PER_ID }) => {

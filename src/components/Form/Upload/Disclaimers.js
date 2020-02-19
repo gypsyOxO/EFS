@@ -6,7 +6,6 @@ import { useFormikContext } from 'formik';
 
 const Disclaimers = props => {
     const {index} = props
-    let {DISCLAIMERS} = props
     const {setFieldValue} = useFormikContext()
 
      //check if all required files have been uploaded.
@@ -17,12 +16,8 @@ const Disclaimers = props => {
         }
     }
 
-    // if no disclaimers on communication, then create default.
-    DISCLAIMERS = DISCLAIMERS || defaultDisclaimers
-    //setFieldValue(`comms.${index}.DISCLAIMERS`, DISCLAIMERS)
-
     //if all required files have been uploaded and the required disclaimer checkbox was checked, then set required disclaimer value to false.
-    isRequiredUploaded && DISCLAIMERS.required && setFieldValue(`comms.${index}.DISCLAIMERS.required`, false)
+    isRequiredUploaded && props.DISCLAIMERS.required && setFieldValue(`comms.${index}.DISCLAIMERS.required`, false)
    
     //check if any files have been uploaded
     let fileAdded = false
