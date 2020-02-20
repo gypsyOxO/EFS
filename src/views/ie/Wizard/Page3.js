@@ -86,20 +86,6 @@ const RenderVendors = arrayHelpers => {
 
 	return (
 		<Grid container spacing={3} className={classes.grid}>
-			<Grid item xs={12}>
-				<div className={classes.buttons}>
-					<Fab
-						onClick={() => arrayHelpers.push(initValues)}
-						display="flex"
-						variant="extended"
-						size="medium"
-						color="secondary"
-						className={classes.button}>
-						<AddIcon />
-						&nbsp;Add Payee Vendor
-					</Fab>
-				</div>
-			</Grid>
 			{vendors &&
 				vendors.map((vendor, index) => (
 					<Fragment key={index}>
@@ -185,6 +171,20 @@ const RenderVendors = arrayHelpers => {
 						</Grid>
 					</Fragment>
 				))}
+			<Grid item xs={12}>
+				<div className={classes.buttons}>
+					<Fab
+						onClick={() => arrayHelpers.push(initValues)}
+						display="flex"
+						variant="extended"
+						size="medium"
+						color="secondary"
+						className={classes.button}>
+						<AddIcon />
+						&nbsp;Add Payee Vendor
+					</Fab>
+				</div>
+			</Grid>
 			{/* {error && <li className="error">{error}</li>} */}
 		</Grid>
 	);
@@ -220,22 +220,6 @@ const RenderPayments = props => {
 
 	return (
 		<div>
-			<div className={classes.buttons} style={{ marginRight: 10 }}>
-				<Fab
-					onClick={() => {
-						arrayHelpers.unshift(initValues);
-						addItem(payments);
-					}}
-					variant="extended"
-					size="medium"
-					color="secondary"
-					className={classes.button}>
-					<AddIcon className={classes.extendedIcon} />
-					&nbsp;Add Payment
-				</Fab>
-
-				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
-			</div>
 
 			{payments &&
 				payments.map((payment, index) => {
@@ -467,6 +451,23 @@ const RenderPayments = props => {
 						</Paper>
 					);
 				})}
+				
+			<div className={classes.buttons} style={{ marginRight: 10 }}>
+				<Fab
+					onClick={() => {
+						arrayHelpers.unshift(initValues);
+						addItem(payments);
+					}}
+					variant="extended"
+					size="medium"
+					color="secondary"
+					className={classes.button}>
+					<AddIcon className={classes.extendedIcon} />
+					&nbsp;Add Payment
+				</Fab>
+
+				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
+			</div>
 		</div>
 	);
 };

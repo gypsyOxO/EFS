@@ -85,22 +85,6 @@ const RenderContributions = props => {
 
 	return (
 		<div>
-			<div className={classes.buttons} style={{ marginRight: 10 }}>
-				<Fab
-					onClick={() => {
-						unshift(initValues);
-						addItem(CONTRIBUTIONS_MADE);
-					}}
-					variant="extended"
-					size="medium"
-					color="secondary"
-					className={classes.button}>
-					<AddIcon className={classes.extendedIcon} />
-					&nbsp;Add Contribution Made
-				</Fab>
-
-				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
-			</div>
 
 			{CONTRIBUTIONS_MADE &&
 				CONTRIBUTIONS_MADE.map((contribution, index) => {
@@ -205,6 +189,22 @@ const RenderContributions = props => {
 						</Paper>
 					);
 				})}
+			<div className={classes.buttons} style={{ marginRight: 10 }}>
+				<Fab
+					onClick={() => {
+						unshift(initValues);
+						addItem(CONTRIBUTIONS_MADE);
+					}}
+					variant="extended"
+					size="medium"
+					color="secondary"
+					className={classes.button}>
+					<AddIcon className={classes.extendedIcon} />
+					&nbsp;Add Contribution Made
+				</Fab>
+
+				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
+			</div>
 		</div>
 	);
 };
@@ -227,7 +227,6 @@ const Page4 = props => {
 		<Fragment>
 			<ContentBox>{contributions_made_box}</ContentBox>
 			<OnChangeHandler handleChange={() => upsertIEData()}>
-				<FieldArray name="CONTRIBUTIONS_MADE" render={arrayHelpers => <RenderContributions arrayHelpers={arrayHelpers} />} />
 				{!CONTRIBUTIONS_MADE.length && (
 					<Grid container spacing={3} style={{ marginTop: 10, marginLeft: 10 }}>
 						<Grid item>
@@ -237,6 +236,7 @@ const Page4 = props => {
 						</Grid>
 					</Grid>
 				)}
+				<FieldArray name="CONTRIBUTIONS_MADE" render={arrayHelpers => <RenderContributions arrayHelpers={arrayHelpers} />} />
 			</OnChangeHandler>
 
 			<div className={classes.buttons}>

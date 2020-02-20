@@ -106,23 +106,6 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 	return (
 		<div>
 			<ContentBox>{communications_box}</ContentBox>
-			<div className={classes.buttons} style={{ marginRight: 10 }}>
-				<Fab
-					onClick={() => {
-						// if (isEmpty(errors) || (errors.comms && isEmpty(errors.comms))) {
-						unshift(initValues);
-						addItem(comms);
-						// }
-					}}
-					variant="extended"
-					size="medium"
-					color="secondary"
-					//{isEmpty(errors) ? "secondary" : isEmpty(errors.comms) ? "secondary" : null}
-					className={classes.button}>
-					<AddIcon className={classes.extendedIcon} />
-					&nbsp;Add Communication
-				</Fab>
-			</div>
 			<div>
 				{comms &&
 					comms.map((comm, index) => (
@@ -181,6 +164,23 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 					</Grid>
 				)}
 			</OnChangeHandler>
+			<div className={classes.buttons} style={{ marginRight: 10 }}>
+				<Fab
+					onClick={() => {
+						// if (isEmpty(errors) || (errors.comms && isEmpty(errors.comms))) {
+						unshift(initValues);
+						addItem(comms);
+						// }
+					}}
+					variant="extended"
+					size="medium"
+					color="secondary"
+					//{isEmpty(errors) ? "secondary" : isEmpty(errors.comms) ? "secondary" : null}
+					className={classes.button}>
+					<AddIcon className={classes.extendedIcon} />
+					&nbsp;Add Communication
+				</Fab>
+			</div>
 		</div>
 	);
 };
