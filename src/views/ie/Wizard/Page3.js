@@ -1,24 +1,24 @@
-import React, { Fragment } from "react";
-import { Field, FieldArray, getIn } from "formik";
-import { renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs";
-import { useMutation } from "@apollo/react-hooks";
+import React, { Fragment } from "react"
+import { Field, FieldArray, getIn } from "formik"
+import { renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
+import { useMutation } from "@apollo/react-hooks"
 
-import Paper from "@material-ui/core/Paper";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import DeleteIcon from "@material-ui/icons/Delete";
+import Paper from "@material-ui/core/Paper"
+import AddIcon from "@material-ui/icons/Add"
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever"
+import DeleteIcon from "@material-ui/icons/Delete"
 
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@material-ui/core/IconButton"
 
-import Fab from "@material-ui/core/Fab";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import WizardNextButton from "components/Wizard/WizardNextButton";
-import WizardBackButton from "components/Wizard/WizardBackButton";
+import Fab from "@material-ui/core/Fab"
+import Typography from "@material-ui/core/Typography"
+import Grid from "@material-ui/core/Grid"
+import WizardNextButton from "components/Wizard/WizardNextButton"
+import WizardBackButton from "components/Wizard/WizardBackButton"
 
-import ContentBox from "components/UI/Content/ContentBox";
+import ContentBox from "components/UI/Content/ContentBox"
 
-import { spendinginfo_box } from "views/ie/Wizard";
+import { spendinginfo_box } from "views/ie/Wizard"
 
 import { makeStyles } from "@material-ui/core/styles"
 import * as pageValidations from "validation/ie/indexpSchema"
@@ -28,7 +28,6 @@ import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
 import useUpsertPaymentData from "graphql/ie/hooks/useUpsertPaymentData"
 import Collapse from "@material-ui/core/Collapse"
 import { convertISODateToJsDate } from "utils/dateUtil"
-
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -67,10 +66,13 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: "center",
 		marginBottom: theme.spacing(4)
 	}
-}));
+}))
 
-const RenderVendors = arrayHelpers => {
-	const classes = useStyles();
+function RenderVendors({ arrayHelpers, payment, paymentIndex }) {
+	const { IE_ID } = arrayHelpers.form.values
+	const vendors = getIn(arrayHelpers.form.values, arrayHelpers.name)
+
+	const classes = useStyles()
 
 	const initValues = {
 		vendorLastName: "",
@@ -81,8 +83,16 @@ const RenderVendors = arrayHelpers => {
 		vendorAddressState: "",
 		vendorAddressZip5: "",
 		vendorAddressZip4: ""
-	};
-	const vendors = getIn(arrayHelpers.form.values, arrayHelpers.name);
+	}
+
+	const [{ upsertPayment }] = useUpsertPaymentData()
+
+	function handleDeleteVendor(vendorIndex) {
+		arrayHelpers.remove(vendorIndex)
+		let paymentPayload = buildPaymentPayload(IE_ID, payment)
+		paymentPayload.IE_PAYEE_VENDORS.splice(vendorIndex, 1)
+		upsertPayment(paymentIndex, paymentPayload)
+	}
 
 	return (
 		<Grid container spacing={3} className={classes.grid}>
@@ -96,7 +106,7 @@ const RenderVendors = arrayHelpers => {
 						) : null}
 
 						<Grid item>
-							<DeleteForeverIcon className={classes.cancel} onClick={() => arrayHelpers.remove(index)} />
+							<DeleteForeverIcon className={classes.cancel} onClick={() => handleDeleteVendor(index)} />
 						</Grid>
 						<Grid item xs={11}>
 							<Typography variant="body1" gutterBottom>
@@ -185,46 +195,56 @@ const RenderVendors = arrayHelpers => {
 					</Fab>
 				</div>
 			</Grid>
-			{/* {error && <li className="error">{error}</li>} */}
 		</Grid>
-	);
-};
+	)
+}
 
-//const renderPayments = ({ fields, meta: { touched, error, submitFailed } }) => {
 
-const initValues = {
-	IE_PAYMENT_ID: "",
-	IE_PAYEE: "",
-	IE_PAYEE_LNAME: "",
-	IE_PAYEE_FNAME: "",
-	IE_PAYEE_ADDR_STR: "",
-	IE_PAYEE_ADDR_STR2: "",
-	IE_PAYEE_ADDR_CITY: "",
-	IE_PAYEE_ADDR_ST: "",
-	IE_PAYEE_ADDR_ZIP_5: "",
-	IE_PAYEE_ADDR_ZIP_4: "",
-	IE_PAYMENT_DESC: "",
-	IE_PAYMENT_AMT: ""
-};
 
-const RenderPayments = props => {
-	const { arrayHelpers, upsertPaymentData, deletePaymentData } = props;
+function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {unshift, remove, name}, deletePaymentData }) {
+    const { IE_ID } = form.values    
+	const payments = getIn(form.values, name)
 
-	const classes = useStyles();
+    const classes = useStyles()
 
-	const payments = getIn(arrayHelpers.form.values, arrayHelpers.name);
-	const errors = getIn(arrayHelpers.form.errors, arrayHelpers.name);
-	const touched = getIn(arrayHelpers.form.touched, arrayHelpers.name);
+    const [{ upsertPayment }] = useUpsertPaymentData()
+    const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(payments)
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(payments);
+    const initValues = {
+        IE_PAYMENT_ID: "",
+        IE_PAYEE: "",
+        IE_PAYEE_LNAME: "",
+        IE_PAYEE_FNAME: "",
+        IE_PAYEE_ADDR_STR: "",
+        IE_PAYEE_ADDR_STR2: "",
+        IE_PAYEE_ADDR_CITY: "",
+        IE_PAYEE_ADDR_ST: "",
+        IE_PAYEE_ADDR_ZIP_5: "",
+        IE_PAYEE_ADDR_ZIP_4: "",
+        IE_PAYMENT_DESC: "",
+        IE_PAYMENT_AMT: ""
+    }
+
+	function upsertPaymentData(index, payment) {
+		const paymentPayload = buildPaymentPayload(IE_ID, payment)
+		upsertPayment(index, paymentPayload)
+    }
+    
+    function handleAddPayment() {
+        unshift(initValues)
+        addItem(payments)
+    }
+
+    function handleDeletePayment(index,payment) {
+        payment.IE_PAYMENT_ID && deletePaymentData(payment)
+        remove(index)
+        deleteItem(payments)
+    }
 
 	return (
 		<div>
-
 			{payments &&
 				payments.map((payment, index) => {
-					// const isError = Array.isArray(errors) && errors.length
-					// const isTouched = Array.isArray(touched) && typeof touched[index] !== "undefined"
 
 					return (
 						<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
@@ -261,11 +281,7 @@ const RenderPayments = props => {
 									)}
 									<Grid item xs={12} sm={1}>
 										<IconButton
-											onClick={() => {
-												payment.IE_PAYMENT_ID && deletePaymentData(payment);
-												arrayHelpers.remove(index);
-												deleteItem(payments);
-											}}
+											onClick={() => handleDeletePayment(index,payment)}
 											aria-label="delete">
 											<DeleteIcon />
 										</IconButton>
@@ -276,33 +292,14 @@ const RenderPayments = props => {
 								</Grid>
 								<Collapse in={expanded[index]} unmountOnExit>
 									<Grid container spacing={3} className={classes.grid}>
-										{/* <Grid item xs={12}>                   
-                            index: {index}             
-								{isError
-									? JSON.stringify(errors)
-									: null}
-								<br />
-								{isTouched > 0
-									? JSON.stringify(touched[index])
-									: null}
-							</Grid> */}
 										<Grid item xs={12} sm={4}>
-											<Field
-												name={`payments.${index}.IE_PAYMENT_DATE`}
-												//helperText={isTouched && typeof touched[index].IE_PAYMENT_DATE !== "undefined" ? isError ? errors[index].IE_PAYMENT_DATE : null : null}
-												//error={isTouched && typeof touched[index].IE_PAYMENT_DATE !== "undefined" ? isError ? Boolean(errors[index].IE_PAYMENT_DATE) : null : null}
-												component={renderDatePicker}
-												fullWidth
-												label="Date"
-											/>
+											<Field name={`payments.${index}.IE_PAYMENT_DATE`} component={renderDatePicker} fullWidth label="Date" />
 										</Grid>
 
 										<Grid item xs={12} sm={4}>
 											<Field
 												name={`payments.${index}.IE_PAYMENT_AMT`}
 												type="number"
-												//helperText={isTouched && typeof touched[index].IE_PAYMENT_AMT !== "undefined" ? isError ? errors[index].IE_PAYMENT_AMT : null : null}
-												//error={isTouched && typeof touched[index].IE_PAYMENT_AMT !== "undefined" ? isError ? Boolean(errors[index].IE_PAYMENT_AMT) : null : null}
 												component={renderTextField}
 												fullWidth
 												label="Amount"
@@ -317,20 +314,6 @@ const RenderPayments = props => {
 											<Field
 												name={`payments.${index}.IE_PAYEE_LNAME`}
 												type="text"
-												// helperText={
-												// 	isTouched && typeof touched[index].IE_PAYEE !== "undefined"
-												// 		? isError
-												// 			? errors[index].IE_PAYEE
-												// 			: null
-												// 		: null
-												// }
-												// error={
-												// 	isTouched && typeof touched[index].IE_PAYEE !== "undefined"
-												// 		? isError
-												// 			? Boolean(errors[index].IE_PAYEE)
-												// 			: null
-												// 		: null
-												// }
 												component={renderTextField}
 												fullWidth
 												label="Payee Last/Business Name"
@@ -341,20 +324,6 @@ const RenderPayments = props => {
 											<Field
 												name={`payments.${index}.IE_PAYEE_FNAME`}
 												type="text"
-												// helperText={
-												// 	isTouched && typeof touched[index].IE_PAYEE !== "undefined"
-												// 		? isError
-												// 			? errors[index].IE_PAYEE
-												// 			: null
-												// 		: null
-												// }
-												// error={
-												// 	isTouched && typeof touched[index].IE_PAYEE !== "undefined"
-												// 		? isError
-												// 			? Boolean(errors[index].IE_PAYEE)
-												// 			: null
-												// 		: null
-												// }
 												component={renderTextField}
 												fullWidth
 												label="Payee First Name (if individual)"
@@ -418,20 +387,6 @@ const RenderPayments = props => {
 											<Field
 												name={`payments.${index}.IE_PAYMENT_DESC`}
 												type="text"
-												// helperText={
-												// 	isTouched && typeof touched[index].IE_PAYMENT_DESC !== "undefined"
-												// 		? isError
-												// 			? errors[index].IE_PAYMENT_DESC
-												// 			: null
-												// 		: null
-												// }
-												// error={
-												// 	isTouched && typeof touched[index].IE_PAYMENT_DESC !== "undefined"
-												// 		? isError
-												// 			? Boolean(errors[index].IE_PAYMENT_DESC)
-												// 			: null
-												// 		: null
-												// }
 												component={renderTextField}
 												fullWidth
 												label="Payee Services: (All services provided by payee for reported amount)"
@@ -443,21 +398,22 @@ const RenderPayments = props => {
 											<Typography variant="body2">
 												Payee Vendors: (name and address of each vendor used by payee for reported amount)
 											</Typography>
-											<FieldArray name={`payments.${index}.IE_PAYEE_VENDORS`} component={RenderVendors} />
+
+											<FieldArray
+												name={`payments.${index}.IE_PAYEE_VENDORS`}
+												render={arrayHelpers => <RenderVendors arrayHelpers={arrayHelpers} paymentIndex={index} payment={payment} />}
+											/>
 										</Grid>
 									</Grid>
 								</Collapse>
 							</OnChangeHandler>
 						</Paper>
-					);
+					)
 				})}
-				
+
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => {
-						arrayHelpers.unshift(initValues);
-						addItem(payments);
-					}}
+					onClick={() => handleAddPayment()}
 					variant="extended"
 					size="medium"
 					color="secondary"
@@ -465,75 +421,29 @@ const RenderPayments = props => {
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Payment
 				</Fab>
-
-				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
 			</div>
 		</div>
-	);
-};
+	)
+}
+
+function buildPaymentPayload(IE_ID, payment) {
+	return {
+		...payment,
+		IE_ID,
+		IE_PAYEE_VENDORS: payment.IE_PAYEE_VENDORS ? [...payment.IE_PAYEE_VENDORS] : null
+	}
+}
 
 const Page3 = props => {
 	const { values } = props
 	const classes = useStyles()
 
-    //const [upsertIndExpPayment] = useMutation(UPSERT_IND_EXP_PAYMENT)
-    const [{upsertPayment}] = useUpsertPaymentData()
-
-    const { IE_ID } = values
-
-
-	const upsertPaymentData = async (index, payment) => {
-		
-
-		const paymentPayload = {
-			...payment,
-			IE_ID,
-			IE_PAYEE_VENDORS: payment.IE_PAYEE_VENDORS ? [...payment.IE_PAYEE_VENDORS] : null
-        }
-        
-
-        upsertPayment(index,paymentPayload)
-    
-
-		//if IE_PAYMENT_ID = "" (which is default), strip it out, so it isn't sent in graphql to server which will cause error
-		// if (paymentPayload.IE_PAYMENT_ID === "") {
-		// 	delete paymentPayload.IE_PAYMENT_ID
-		// }
-
-		// paymentPayload.__typename && delete paymentPayload.__typename
-
-		// const { data } = await upsertIndExpPayment({ variables: { payment: paymentPayload } })
-		// setFieldValue(`payments.${index}.IE_PAYMENT_ID`, data.upsertIndExpPayment.IE_PAYMENT_ID)
-	}
-
-
-
-	// const upsertPaymentData = async (index, payment) => {
-		
-
-	// 	const paymentPayload = {
-	// 		...payment,
-	// 		IE_ID,
-	// 		IE_PAYEE_VENDORS: payment.IE_PAYEE_VENDORS ? [...payment.IE_PAYEE_VENDORS] : null
-	// 	}
-
-	// 	//if IE_PAYMENT_ID = "" (which is default), strip it out, so it isn't sent in graphql to server which will cause error
-	// 	if (paymentPayload.IE_PAYMENT_ID === "") {
-	// 		delete paymentPayload.IE_PAYMENT_ID
-	// 	}
-
-	// 	paymentPayload.__typename && delete paymentPayload.__typename
-
-	// 	const { data } = await upsertIndExpPayment({ variables: { payment: paymentPayload } })
-	// 	setFieldValue(`payments.${index}.IE_PAYMENT_ID`, data.upsertIndExpPayment.IE_PAYMENT_ID)
-	// }
-
 	//handle IE Payment deletes
-	const [deleteIndExpPayment] = useMutation(DELETE_IND_EXP_PAYMENT);
+	const [deleteIndExpPayment] = useMutation(DELETE_IND_EXP_PAYMENT)
 
 	const deletePaymentData = payment => {
-		deleteIndExpPayment({ variables: { IE_PAYMENT_ID: payment.IE_COMM_ID } });
-	};
+		deleteIndExpPayment({ variables: { IE_PAYMENT_ID: payment.IE_COMM_ID } })
+	}
 
 	return (
 		<Fragment>
@@ -541,13 +451,7 @@ const Page3 = props => {
 
 			<FieldArray
 				name="payments"
-				render={arrayHelpers => (
-					<RenderPayments
-						arrayHelpers={arrayHelpers}
-						upsertPaymentData={(index, payment) => upsertPaymentData(index, payment)}
-						deletePaymentData={comm => deletePaymentData(comm)}
-					/>
-				)}
+				render={arrayHelpers => <RenderPayments arrayHelpers={arrayHelpers} deletePaymentData={comm => deletePaymentData(comm)} />}
 			/>
 
 			<div className={classes.buttons}>
@@ -555,7 +459,7 @@ const Page3 = props => {
 				<WizardNextButton {...props} validationGroup={pageValidations.Page3} />
 			</div>
 		</Fragment>
-	);
-};
+	)
+}
 
-export default Page3;
+export default Page3
