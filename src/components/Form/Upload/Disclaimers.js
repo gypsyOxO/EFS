@@ -1,8 +1,9 @@
 import React, { Fragment } from "react"
-import { commTypes, disclaimers, defaultDisclaimers } from "views/ie/Wizard"
+import { commTypes, disclaimers } from "views/ie/Wizard"
 import Grid from "@material-ui/core/Grid"
 import Checkbox from "components/Form/Inputs/Checkbox"
 import { useFormikContext } from 'formik';
+
 
 const Disclaimers = props => {
     const {index} = props
@@ -35,7 +36,7 @@ const Disclaimers = props => {
         show = ((disclaimer.isRequired && !isRequiredUploaded)      // Show disclaimers for "Required file" if any required file is missing.
                 || (!disclaimer.isRequired && fileAdded) )          // ..or other disclaimers if any file has been uploaded
                 &&
-                (disclaimer.comm_file_type.some(comm_file_type => comm_file_type==props.COMM_FILE_TYPE))    // filter by disclaimers specific to the type (DOC, AUDIO, VIDEO)
+                (disclaimer.comm_file_type.some(comm_file_type => comm_file_type === props.COMM_FILE_TYPE))    // filter by disclaimers specific to the type (DOC, AUDIO, VIDEO)
 	    return show && <Checkbox key={disclaimer.name} name={`comms.${index}.DISCLAIMERS.${disclaimer.name}`} label={disclaimer.description} />
 
 	})
@@ -46,6 +47,11 @@ const Disclaimers = props => {
 			</Grid>
 		
 	)
+}
+
+Disclaimers.defaultProps = {
+    index: 0,
+    required: false
 }
 
 export default Disclaimers

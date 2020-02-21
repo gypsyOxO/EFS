@@ -20,6 +20,7 @@ export default gql`
 		getBallotmeasure(BM_ID: Int!): BallotMeasure!
         getIndExpPayment(IE_PAYMENT_ID: Int!): IndExpPayment
 		getCommittees: [Committee!]!
+        getAmendments(ORIG_IE_ID: Int!): [IndExp]
 	}
 
 	type Mutation {
@@ -46,7 +47,7 @@ export default gql`
         MODIFIED_FILE_NAME: String!
     }
 
-
+   
 	type IndExp {
 		IE_ID: Int!
 		SUBJECT: String
@@ -70,6 +71,7 @@ export default gql`
         CONTRIBUTIONS_MADE: JSON
         CONTRIBUTIONS_RECEIVED: JSON
         PRIMARY_GENERAL_FLG: String
+        IE_STATUS_ID: Int
 	}
 
 	input IndExpInput {

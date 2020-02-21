@@ -1,12 +1,14 @@
 import React, { Component, Fragment } from "react"
 import Wizard from "../../components/Wizard/Wizard"
 import { withApollo } from "react-apollo"
-import { GET_BLANK_FORM, GET_IND_EXP } from "graphql/ie/Queries"
+import { GET_BLANK_FORM, GET_IND_EXP, GET_AMENDMENTS } from "graphql/ie/Queries"
 
 import { graphqlFilter } from "utils/graphqlUtil"
 import { filteredIEUpsert } from "graphql/ie/FilterQueries"
 import { UPSERT_IND_EXP, UPSERT_IND_EXP_PAYMENT, UPSERT_IND_EXP_COMM } from "graphql/ie/Mutations"
 import { defaultDisclaimers } from "views/ie/Wizard"
+import {getMaxAmendment} from "./setUpAmendments"
+
 
 class IndExp extends Component {
 	constructor() {
@@ -26,8 +28,9 @@ class IndExp extends Component {
 
 			let data = {}
 			//data = { IE_ID: 0 } //test new ie
-			//data = { IE_ID: 6590, amend: true } //test amendment
-			 data = { IE_ID: 6590}
+            //data = { IE_ID: 6590, amend: true } //test amendment
+           
+		    data = { IE_ID: 6590}
 			//data = { IE_ID: 6308} //test ie with no document
 			if (data.IE_ID > 0) {
 				initValues = await this.GetInitValuesFromDB(data)
@@ -37,33 +40,53 @@ class IndExp extends Component {
 				initValues: { ...initValues }
 			})
 		}
-	}
+    }
+    
+    checkChecked() {
+        return true
+    }
+
 
 	GetInitValuesFromDB = async ({ IE_ID, amend }) => {
-		const { client } = this.props
+        const { client } = this.props
 
 		//reinitialize apollo and react init state for formik context
 		await client.clearStore()
-		this.setState({ initValues: {} })
+        this.setState({ initValues: {} })
+               
+        //if amending, needs new IE_ID to base off of. if amendment not in status 3 or no records returned, then turns into a standard edit .
+        if (amend) {
+            let { data: {getAmendments}} = await client.query({query: GET_AMENDMENTS, variables: {ORIG_IE_ID: IE_ID}})
 
-		// reads from server
+            
+            if (getAmendments.length) {
+                const amendment = getMaxAmendment(getAmendments)
+                IE_ID = amendment[0].IE_ID
+                amend = amendment[0].IE_STATUS_ID === 3 ? true : false   
+
+            }
+        }
+             
 		let {
 			data: { getIndExp }
 		} = await client.query({
 			query: GET_IND_EXP,
 			variables: { IE_ID: IE_ID }
-		})
+        })
+        
+
 
 		//Initalizes JSON data elements from pre-e-filing (scanned, not scanned) IEs
 		getIndExp.CONTRIBUTIONS_MADE = getIndExp.CONTRIBUTIONS_MADE ? getIndExp.CONTRIBUTIONS_MADE : []
-		getIndExp.CONTRIBUTIONS_RECEIVED = getIndExp.CONTRIBUTIONS_RECEIVED ? getIndExp.CONTRIBUTIONS_RECEIVED : []
-		let index = 0
-		for (const payment of getIndExp.payments) {
+        getIndExp.CONTRIBUTIONS_RECEIVED = getIndExp.CONTRIBUTIONS_RECEIVED ? getIndExp.CONTRIBUTIONS_RECEIVED : []
+        
+		
+		for (let index = 0; index < getIndExp.payments.length; index++) {
 			getIndExp.payments[index].IE_PAYEE_VENDORS = getIndExp.payments[index].IE_PAYEE_VENDORS ? getIndExp.payments[index].IE_PAYEE_VENDORS : []
-			index++
+		
 		}
-		index = 0
-		for (const comm of getIndExp.comms) {
+		
+		for (let index = 0; index < getIndExp.comms.length; index++) {
 			getIndExp.comms[index].DISCLAIMERS = getIndExp.comms[index].DISCLAIMERS ? getIndExp.comms[index].DISCLAIMERS : defaultDisclaimers
 			index++
 		}
@@ -78,7 +101,7 @@ class IndExp extends Component {
 			getIndExp.IE_ID = upsertIndExp.IE_ID
             //IE_ID is set, now handle payments and comms
             
-			index = 0
+			let index = 0
             
 			for (const payment of getIndExp.payments) {
 				const paymentPayload = {

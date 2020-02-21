@@ -137,6 +137,16 @@ export const GET_COMM_TYPES = gql`
 	}
 `
 
+export const GET_AMENDMENTS = gql`
+query GetAmendments($ORIG_IE_ID: Int!) {
+		getAmendments(ORIG_IE_ID: $ORIG_IE_ID) {
+            IE_ID
+            AMEND_NUM
+            IE_STATUS_ID
+        }
+    }
+`
+
 
 
 // ====================================================

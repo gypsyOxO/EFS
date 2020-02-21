@@ -1,6 +1,6 @@
 import GraphQLJSON from "graphql-type-json"
 import { GraphQLDate, GraphQLDateTime, GraphQLTime } from "graphql-iso-date"
-require('dotenv').config()
+require("dotenv").config()
 
 const { createWriteStream } = require("fs") // added
 const path = require("path") //added
@@ -50,24 +50,24 @@ export default {
 			return true
 		},
 
-		updateIndExp: async (parent, args, { db }) => {		
+		updateIndExp: async (parent, args, { db }) => {
 			await db.ind_exp.update(args.ie, { where: { IE_ID: args.IE_ID } })
 			return db.ind_exp.findByPk(args.IE_ID)
 		},
 
 		addIndExp: (parent, args, { db }) => {
 			return db.ind_exp.create(args.ie)
-        },
-        
-        upsertIndExp: async (_,args, {db}) => {
-            if (typeof args.ie.IE_ID !== "undefined") {
-                await db.ind_exp.update(args.ie, { where: { IE_ID: args.ie.IE_ID } })
+		},
+
+		upsertIndExp: async (_, args, { db }) => {
+			if (typeof args.ie.IE_ID !== "undefined") {
+				await db.ind_exp.update(args.ie, { where: { IE_ID: args.ie.IE_ID } })
 
 				return db.ind_exp.findByPk(args.ie.IE_ID)
 			} else {
 				return db.ind_exp.create(args.ie)
-			}                
-        },
+			}
+		},
 
 		upsertIndExpPayment: async (parent, args, { db }) => {
 			if (typeof args.payment.IE_PAYMENT_ID !== "undefined") {
@@ -80,8 +80,8 @@ export default {
 		},
 
 		deleteIndExpPayment: (_, { IE_PAYMENT_ID }, { db }) => {
-            //returns number of deleted rows
-            return db.ind_exp_payment.destroy({ where: { IE_PAYMENT_ID: IE_PAYMENT_ID } })            
+			//returns number of deleted rows
+			return db.ind_exp_payment.destroy({ where: { IE_PAYMENT_ID: IE_PAYMENT_ID } })
 		},
 
 		upsertIndExpComm: async (parent, args, { db }) => {
@@ -92,14 +92,12 @@ export default {
 			} else {
 				return db.ind_exp_communication.create(args.comm)
 			}
-        },
+		},
 
-        deleteIndExpComm: (_,{IE_COMM_ID}, {db}) => {
-            //returns number of deleted rows
-            return db.ind_exp_communication.destroy({where: {IE_COMM_ID: IE_COMM_ID}})
-            
-        }
-
+		deleteIndExpComm: (_, { IE_COMM_ID }, { db }) => {
+			//returns number of deleted rows
+			return db.ind_exp_communication.destroy({ where: { IE_COMM_ID: IE_COMM_ID } })
+		}
 	},
 
 	Query: {
@@ -109,7 +107,21 @@ export default {
 		getBallotmeasures: (parent, args, { db }) => db.ballotmeasures.findAll(),
 		getCommtypes: (parent, args, { db }) => db.comm_type.findAll({ where: { ACTIVE_FLG: 1 } }),
 		getIndExp: (parent, { IE_ID }, { db }) => db.ind_exp.findByPk(IE_ID),
-		getCommittees: (parent, args, { db }) => db.committee.findAll()
+		getCommittees: (parent, args, { db }) => db.committee.findAll(),
+		getAmendments: (parent, { ORIG_IE_ID }, { db }) => {
+			const Op = db.Sequelize.Op
+			return db.ind_exp.findAll({
+				where: {
+					ORIG_IE_ID: ORIG_IE_ID,
+					IE_STATUS_ID: {
+						[Op.ne]: -1
+					},
+					IE_ID: {
+						[Op.ne]: ORIG_IE_ID
+					}
+				}
+			})
+		}
 	}
 }
 

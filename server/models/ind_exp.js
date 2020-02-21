@@ -82,7 +82,10 @@ module.exports = function(sequelize, DataTypes) {
 			CMT_PER_ID: {
 				type: DataTypes.INTEGER(10),
 				allowNull: true
-			},
+            },            
+			IE_STATUS_ID: {
+				type: DataTypes.INTEGER(11)
+			},            
 			IE_ACTIVE_FLG: {
 				type: DataTypes.INTEGER(1).UNSIGNED.ZEROFILL,
 				allowNull: true,
