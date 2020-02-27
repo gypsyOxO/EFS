@@ -109,7 +109,7 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { push, remove }, up
 			<div>
 				{comms &&
 					comms.map((comm, index) => (
-						<Paper key={comm.IE_COMM_ID} className={classes.paper} onClick={() => handleExpandClick(index)}>
+						<Paper key={comm.IE_COMM_ID} className={classes.paper}>
 							<OnChangeHandler handleChange={() => upsertCommData(index, comm)}>
 								<Grid container>
 									{expanded[index] ? (
@@ -119,7 +119,7 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { push, remove }, up
 											</Typography>
 										</Grid>
 									) : (
-										<Grid item xs={12} sm={10}>
+										<Grid item xs={12} sm={10} onClick={() => handleExpandClick(index)}>
 											<Typography variant="body1" gutterBottom>
 												<b>Type:&nbsp;</b>
 												{comm.COMM_TYPE}
@@ -138,7 +138,7 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { push, remove }, up
 										</IconButton>
 									</Grid>
 									<Grid item xs={12} sm={1}>
-										<ExpandButton index={index} />
+										<ExpandButton index={index} onClick={() => handleExpandClick(index)} />
 									</Grid>
 								</Grid>
 								<Collapse in={expanded[index]} unmountOnExit>
@@ -167,7 +167,6 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { push, remove }, up
 					variant="extended"
 					size="medium"
 					color={isValid ? "secondary" : "default"}
-					//{isEmpty(errors) ? "secondary" : isEmpty(errors.comms) ? "secondary" : null}
 					className={classes.button}>
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Communication

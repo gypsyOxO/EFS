@@ -27,15 +27,12 @@ function useExpandClick(initialState) {
 
 	const [expanded, setExpanded] = useState(
 		initialState && initialState.length
-			? initialState.length === 1
-				? [true]
-				: [true, ...new Array(initialState.length - 1).fill(false, 0, initialState.length - 1)]
-			: []
+			? [...new Array(initialState.length - 1).fill(false, 0, initialState.length)] : []
 	)
 
 	const handleExpandClick = index => {
 		let newExpandList = [...new Array(initialState.length).fill(false, 0, initialState.length)]
-		newExpandList.splice(index, 1, true)
+		newExpandList.splice(index, 1, !expanded[index])
 		setExpanded(newExpandList)
 	}
 
@@ -49,8 +46,8 @@ function useExpandClick(initialState) {
 
 
 
-	const ExpandButton = ({index}) => (
-		<IconButton
+	const ExpandButton = ({index, onClick}) => (
+		<IconButton onClick={onClick}
 			className={clsx(classes.expand, {
 				[classes.expandOpen]: expanded[index]
 			})}>
