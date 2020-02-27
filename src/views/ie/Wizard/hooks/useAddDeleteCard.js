@@ -5,10 +5,10 @@ function useAddDeleteCard() {
 	const { isValid } = useFormikContext()
 	const validate = useValidateForm()
 
-	async function addCard(initValues, type, unshift, addItem) {
+	async function addCard(initValues, type, push, addItem) {
 		await validate()
 		if (isValid) {
-			unshift(initValues)
+			push(initValues)
 			addItem(type)
 		}
     }

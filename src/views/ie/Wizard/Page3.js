@@ -203,7 +203,7 @@ function RenderVendors({ arrayHelpers, payment, paymentIndex }) {
 
 
 
-function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {unshift, remove, name}, deletePaymentData }) {
+function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {push, remove, name}, deletePaymentData }) {
     const { IE_ID } = form.values    
 	const payments = getIn(form.values, name)
 
@@ -413,7 +413,7 @@ function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {unshift, remove, 
 
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => addCard(initValues,payments, unshift, addItem)}
+					onClick={() => addCard(initValues,payments, push, addItem)}
 					variant="extended"
 					size="medium"
 					color="secondary"

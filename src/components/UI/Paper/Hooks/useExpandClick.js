@@ -44,7 +44,7 @@ function useExpandClick(initialState) {
 	}
 
 	const addItem = items => {
-		setExpanded([true, ...new Array(items.length).fill(false, 0, items.length)])
+		setExpanded([...new Array(items.length).fill(false, 0, items.length), true])
 	}
 
 

@@ -274,7 +274,7 @@ const RenderContributions = props => {
 				))}
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => addCard(initValues, CONTRIBUTIONS_RECEIVED, arrayHelpers.unshift, addItem)}
+					onClick={() => addCard(initValues, CONTRIBUTIONS_RECEIVED, arrayHelpers.push, addItem)}
 					variant="extended"
 					size="medium"
 					color="secondary"

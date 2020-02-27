@@ -93,7 +93,7 @@ const initValues = {
 	DISCLAIMERS: { required: false, color_original: false, language: false, funding_names: false }
 }
 
-const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove }, upsertCommData, deleteCommData, upsertIEData }) => {
+const RenderCommunications = ({ arrayHelpers, arrayHelpers: { push, remove }, upsertCommData, deleteCommData, upsertIEData }) => {
 	const { errors, touched, setFieldValue, setFieldError, setFieldTouched, validateForm, isValid } = arrayHelpers.form
 	const classes = useStyles()
 
@@ -163,7 +163,7 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 			</OnChangeHandler>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => addCard(initValues, comms, unshift, addItem)}
+					onClick={() => addCard(initValues, comms, push, addItem)}
 					variant="extended"
 					size="medium"
 					color={isValid ? "secondary" : "default"}

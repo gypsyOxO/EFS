@@ -78,7 +78,7 @@ const RenderContributions = props => {
 	const classes = useStyles()
 	const {
 		arrayHelpers,
-		arrayHelpers: { unshift, remove }
+		arrayHelpers: { push, remove }
 	} = props
 	const { CONTRIBUTIONS_MADE } = arrayHelpers.form.values
 
@@ -191,7 +191,7 @@ const RenderContributions = props => {
 				})}
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => addCard(initValues, CONTRIBUTIONS_MADE, unshift, addItem)}
+					onClick={() => addCard(initValues, CONTRIBUTIONS_MADE, push, addItem)}
 					variant="extended"
 					size="medium"
 					color="secondary"
