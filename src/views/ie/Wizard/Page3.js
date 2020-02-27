@@ -24,10 +24,12 @@ import { makeStyles } from "@material-ui/core/styles"
 import * as pageValidations from "validation/ie/indexpSchema"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 import { UPSERT_IND_EXP_PAYMENT, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
-import useExpandClick from "components/UI/Paper/Hooks/useExpandClick"
+import useExpandClick from "components/UI/Paper/hooks/useExpandClick"
 import useUpsertPaymentData from "graphql/ie/hooks/useUpsertPaymentData"
 import Collapse from "@material-ui/core/Collapse"
 import { convertISODateToJsDate } from "utils/dateUtil"
+import useAddDeleteCard from './hooks/useAddDeleteCard';
+
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -210,6 +212,9 @@ function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {unshift, remove, 
     const [{ upsertPayment }] = useUpsertPaymentData()
     const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(payments)
 
+    const [{addCard,deleteCard}] = useAddDeleteCard()
+
+
     const initValues = {
         IE_PAYMENT_ID: "",
         IE_PAYEE: "",
@@ -230,15 +235,10 @@ function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {unshift, remove, 
 		upsertPayment(index, paymentPayload)
     }
     
-    function handleAddPayment() {
-        unshift(initValues)
-        addItem(payments)
-    }
 
     function handleDeletePayment(index,payment) {
         payment.IE_PAYMENT_ID && deletePaymentData(payment)
-        remove(index)
-        deleteItem(payments)
+        deleteCard(payments,index,remove,deleteItem)   
     }
 
 	return (
@@ -413,7 +413,7 @@ function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {unshift, remove, 
 
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => handleAddPayment()}
+					onClick={() => addCard(initValues,payments, unshift, addItem)}
 					variant="extended"
 					size="medium"
 					color="secondary"

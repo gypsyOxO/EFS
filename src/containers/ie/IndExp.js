@@ -24,10 +24,10 @@ class IndExp extends Component {
 		//*****for testing purposes only*****
 		if (process.env.NODE_ENV === "development") {
 			let initValues = {}
-			const { client } = this.props
+			//const { client } = this.props
 
-			let data = {}
-			//data = { IE_ID: 0 } //test new ie
+			let data
+			// data = { IE_ID: 0 } //test new ie
             //data = { IE_ID: 6590, amend: true } //test amendment
            
 		    data = { IE_ID: 6590}
@@ -62,7 +62,7 @@ class IndExp extends Component {
             if (getAmendments.length) {
                 const amendment = getMaxAmendment(getAmendments)
                 IE_ID = amendment[0].IE_ID
-                amend = amendment[0].IE_STATUS_ID === 3 ? true : false   
+                amend = amendment[0].IE_STATUS_ID === 3
 
             }
         }

@@ -1,38 +1,39 @@
-import React, { Fragment } from "react";
-import { Field, FieldArray } from "formik";
+import React, { Fragment } from "react"
+import { Field, FieldArray } from "formik"
 
-import Paper from "@material-ui/core/Paper";
-import AddIcon from "@material-ui/icons/Add";
+import Paper from "@material-ui/core/Paper"
+import AddIcon from "@material-ui/icons/Add"
 
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteIcon from "@material-ui/icons/Delete"
 
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@material-ui/core/IconButton"
 
-import Fab from "@material-ui/core/Fab";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import WizardNextButton from "components/Wizard/WizardNextButton";
-import WizardBackButton from "components/Wizard/WizardBackButton";
-import ContentBox from "components/UI/Content/ContentBox";
+import Fab from "@material-ui/core/Fab"
+import Typography from "@material-ui/core/Typography"
+import Grid from "@material-ui/core/Grid"
+import WizardNextButton from "components/Wizard/WizardNextButton"
+import WizardBackButton from "components/Wizard/WizardBackButton"
+import ContentBox from "components/UI/Content/ContentBox"
 
-import { contributions_received_box } from "views/ie/Wizard";
+import { contributions_received_box } from "views/ie/Wizard"
 
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { withStyles, makeStyles } from "@material-ui/core/styles"
 
-import FormControl from "@material-ui/core/FormControl";
-import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs";
-import useExpandClick from "components/UI/Paper/Hooks/useExpandClick";
-import Collapse from "@material-ui/core/Collapse";
-import { convertISODateToJsDate } from "utils/dateUtil";
-import * as pageValidations from "validation/ie/indexpSchema";
+import FormControl from "@material-ui/core/FormControl"
+import { renderRadioGroup, renderTextField, renderDatePicker } from "components/Form/Inputs/renderInputs"
+import useExpandClick from "components/UI/Paper/hooks/useExpandClick"
+import Collapse from "@material-ui/core/Collapse"
+import { convertISODateToJsDate } from "utils/dateUtil"
+import * as pageValidations from "validation/ie/indexpSchema"
 
-import OnChangeHandler from "components/UI/Utils/OnChangeHandler";
-import { graphqlFilter } from "utils/graphqlUtil";
-import { filteredIEUpsert } from "graphql/ie/FilterQueries";
-import { UPSERT_IND_EXP } from "graphql/ie/Mutations";
-import { useMutation } from "@apollo/react-hooks";
-import { disclaimer_cont_rec } from "views/ie/Wizard";
-import Checkbox from "components/Form/Inputs/Checkbox";
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
+import { graphqlFilter } from "utils/graphqlUtil"
+import { filteredIEUpsert } from "graphql/ie/FilterQueries"
+import { UPSERT_IND_EXP } from "graphql/ie/Mutations"
+import { useMutation } from "@apollo/react-hooks"
+import { disclaimer_cont_rec } from "views/ie/Wizard"
+import Checkbox from "components/Form/Inputs/Checkbox"
+import useAddDeleteCard from "./hooks/useAddDeleteCard"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -68,14 +69,14 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: "center",
 		marginBottom: theme.spacing(4)
 	}
-}));
+}))
 
 const AllCapsTextField = withStyles({
 	root: {},
 	label: {
 		textTransform: "uppercase"
 	}
-})(Field);
+})(Field)
 
 const initValues = {
 	contributorFirstName: "",
@@ -90,18 +91,18 @@ const initValues = {
 	contributorAddressZip5: "",
 	dateReceived: "",
 	amountReceived: ""
-};
+}
 
 const RenderContributions = props => {
-	const classes = useStyles();
-	const { arrayHelpers } = props;
-	const { CONTRIBUTIONS_RECEIVED } = arrayHelpers.form.values;
+	const classes = useStyles()
+	const { arrayHelpers } = props
+	const { CONTRIBUTIONS_RECEIVED } = arrayHelpers.form.values
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_RECEIVED);
+	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_RECEIVED)
+	const [{ addCard, deleteCard }] = useAddDeleteCard()
 
 	return (
 		<div>
-
 			{CONTRIBUTIONS_RECEIVED &&
 				CONTRIBUTIONS_RECEIVED.map((contribution, index) => (
 					<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
@@ -137,8 +138,7 @@ const RenderContributions = props => {
 							<Grid item xs={12} sm={1}>
 								<IconButton
 									onClick={() => {
-										arrayHelpers.remove(index);
-										deleteItem(CONTRIBUTIONS_RECEIVED);
+										deleteCard(CONTRIBUTIONS_RECEIVED, index, arrayHelpers.remove, deleteItem)
 									}}
 									aria-label="delete">
 									<DeleteIcon />
@@ -274,10 +274,7 @@ const RenderContributions = props => {
 				))}
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => {
-						arrayHelpers.unshift(initValues);
-						addItem(CONTRIBUTIONS_RECEIVED);
-					}}
+					onClick={() => addCard(initValues, CONTRIBUTIONS_RECEIVED, arrayHelpers.unshift, addItem)}
 					variant="extended"
 					size="medium"
 					color="secondary"
@@ -289,22 +286,22 @@ const RenderContributions = props => {
 				{/* {(touched || submitFailed) && error && <span>{error}</span>} */}
 			</div>
 		</div>
-	);
-};
+	)
+}
 
 const Page5 = props => {
 	const {
 		values,
 		values: { CONTRIBUTIONS_RECEIVED }
-	} = props;
-	const classes = useStyles();
+	} = props
+	const classes = useStyles()
 
-	const [upsertIndExp] = useMutation(UPSERT_IND_EXP);
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
 
 	const upsertIEData = () => {
-		const filteredResult = graphqlFilter(filteredIEUpsert, values);
-		upsertIndExp({ variables: { ie: filteredResult } });
-	};
+		const filteredResult = graphqlFilter(filteredIEUpsert, values)
+		upsertIndExp({ variables: { ie: filteredResult } })
+	}
 
 	return (
 		<Fragment>
@@ -326,7 +323,7 @@ const Page5 = props => {
 				<WizardNextButton {...props} validationGroup={pageValidations.Page5} />
 			</div>
 		</Fragment>
-	);
-};
+	)
+}
 
-export default Page5;
+export default Page5

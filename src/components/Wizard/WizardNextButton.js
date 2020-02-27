@@ -2,6 +2,7 @@ import React from "react"
 import Button from "@material-ui/core/Button"
 import { makeStyles } from "@material-ui/core/styles"
 import isEmpty from "lodash/isEmpty"
+import useValidateForm from "views/ie/Wizard/hooks/useValidateForm"
 
 const useStyles = makeStyles(theme => ({
 	buttons: {
@@ -14,37 +15,28 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
+
+
+
 const WizardNextButton = props => {
 	const classes = useStyles()
-	const { navigateNext, errors, setFieldTouched, validationGroup, touched, values, validateForm, isValid } = props
-
-	//isValid: check intersection on validation group and errors and differences on validationgroup and touched for validity.
-
-	// const isValid =
-	// 	(isEmpty(validationGroup.filter(field => Object.keys(errors).includes(field))) &&
-	// 		isEmpty(validationGroup.filter(field => !Object.keys(touched).includes(field)))) ||
-    // 	isEmpty(validationGroup.filter(field => !values[field]))
+    const { navigateNext, errors, setFieldTouched, touched, values, validateForm, isValid } = props
     
-    const handleClick = () => {
-        validateForm().then(res => {
-            if (!isEmpty(res)) {
-                return Promise.reject() 
-            }                    
-        }).then(navigateNext).catch(res => res)
+    const validate = useValidateForm()
+    
+    const validateClick = async () => {
+        const res = await validate()
+        res && navigateNext()
     }
-    
-	return (
+
+ 	return (
 		<div className={classes.buttons}>
-			<Button
-				//onClick={isValid ? navigateNext : () => validationGroup.map(field => setFieldTouched(field))}
-				onClick={ () => handleClick()}
+			<Button				
+				onClick={ validateClick}
 				className={classes.button}
 				type="submit"
 				variant="contained"
 				color={isValid ? "primary" : "default"}
-				// {
-				// 	isEmpty(validationGroup.filter(fields => Object.keys(errors).includes(fields))) ? "primary" : "default"
-				// }
 			>
 				Next
 			</Button>

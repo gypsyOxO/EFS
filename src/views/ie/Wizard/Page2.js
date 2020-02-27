@@ -1,42 +1,42 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from "react"
 
-import isEmpty from "lodash/isEmpty";
+import { FieldArray } from "formik"
+import { useMutation } from "@apollo/react-hooks"
 
-import { FieldArray } from "formik";
-import { useMutation } from "@apollo/react-hooks";
+import Paper from "@material-ui/core/Paper"
+import AddIcon from "@material-ui/icons/Add"
 
-import Paper from "@material-ui/core/Paper";
-import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete"
 
-import DeleteIcon from "@material-ui/icons/Delete";
+import IconButton from "@material-ui/core/IconButton"
+import Collapse from "@material-ui/core/Collapse"
 
-import IconButton from "@material-ui/core/IconButton";
-import Collapse from "@material-ui/core/Collapse";
+import Fab from "@material-ui/core/Fab"
+import Typography from "@material-ui/core/Typography"
+import Grid from "@material-ui/core/Grid"
+import WizardNextButton from "components/Wizard/WizardNextButton"
+import WizardBackButton from "components/Wizard/WizardBackButton"
 
-import Fab from "@material-ui/core/Fab";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import WizardNextButton from "components/Wizard/WizardNextButton";
-import WizardBackButton from "components/Wizard/WizardBackButton";
+import ContentBox from "components/UI/Content/ContentBox"
 
-import ContentBox from "components/UI/Content/ContentBox";
+import { communications_box } from "views/ie/Wizard"
 
-import { communications_box } from "views/ie/Wizard";
+import { makeStyles } from "@material-ui/core/styles"
+import SelectCommType from "components/Form/Inputs/SelectCommType"
 
-import { makeStyles } from "@material-ui/core/styles";
-import SelectCommType from "components/Form/Inputs/SelectCommType";
+import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
+import { UPSERT_IND_EXP_COMM, DELETE_IND_EXP_COMM, UPSERT_IND_EXP } from "graphql/ie/Mutations"
+import useExpandClick from "components/UI/Paper/hooks/useExpandClick"
 
-import OnChangeHandler from "components/UI/Utils/OnChangeHandler";
-import { UPSERT_IND_EXP_COMM, DELETE_IND_EXP_COMM, UPSERT_IND_EXP } from "graphql/ie/Mutations";
-import useExpandClick from "components/UI/Paper/Hooks/useExpandClick";
+import { graphqlFilter } from "utils/graphqlUtil"
+import { filteredIEUpsert } from "graphql/ie/FilterQueries"
 
-import { graphqlFilter } from "utils/graphqlUtil";
-import { filteredIEUpsert } from "graphql/ie/FilterQueries";
+import * as pageValidations from "validation/ie/indexpSchema"
+import { disclaimer_comm } from "views/ie/Wizard"
+import FormControl from "@material-ui/core/FormControl"
+import Checkbox from "components/Form/Inputs/Checkbox"
 
-import * as pageValidations from "validation/ie/indexpSchema";
-import { disclaimer_comm } from "views/ie/Wizard";
-import FormControl from "@material-ui/core/FormControl";
-import Checkbox from "components/Form/Inputs/Checkbox";
+import useAddDeleteCard from "./hooks/useAddDeleteCard"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
 	margins: {
 		margin: theme.spacing(2)
 	}
-}));
+}))
 
 const initValues = {
 	IE_COMM_ID: "",
@@ -91,17 +91,17 @@ const initValues = {
 	AUDIO_FILE_NAME: "",
 	VIDEO_FILE_NAME: "",
 	DISCLAIMERS: { required: false, color_original: false, language: false, funding_names: false }
-};
+}
 
 const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove }, upsertCommData, deleteCommData, upsertIEData }) => {
-	const { errors, touched, setFieldValue, setFieldError, setFieldTouched, validateForm } = arrayHelpers.form;
-	const classes = useStyles();
+	const { errors, touched, setFieldValue, setFieldError, setFieldTouched, validateForm, isValid } = arrayHelpers.form
+	const classes = useStyles()
 
-	//const comms = getIn(arrayHelpers.form.values, arrayHelpers.name)
+	const { comms = [] } = arrayHelpers.form.values
 
-	const { comms = [] } = arrayHelpers.form.values;
+	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(comms)
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(comms);
+	const [{ addCard, deleteCard }] = useAddDeleteCard()
 
 	return (
 		<div>
@@ -130,11 +130,8 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 									<Grid item xs={12} sm={1}>
 										<IconButton
 											onClick={() => {
-												comm.IE_COMM_ID && deleteCommData(comm);
-												remove(index);
-												deleteItem(comms);
-
-												//validateForm()
+												comm.IE_COMM_ID && deleteCommData(comm)
+												deleteCard(comms, index, remove, deleteItem)
 											}}
 											aria-label="delete">
 											<DeleteIcon />
@@ -166,15 +163,10 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 			</OnChangeHandler>
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => {
-						// if (isEmpty(errors) || (errors.comms && isEmpty(errors.comms))) {
-						unshift(initValues);
-						addItem(comms);
-						// }
-					}}
+					onClick={() => addCard(initValues, comms, unshift, addItem)}
 					variant="extended"
 					size="medium"
-					color="secondary"
+					color={isValid ? "secondary" : "default"}
 					//{isEmpty(errors) ? "secondary" : isEmpty(errors.comms) ? "secondary" : null}
 					className={classes.button}>
 					<AddIcon className={classes.extendedIcon} />
@@ -182,47 +174,47 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { unshift, remove },
 				</Fab>
 			</div>
 		</div>
-	);
-};
+	)
+}
 
 const Page2 = props => {
-	const classes = useStyles();
-	const { setFieldValue, values } = props;
+	const classes = useStyles()
+	const { setFieldValue, values } = props
 
 	//handle IE Comm updates
-	const [upsertIndExpComm] = useMutation(UPSERT_IND_EXP_COMM);
+	const [upsertIndExpComm] = useMutation(UPSERT_IND_EXP_COMM)
 
 	const upsertCommData = async (index, communication) => {
-		const { IE_ID } = values;
+		const { IE_ID } = values
 		const commPayload = {
 			...communication,
 			IE_ID
-		};
-
-		if (commPayload.IE_COMM_ID === "") {
-			delete commPayload.IE_COMM_ID;
 		}
 
-		commPayload.__typename && delete commPayload.__typename;
+		if (commPayload.IE_COMM_ID === "") {
+			delete commPayload.IE_COMM_ID
+		}
 
-		const { data } = await upsertIndExpComm({ variables: { comm: commPayload } });
+		commPayload.__typename && delete commPayload.__typename
 
-		setFieldValue(`comms.${index}.IE_COMM_ID`, data.upsertIndExpComm.IE_COMM_ID);
-	};
+		const { data } = await upsertIndExpComm({ variables: { comm: commPayload } })
+
+		setFieldValue(`comms.${index}.IE_COMM_ID`, data.upsertIndExpComm.IE_COMM_ID)
+	}
 
 	//handle IE Comm deletes
-	const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM);
+	const [deleteIndExpComm] = useMutation(DELETE_IND_EXP_COMM)
 
 	const deleteCommData = communication => {
-		deleteIndExpComm({ variables: { IE_COMM_ID: communication.IE_COMM_ID } });
-	};
+		deleteIndExpComm({ variables: { IE_COMM_ID: communication.IE_COMM_ID } })
+	}
 
-	const [upsertIndExp] = useMutation(UPSERT_IND_EXP);
+	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
 
 	const upsertIEData = () => {
-		const filteredResult = graphqlFilter(filteredIEUpsert, values);
-		upsertIndExp({ variables: { ie: filteredResult } });
-	};
+		const filteredResult = graphqlFilter(filteredIEUpsert, values)
+		upsertIndExp({ variables: { ie: filteredResult } })
+	}
 
 	return (
 		<Fragment>
@@ -243,7 +235,7 @@ const Page2 = props => {
 				<WizardNextButton {...props} validationGroup={pageValidations.Page2} />
 			</div>
 		</Fragment>
-	);
-};
+	)
+}
 
-export default Page2;
+export default Page2
