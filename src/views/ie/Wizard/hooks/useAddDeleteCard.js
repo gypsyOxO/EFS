@@ -6,20 +6,21 @@ function useAddDeleteCard() {
 	const validate = useValidateForm()
 
 	async function addCard(initValues, type, push, addItem) {
-		await validate()
+		type.length && (await validate())
 		if (isValid) {
-			push(initValues)
+			await push(initValues)
 			addItem(type)
 		}
-    }
-    
-    async function deleteCard(type, index, remove, deleteItem) {
-        await remove(index)       
-        deleteItem(type)        
-        validate()
-    }
+		!type.length && (await validate())
+	}
 
-	return [{addCard,deleteCard}]
+	async function deleteCard(type, index, remove, deleteItem) {
+		await remove(index)
+		deleteItem(type)
+		validate()
+	}
+
+	return [{ addCard, deleteCard }]
 }
 
 export default useAddDeleteCard
