@@ -19,7 +19,7 @@ import WizardNextButton from "components/Wizard/WizardNextButton"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
 
 import CandidateOrBallotMeasure from "components/Form/Panels/CandidateOrBallotMeasure/CandidateOrBallotMeasure"
-import * as pageValidations from "validation/ie/indexpSchema"
+
 
 import { graphqlFilter } from "utils/graphqlUtil"
 import { filteredIEUpsert} from "graphql/ie/FilterQueries"
@@ -107,8 +107,8 @@ const Page1 = props => {
                         />
 					</Grid>
 				</Grid>
-			</OnChangeHandler>
-			<WizardNextButton {...props} validationGroup={pageValidations.Page1} />
+			</OnChangeHandler>			
+            <WizardNextButton {...props}  />
 		</Fragment>
 	)
 }

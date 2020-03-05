@@ -73,13 +73,15 @@ export default function Wizard(props) {
 				<main className={classes.layout}>
 					<Wiz pages={[Page1, Page2, Page3, Page4, Page5, Review]}>
 						{wizProps => {
+                            const {pageIndex} = wizProps
+
 							return (
 								<>
 									<Formik
                                         
 										enableReinitialize
 										initialValues={props.initValues}
-										validationSchema={indexpSchema}
+										validationSchema={indexpSchema[pageIndex]}
 										onSubmit={(values) => {                                            
                                             //jumpLink(values.IE_ID, 1)
                                          

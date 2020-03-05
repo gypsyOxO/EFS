@@ -34,6 +34,7 @@ import { useMutation } from "@apollo/react-hooks"
 import { disclaimer_cont_rec } from "views/ie/Wizard"
 import Checkbox from "components/Form/Inputs/Checkbox"
 import useAddDeleteCard from "./hooks/useAddDeleteCard"
+import useCleanErrorsOnUnmount from './hooks/useCleanErrosOnUnmount';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -95,10 +96,10 @@ const initValues = {
 
 const RenderContributions = props => {
 	const classes = useStyles()
-	const { arrayHelpers } = props
+	const { arrayHelpers, arrayHelpers: {form: {isValid}}, arrayHelpers: {remove, push} } = props
 	const { CONTRIBUTIONS_RECEIVED } = arrayHelpers.form.values
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_RECEIVED)
+	const {expanded, ExpandButton,  handleExpandClick, addItem, deleteItem } = useExpandClick(CONTRIBUTIONS_RECEIVED)
 	const [{ addCard, deleteCard }] = useAddDeleteCard()
 
 	return (
@@ -138,7 +139,7 @@ const RenderContributions = props => {
 							<Grid item xs={12} sm={1}>
 								<IconButton
 									onClick={() => {
-										deleteCard(CONTRIBUTIONS_RECEIVED, index, arrayHelpers.remove, deleteItem)
+										deleteCard(index, remove, deleteItem)
 									}}
 									aria-label="delete">
 									<DeleteIcon />
@@ -274,10 +275,10 @@ const RenderContributions = props => {
 				))}
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => addCard(initValues, CONTRIBUTIONS_RECEIVED, arrayHelpers.push, addItem)}
+					onClick={() => addCard(initValues, CONTRIBUTIONS_RECEIVED, push, addItem)}
 					variant="extended"
 					size="medium"
-					color="secondary"
+					color={isValid ? "secondary" : "default"}
 					className={classes.button}>
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Contribution Received
@@ -293,8 +294,11 @@ const Page5 = props => {
 	const {
 		values,
 		values: { CONTRIBUTIONS_RECEIVED }
-	} = props
+    } = props
+    
 	const classes = useStyles()
+
+    useCleanErrorsOnUnmount()
 
 	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
 

@@ -1,8 +1,5 @@
 import React, { Component } from "react"
 
-//import RequestHandler from 'graphql/ie/requestHandler';
-import { connect } from "formik"
-
 class Wiz extends Component {
 	state = {
 		pageIndex: 0
@@ -36,7 +33,7 @@ class Wiz extends Component {
 	}
 
 	_renderPage = formProps => {
-		const { pageIndex } = this.state
+        const { pageIndex } = this.state        
 		const Page = this.props.pages[pageIndex]
 
 		return (
@@ -52,4 +49,4 @@ class Wiz extends Component {
 	}
 }
 
-export default connect(Wiz)
+export default Wiz

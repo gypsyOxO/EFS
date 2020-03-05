@@ -36,6 +36,7 @@ import { useMutation } from "@apollo/react-hooks"
 import { disclaimer_cont_made } from "views/ie/Wizard"
 import Checkbox from "components/Form/Inputs/Checkbox"
 import useAddDeleteCard from "./hooks/useAddDeleteCard"
+import useCleanErrorsOnUnmount from './hooks/useCleanErrosOnUnmount';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -78,11 +79,12 @@ const RenderContributions = props => {
 	const classes = useStyles()
 	const {
 		arrayHelpers,
-		arrayHelpers: { push, remove }
+        arrayHelpers: { push, remove },
+        arrayHelpers: {form: {isValid}}
 	} = props
 	const { CONTRIBUTIONS_MADE } = arrayHelpers.form.values
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(CONTRIBUTIONS_MADE)
+	const {expanded, ExpandButton,  handleExpandClick, addItem, deleteItem } = useExpandClick(CONTRIBUTIONS_MADE)
 	const [{ addCard, deleteCard }] = useAddDeleteCard()
 
 	return (
@@ -129,7 +131,7 @@ const RenderContributions = props => {
 								<Grid item xs={12} sm={1}>
 									<IconButton
 										onClick={() => {
-											deleteCard(CONTRIBUTIONS_MADE, index, remove, deleteItem)
+											deleteCard(index, remove, deleteItem)
 										}}
 										aria-label="delete">
 										<DeleteIcon />
@@ -194,7 +196,7 @@ const RenderContributions = props => {
 					onClick={() => addCard(initValues, CONTRIBUTIONS_MADE, push, addItem)}
 					variant="extended"
 					size="medium"
-					color="secondary"
+					color={isValid ? "secondary" : "default"}
 					className={classes.button}>
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Contribution Made
@@ -210,8 +212,10 @@ const Page4 = props => {
 	const {
 		values,
 		values: { CONTRIBUTIONS_MADE = [] }
-	} = props
+    } = props    
 	const classes = useStyles()
+
+    useCleanErrorsOnUnmount()
 
 	const [upsertIndExp] = useMutation(UPSERT_IND_EXP)
 

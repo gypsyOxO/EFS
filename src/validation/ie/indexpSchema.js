@@ -4,7 +4,7 @@ const required = "* Required"
 const invalidDate = "* Invalid date"
 const invalidNumber = "* Must be numeric"
 
-export const indexpSchema = yup.object().shape({
+const page1 = yup.object().shape({
 	DATE_DISTRIBUTED: yup
 		.date()
 		.required(required)
@@ -29,7 +29,24 @@ export const indexpSchema = yup.object().shape({
 		.number()
 		.nullable()
 		.when("SUBJECT", { is: "B", then: yup.number().required(required) }),
-	SUBJECT: yup.string(),
+	SUBJECT: yup.string()
+})
+
+const page2 = yup.object().shape({
+	comms: yup.lazy(value => {
+		if (value && value.length) {
+			return yup.array().of(
+				yup.object().shape({
+					COMM_TYPE: yup.string().required(required)
+				})
+			)
+		}
+
+		return yup.mixed().notRequired()
+	})
+})
+
+const page3 = yup.object().shape({
 	payments: yup.lazy(value => {
 		if (value && value.length) {
 			return yup.array().of(
@@ -74,10 +91,14 @@ export const indexpSchema = yup.object().shape({
 					})
 				})
 			)
-        }
-        
+		}
+
 		return yup.mixed().notRequired()
-	}),
+	})
+})
+
+
+const page4 = yup.object().shape({
 	CONTRIBUTIONS_MADE: yup.lazy(value => {
 		if (value && value.length) {
 			return yup.array().of(
@@ -90,10 +111,14 @@ export const indexpSchema = yup.object().shape({
 						.typeError(invalidDate)
 				})
 			)
-        }
-        
+		}
+
 		return yup.mixed().notRequired()
-	}),
+	})
+})
+
+
+const page5 = yup.object().shape({
 	CONTRIBUTIONS_RECEIVED: yup.lazy(value => {
 		if (value && value.length) {
 			return yup.array().of(
@@ -126,37 +151,11 @@ export const indexpSchema = yup.object().shape({
 		}
 
 		return yup.mixed().notRequired()
-	}),
-	comms: yup.lazy(value => {
-		if (value && value.length) {
-			return yup.array().of(
-				yup.object().shape({
-					COMM_TYPE: yup.string().required(required)
-				})
-			)
-		}
-
-		return yup.mixed().notRequired()
 	})
-
-	// ,
-
-	//  comms: Yup.array().of(
-	//             Yup.object().shape({
-	//                 COMM_TYPE: Yup.string()
-	//             })
-
-	//)
-	// payments: Yup.array().of(
-	//     Yup.object().shape({
-	//         IE_PAYMENT_DATE: Yup.string().required("Required"),
-	//         IE_PAYMENT_AMT: Yup.string().required("Required"),
-	//         IE_PAYEE: Yup.string().required("Required"),
-	//         IE_PAYMENT_DESC: Yup.string().required("Required")
-	//     })
-
-	// )
 })
+
+
+export const indexpSchema = [page1, page2, page3, page4, page5]
 
 export const Page1 = ["DATE_DISTRIBUTED", "ELECTION_ID", "ELEC_SEAT_ID", "ELEC_SEAT_CAND_ID", "BM_ID"]
 export const Page2 = []

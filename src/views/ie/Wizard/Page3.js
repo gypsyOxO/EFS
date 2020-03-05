@@ -23,13 +23,13 @@ import { spendinginfo_box } from "views/ie/Wizard"
 import { makeStyles } from "@material-ui/core/styles"
 import * as pageValidations from "validation/ie/indexpSchema"
 import OnChangeHandler from "components/UI/Utils/OnChangeHandler"
-import { UPSERT_IND_EXP_PAYMENT, DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
+import { DELETE_IND_EXP_PAYMENT } from "graphql/ie/Mutations"
 import useExpandClick from "components/UI/Paper/hooks/useExpandClick"
 import useUpsertPaymentData from "graphql/ie/hooks/useUpsertPaymentData"
 import Collapse from "@material-ui/core/Collapse"
 import { convertISODateToJsDate } from "utils/dateUtil"
-import useAddDeleteCard from './hooks/useAddDeleteCard';
-
+import useAddDeleteCard from "./hooks/useAddDeleteCard"
+import useCleanErrorsOnUnmount from "./hooks/useCleanErrosOnUnmount"
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -201,51 +201,53 @@ function RenderVendors({ arrayHelpers, payment, paymentIndex }) {
 	)
 }
 
+function RenderPayments({
+	arrayHelpers,
+	arrayHelpers: {		
+		form: { values, isValid }
+	},
+	deletePaymentData
+}) {
+	const { IE_ID } = values
+	const { push, remove, name } = arrayHelpers
+	const payments = getIn(values, name)
 
+	const classes = useStyles()
 
-function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {push, remove, name}, deletePaymentData }) {
-    const { IE_ID } = form.values    
-	const payments = getIn(form.values, name)
+	const [{ upsertPayment }] = useUpsertPaymentData()
+	const { expanded, ExpandButton, handleExpandClick, addItem, deleteItem } = useExpandClick(payments)
 
-    const classes = useStyles()
+	const [{ addCard, deleteCard }] = useAddDeleteCard()
 
-    const [{ upsertPayment }] = useUpsertPaymentData()
-    const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(payments)
-
-    const [{addCard,deleteCard}] = useAddDeleteCard()
-
-
-    const initValues = {
-        IE_PAYMENT_ID: "",
-        IE_PAYEE: "",
-        IE_PAYEE_LNAME: "",
-        IE_PAYEE_FNAME: "",
-        IE_PAYEE_ADDR_STR: "",
-        IE_PAYEE_ADDR_STR2: "",
-        IE_PAYEE_ADDR_CITY: "",
-        IE_PAYEE_ADDR_ST: "",
-        IE_PAYEE_ADDR_ZIP_5: "",
-        IE_PAYEE_ADDR_ZIP_4: "",
-        IE_PAYMENT_DESC: "",
-        IE_PAYMENT_AMT: ""
-    }
+	const initValues = {
+		IE_PAYMENT_ID: "",
+		IE_PAYEE: "",
+		IE_PAYEE_LNAME: "",
+		IE_PAYEE_FNAME: "",
+		IE_PAYEE_ADDR_STR: "",
+		IE_PAYEE_ADDR_STR2: "",
+		IE_PAYEE_ADDR_CITY: "",
+		IE_PAYEE_ADDR_ST: "",
+		IE_PAYEE_ADDR_ZIP_5: "",
+		IE_PAYEE_ADDR_ZIP_4: "",
+		IE_PAYMENT_DESC: "",
+		IE_PAYMENT_AMT: ""
+	}
 
 	function upsertPaymentData(index, payment) {
 		const paymentPayload = buildPaymentPayload(IE_ID, payment)
 		upsertPayment(index, paymentPayload)
-    }
-    
+	}
 
-    function handleDeletePayment(index,payment) {
-        payment.IE_PAYMENT_ID && deletePaymentData(payment)
-        deleteCard(payments,index,remove,deleteItem)   
-    }
+	function handleDeletePayment(index, payment) {
+		payment.IE_PAYMENT_ID && deletePaymentData(payment)
+		deleteCard(index, remove, deleteItem)
+	}
 
 	return (
 		<div>
 			{payments &&
 				payments.map((payment, index) => {
-
 					return (
 						<Paper key={index} className={classes.paper} onClick={() => handleExpandClick(index)}>
 							<OnChangeHandler handleChange={() => upsertPaymentData(index, payment)}>
@@ -280,9 +282,7 @@ function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {push, remove, nam
 										</Fragment>
 									)}
 									<Grid item xs={12} sm={1}>
-										<IconButton
-											onClick={() => handleDeletePayment(index,payment)}
-											aria-label="delete">
+										<IconButton onClick={() => handleDeletePayment(index, payment)} aria-label="delete">
 											<DeleteIcon />
 										</IconButton>
 									</Grid>
@@ -413,10 +413,10 @@ function RenderPayments ({arrayHelpers: {form}, arrayHelpers: {push, remove, nam
 
 			<div className={classes.buttons} style={{ marginRight: 10 }}>
 				<Fab
-					onClick={() => addCard(initValues,payments, push, addItem)}
+					onClick={() => addCard(initValues, payments, push, addItem)}
 					variant="extended"
 					size="medium"
-					color="secondary"
+					color={isValid ? "secondary" : "default"}
 					className={classes.button}>
 					<AddIcon className={classes.extendedIcon} />
 					&nbsp;Add Payment
@@ -435,8 +435,9 @@ function buildPaymentPayload(IE_ID, payment) {
 }
 
 const Page3 = props => {
-	const { values } = props
 	const classes = useStyles()
+
+	useCleanErrorsOnUnmount()
 
 	//handle IE Payment deletes
 	const [deleteIndExpPayment] = useMutation(DELETE_IND_EXP_PAYMENT)

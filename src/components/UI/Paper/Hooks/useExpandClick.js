@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState,useCallback } from "react"
 import IconButton from "@material-ui/core/IconButton"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import clsx from "clsx"
@@ -20,42 +20,54 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-function useExpandClick(initialState) {
-	const classes = useStyles()
-
-    
+export default function useExpandClick(initialState) {
+	
 
 	const [expanded, setExpanded] = useState(
 		initialState && initialState.length
-			? [...new Array(initialState.length - 1).fill(false, 0, initialState.length)] : []
-	)
+			? [...new Array(initialState.length).fill(false, 0, initialState.length)] : []
+    )
 
+    
+    // const [count, setCount] = useState(0)
+    // const increment = useCallback(() => setCount((x) => x + 1), [])
+    
+    
 	const handleExpandClick = index => {
 		let newExpandList = [...new Array(initialState.length).fill(false, 0, initialState.length)]
 		newExpandList.splice(index, 1, !expanded[index])
 		setExpanded(newExpandList)
 	}
 
-	const deleteItem = items => {
-		items ? setExpanded([true, ...new Array(items.length).fill(false, 0, items.length)]) : setExpanded([true])
+	const deleteItem = (index) => {        
+        let newExpandList = []
+
+        if(expanded.length > 1) {
+            newExpandList = [...expanded]
+            newExpandList.splice(index,1)            
+        }
+
+        setExpanded(newExpandList)
+    }
+    
+	const addItem = () => {        
+		setExpanded([...new Array(expanded.length).fill(false, 0, expanded.length), true])
 	}
 
-	const addItem = items => {
-		setExpanded([...new Array(items.length).fill(false, 0, items.length), true])
-	}
-
-
-
-	const ExpandButton = ({index, onClick}) => (
+	const ExpandButton = ({index, onClick}) => {
+        
+        const classes = useStyles()
+        return (        
 		<IconButton onClick={onClick}
 			className={clsx(classes.expand, {
 				[classes.expandOpen]: expanded[index]
 			})}>
 			<ExpandMoreIcon />
 		</IconButton>
-	)
+	)}
 
-	return [expanded, ExpandButton,{ handleExpandClick, deleteItem, addItem }]
+    return {expanded, ExpandButton, handleExpandClick, deleteItem, addItem }
+    
 }
 
-export default useExpandClick
+

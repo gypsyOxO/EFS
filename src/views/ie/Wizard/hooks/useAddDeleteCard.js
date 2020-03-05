@@ -1,26 +1,31 @@
-import { useFormikContext } from "formik"
 import useValidateForm from "./useValidateForm"
 
-function useAddDeleteCard() {
-	const { isValid } = useFormikContext()
-	const validate = useValidateForm()
+export default function useAddDeleteCard() {
+
+
+    const validate = useValidateForm()
 
 	async function addCard(initValues, type, push, addItem) {
-		type.length && (await validate())
+        
+        let isValid = true
+
+        if(type.length) {
+            isValid = await validate()
+        }        
+ 
 		if (isValid) {
 			await push(initValues)
 			addItem(type)
-		}
-		!type.length && (await validate())
+        }
+		
 	}
 
-	async function deleteCard(type, index, remove, deleteItem) {
+	async function deleteCard(index, deleteItem, remove) {
 		await remove(index)
-		deleteItem(type)
+		deleteItem(index)
 		validate()
-	}
+    }
 
-	return [{ addCard, deleteCard }]
+	return [{ addCard, deleteCard}]
 }
 
-export default useAddDeleteCard

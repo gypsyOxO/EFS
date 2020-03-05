@@ -1,7 +1,6 @@
 import React from "react"
 import Button from "@material-ui/core/Button"
 import { makeStyles } from "@material-ui/core/styles"
-import isEmpty from "lodash/isEmpty"
 import useValidateForm from "views/ie/Wizard/hooks/useValidateForm"
 
 const useStyles = makeStyles(theme => ({
@@ -15,12 +14,9 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-
-
-
 const WizardNextButton = props => {
 	const classes = useStyles()
-    const { navigateNext, errors, setFieldTouched, touched, values, validateForm, isValid } = props
+    const { navigateNext, isValid } = props
     
     const validate = useValidateForm()
     

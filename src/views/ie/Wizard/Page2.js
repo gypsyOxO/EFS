@@ -37,6 +37,7 @@ import FormControl from "@material-ui/core/FormControl"
 import Checkbox from "components/Form/Inputs/Checkbox"
 
 import useAddDeleteCard from "./hooks/useAddDeleteCard"
+import useCleanErrorsOnUnmount from './hooks/useCleanErrosOnUnmount';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -94,14 +95,14 @@ const initValues = {
 }
 
 const RenderCommunications = ({ arrayHelpers, arrayHelpers: { push, remove }, upsertCommData, deleteCommData, upsertIEData }) => {
-	const { errors, touched, setFieldValue, setFieldError, setFieldTouched, validateForm, isValid } = arrayHelpers.form
+    const { isValid, values: {comms = []}} = arrayHelpers.form
+    
 	const classes = useStyles()
 
-	const { comms = [] } = arrayHelpers.form.values
+	const {expanded, ExpandButton,  handleExpandClick, addItem, deleteItem } = useExpandClick(comms)
 
-	const [expanded, ExpandButton, { handleExpandClick, addItem, deleteItem }] = useExpandClick(comms)
-
-	const [{ addCard, deleteCard }] = useAddDeleteCard()
+    const [{ addCard, deleteCard }] = useAddDeleteCard()
+    
 
 	return (
 		<div>
@@ -131,7 +132,7 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { push, remove }, up
 										<IconButton
 											onClick={() => {
 												comm.IE_COMM_ID && deleteCommData(comm)
-												deleteCard(comms, index, remove, deleteItem)
+												deleteCard(index, deleteItem, remove)
 											}}
 											aria-label="delete">
 											<DeleteIcon />
@@ -176,9 +177,15 @@ const RenderCommunications = ({ arrayHelpers, arrayHelpers: { push, remove }, up
 	)
 }
 
+
+
+
 const Page2 = props => {
 	const classes = useStyles()
-	const { setFieldValue, values } = props
+    const { setFieldValue, values} = props
+
+    useCleanErrorsOnUnmount()
+
 
 	//handle IE Comm updates
 	const [upsertIndExpComm] = useMutation(UPSERT_IND_EXP_COMM)
@@ -216,7 +223,7 @@ const Page2 = props => {
 	}
 
 	return (
-		<Fragment>
+		<Fragment>            
 			<FieldArray
 				name="comms"
 				render={arrayHelpers => (
