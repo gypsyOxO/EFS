@@ -6,5 +6,17 @@ jobs:
       -image:  circleci/node:10.15.0
     steps:
       - checkout
-      - run: npm install
-      - run: npm test
+      - run: npm install    
+  test: 
+    docker: 
+      -image: circleci/node:10.15.0
+    steps: 
+      -checkout
+      -run: npm test
+workflows:
+  version: 2.1
+  build_and_test_it:
+    jobs:
+      -build
+      -test
+      
